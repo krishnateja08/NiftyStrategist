@@ -800,112 +800,217 @@ function tick(){
 }
 tick();setInterval(tick,1000);
 
-/* ── Live Ticker via Yahoo Finance ── */
-const SYMBOLS = [
-  { s:'NIFTY 50',   yf:'^NSEI',               prefix:'',   decimals:2 },
-  { s:'SENSEX',     yf:'^BSESN',              prefix:'',   decimals:2 },
-  { s:'BANK NIFTY', yf:'^NSEBANK',            prefix:'',   decimals:2 },
-  { s:'FINNIFTY',   yf:'NIFTY_FIN_SERVICE.NS',prefix:'',   decimals:2 },
-  { s:'RELIANCE',   yf:'RELIANCE.NS',          prefix:'₹',  decimals:2 },
-  { s:'TCS',        yf:'TCS.NS',               prefix:'₹',  decimals:2 },
-  { s:'HDFCBANK',   yf:'HDFCBANK.NS',          prefix:'₹',  decimals:2 },
-  { s:'INFY',       yf:'INFY.NS',              prefix:'₹',  decimals:2 },
-  { s:'ICICIBANK',  yf:'ICICIBANK.NS',         prefix:'₹',  decimals:2 },
-  { s:'S&P 500',    yf:'^GSPC',               prefix:'',   decimals:2 },
-  { s:'USD/INR',    yf:'INR=X',               prefix:'',   decimals:2 },
-  { s:'GOLD',       yf:'GC=F',               prefix:'$',  decimals:2 },
-  { s:'CRUDE',      yf:'CL=F',               prefix:'$',  decimals:2 },
+/* ══════════════════════════════════════
+   LIVE TICKER — Multi-Source Engine
+   Sources: NSE India → Groww → Yahoo
+══════════════════════════════════════ */
+
+const TICKER_STOCKS = [
+  { s:'RELIANCE',  sym:'RELIANCE',  prefix:'₹' },
+  { s:'TCS',       sym:'TCS',       prefix:'₹' },
+  { s:'HDFCBANK',  sym:'HDFCBANK',  prefix:'₹' },
+  { s:'INFY',      sym:'INFY',      prefix:'₹' },
+  { s:'ICICIBANK', sym:'ICICIBANK', prefix:'₹' },
+  { s:'SBIN',      sym:'SBIN',      prefix:'₹' },
+  { s:'WIPRO',     sym:'WIPRO',     prefix:'₹' },
+  { s:'AXISBANK',  sym:'AXISBANK',  prefix:'₹' },
+  { s:'ITC',       sym:'ITC',       prefix:'₹' },
+  { s:'LT',        sym:'LT',        prefix:'₹' },
 ];
 
-function fmtNum(n, decimals) {
-  if(n === undefined || n === null || isNaN(n)) return '—';
-  if(n >= 1000) return n.toLocaleString('en-IN',{minimumFractionDigits:decimals,maximumFractionDigits:decimals});
-  return n.toFixed(decimals);
+const TICKER_INDICES = [
+  { s:'NIFTY 50',   key:'NIFTY 50'   },
+  { s:'SENSEX',     key:'SENSEX'     },
+  { s:'BANK NIFTY', key:'NIFTY BANK' },
+  { s:'FINNIFTY',   key:'NIFTY FIN SERVICE' },
+];
+
+function fmt(n, d=2) {
+  if(n==null||isNaN(n)) return '—';
+  return n>=1000 ? n.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}) : n.toFixed(d);
 }
 
 function renderTicker(items) {
-  const el = document.getElementById('tkr');
-  const html = [...items,...items].map(t =>
+  const tkr = document.getElementById('tkr');
+  tkr.innerHTML = [...items,...items].map(t=>
     `<span class="ti"><span class="s">${t.s}</span><span>${t.v}</span><span class="${t.u?'up':'dn'}">${t.c}</span></span>`
   ).join('');
-  el.innerHTML = html;
 }
 
-function parseQuotes(raw) {
-  try {
-    const data = typeof raw === 'string' ? JSON.parse(raw) : raw;
-    return data?.quoteResponse?.result || [];
-  } catch(e) { return []; }
-}
+/* ── Source 1: NSE India official API via corsproxy ── */
+async function fromNSE() {
+  const items = [];
 
-function buildItems(quotes) {
-  return SYMBOLS.map(sym => {
-    const q = quotes.find(r => r.symbol === sym.yf);
-    if(!q || !q.regularMarketPrice) return {s:sym.s, v:'—', c:'—', u:1};
-    const price  = q.regularMarketPrice;
-    const chgPct = q.regularMarketChangePercent || 0;
-    const up     = chgPct >= 0;
-    return {
-      s: sym.s,
-      v: sym.prefix + fmtNum(price, sym.decimals),
-      c: (up?'+':'') + chgPct.toFixed(2) + '%',
-      u: up ? 1 : 0
-    };
+  /* Indices from NSE allIndices */
+  const idxUrl = 'https://www.nseindia.com/api/allIndices';
+  const idxProxy = `https://corsproxy.io/?${encodeURIComponent(idxUrl)}`;
+  const ir = await fetch(idxProxy, {
+    headers:{'Accept':'application/json'},
+    signal: AbortSignal.timeout(7000), cache:'no-store'
   });
-}
+  const idxData = await ir.json();
+  const indices = idxData.data || [];
 
-async function tryFetch(proxyUrl) {
-  const res = await fetch(proxyUrl, {cache:'no-store', signal: AbortSignal.timeout(8000)});
-  if(!res.ok) throw new Error('HTTP '+res.status);
-  return res;
-}
-
-async function fetchLiveTicker() {
-  const syms   = SYMBOLS.map(s=>s.yf).join(',');
-  const yfUrl  = `https://query1.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
-  const yfUrl2 = `https://query2.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
-
-  /* ordered list of proxy strategies */
-  const strategies = [
-    /* 1. corsproxy.io */
-    async () => {
-      const r = await tryFetch(`https://corsproxy.io/?${encodeURIComponent(yfUrl)}`);
-      return parseQuotes(await r.json());
-    },
-    /* 2. allorigins on query2 */
-    async () => {
-      const r = await tryFetch(`https://api.allorigins.win/get?url=${encodeURIComponent(yfUrl2)}`);
-      const j = await r.json();
-      return parseQuotes(j.contents);
-    },
-    /* 3. corsproxy.io on query2 */
-    async () => {
-      const r = await tryFetch(`https://corsproxy.io/?${encodeURIComponent(yfUrl2)}`);
-      return parseQuotes(await r.json());
-    },
-    /* 4. thingproxy */
-    async () => {
-      const r = await tryFetch(`https://thingproxy.freeboard.io/fetch/${yfUrl}`);
-      return parseQuotes(await r.json());
-    },
-  ];
-
-  for(const strategy of strategies) {
-    try {
-      const quotes = await strategy();
-      if(quotes.length > 0) {
-        const items = buildItems(quotes);
-        const hasReal = items.some(i => i.v !== '—');
-        if(hasReal) { renderTicker(items); return; }
-      }
-    } catch(e) {
-      console.warn('Proxy attempt failed:', e.message);
+  for(const ti of TICKER_INDICES) {
+    const found = indices.find(i => i.index === ti.key || i.indexSymbol === ti.key);
+    if(found) {
+      const up = parseFloat(found.percentChange) >= 0;
+      items.push({
+        s: ti.s,
+        v: fmt(found.last, 2),
+        c: (up?'+':'') + parseFloat(found.percentChange).toFixed(2) + '%',
+        u: up?1:0
+      });
     }
   }
-  console.warn('All proxies failed — ticker will retry in 60s');
+
+  /* Stocks from NSE quote API */
+  for(const st of TICKER_STOCKS) {
+    try {
+      const sUrl = `https://www.nseindia.com/api/quote-equity?symbol=${encodeURIComponent(st.sym)}`;
+      const sProxy = `https://corsproxy.io/?${encodeURIComponent(sUrl)}`;
+      const sr = await fetch(sProxy, {
+        headers:{'Accept':'application/json'},
+        signal: AbortSignal.timeout(5000), cache:'no-store'
+      });
+      const sd = await sr.json();
+      const price = sd?.priceInfo?.lastPrice;
+      const chg   = sd?.priceInfo?.pChange;
+      if(price!=null) {
+        const up = chg >= 0;
+        items.push({
+          s: st.s,
+          v: st.prefix + fmt(price, 2),
+          c: (up?'+':'') + parseFloat(chg).toFixed(2) + '%',
+          u: up?1:0
+        });
+      }
+    } catch(e) { /* skip individual stock errors */ }
+  }
+
+  return items;
 }
 
-/* kick off immediately, then every 60 s */
+/* ── Source 2: Groww public API (no CORS issues) ── */
+async function fromGroww() {
+  const items = [];
+
+  /* Groww indices */
+  const growwIndices = [
+    { s:'NIFTY 50',   url:'https://groww.in/v1/api/stocks_fo/v1/indices/NIFTY%2050' },
+    { s:'SENSEX',     url:'https://groww.in/v1/api/stocks_fo/v1/indices/BSE%20SENSEX' },
+    { s:'BANK NIFTY', url:'https://groww.in/v1/api/stocks_fo/v1/indices/NIFTY%20BANK' },
+    { s:'FINNIFTY',   url:'https://groww.in/v1/api/stocks_fo/v1/indices/NIFTY%20FIN%20SERVICE' },
+  ];
+
+  for(const gi of growwIndices) {
+    try {
+      const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(gi.url)}`,{
+        signal:AbortSignal.timeout(5000),cache:'no-store'
+      });
+      const d = await r.json();
+      const price = d?.currentValue ?? d?.ltp ?? d?.lastPrice;
+      const chg   = d?.dayChangePerc ?? d?.percentChange ?? d?.pChange;
+      if(price!=null){
+        const up = parseFloat(chg)>=0;
+        items.push({s:gi.s, v:fmt(price,2), c:(up?'+':'')+parseFloat(chg).toFixed(2)+'%', u:up?1:0});
+      }
+    } catch(e){}
+  }
+
+  /* Groww stocks */
+  const growwStocks = [
+    { s:'RELIANCE',  url:'https://groww.in/v1/api/stocks_fo/v1/company/search_results/reliance-industries-ltd',   prefix:'₹' },
+    { s:'TCS',       url:'https://groww.in/v1/api/stocks_fo/v1/company/search_results/tata-consultancy-services', prefix:'₹' },
+    { s:'HDFCBANK',  url:'https://groww.in/v1/api/stocks_fo/v1/company/search_results/hdfc-bank-ltd',             prefix:'₹' },
+    { s:'INFY',      url:'https://groww.in/v1/api/stocks_fo/v1/company/search_results/infosys-ltd',               prefix:'₹' },
+    { s:'SBIN',      url:'https://groww.in/v1/api/stocks_fo/v1/company/search_results/state-bank-of-india',       prefix:'₹' },
+  ];
+
+  for(const gs of growwStocks) {
+    try {
+      const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(gs.url)}`,{
+        signal:AbortSignal.timeout(5000),cache:'no-store'
+      });
+      const d = await r.json();
+      const price = d?.ltp ?? d?.lastPrice ?? d?.currentPrice;
+      const chg   = d?.dayChangePerc ?? d?.percentChange;
+      if(price!=null){
+        const up = parseFloat(chg||0)>=0;
+        items.push({s:gs.s, v:gs.prefix+fmt(price,2), c:(up?'+':'')+parseFloat(chg||0).toFixed(2)+'%', u:up?1:0});
+      }
+    } catch(e){}
+  }
+
+  return items;
+}
+
+/* ── Source 3: Yahoo Finance via multiple proxies ── */
+async function fromYahoo() {
+  const YF_SYMS = [
+    {s:'NIFTY 50',yf:'^NSEI',p:''},
+    {s:'SENSEX',yf:'^BSESN',p:''},
+    {s:'BANK NIFTY',yf:'^NSEBANK',p:''},
+    {s:'RELIANCE',yf:'RELIANCE.NS',p:'₹'},
+    {s:'TCS',yf:'TCS.NS',p:'₹'},
+    {s:'HDFCBANK',yf:'HDFCBANK.NS',p:'₹'},
+    {s:'INFY',yf:'INFY.NS',p:'₹'},
+    {s:'ICICIBANK',yf:'ICICIBANK.NS',p:'₹'},
+    {s:'SBIN',yf:'SBIN.NS',p:'₹'},
+    {s:'ITC',yf:'ITC.NS',p:'₹'},
+    {s:'S&P 500',yf:'^GSPC',p:''},
+    {s:'USD/INR',yf:'INR=X',p:''},
+    {s:'GOLD',yf:'GC=F',p:'$'},
+    {s:'CRUDE',yf:'CL=F',p:'$'},
+  ];
+  const syms = YF_SYMS.map(x=>x.yf).join(',');
+  const base = `https://query1.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
+  const proxies = [
+    `https://corsproxy.io/?${encodeURIComponent(base)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(base)}`,
+  ];
+
+  for(const px of proxies){
+    try{
+      const r = await fetch(px,{signal:AbortSignal.timeout(7000),cache:'no-store'});
+      let raw = await r.json();
+      if(raw.contents) raw = JSON.parse(raw.contents);
+      const quotes = raw?.quoteResponse?.result || [];
+      if(!quotes.length) continue;
+      return YF_SYMS.map(sym=>{
+        const q = quotes.find(x=>x.symbol===sym.yf);
+        if(!q?.regularMarketPrice) return {s:sym.s,v:'—',c:'—',u:1};
+        const up = q.regularMarketChangePercent>=0;
+        return {s:sym.s, v:sym.p+fmt(q.regularMarketPrice,2), c:(up?'+':'')+q.regularMarketChangePercent.toFixed(2)+'%', u:up?1:0};
+      }).filter(i=>i.v!=='—');
+    }catch(e){}
+  }
+  return [];
+}
+
+/* ── Main orchestrator ── */
+async function fetchLiveTicker() {
+  /* Try NSE first */
+  try {
+    const items = await fromNSE();
+    if(items.length >= 4){ renderTicker(items); console.log('Ticker: NSE'); return; }
+  } catch(e){ console.warn('NSE failed',e.message); }
+
+  /* Try Groww */
+  try {
+    const items = await fromGroww();
+    if(items.length >= 4){ renderTicker(items); console.log('Ticker: Groww'); return; }
+  } catch(e){ console.warn('Groww failed',e.message); }
+
+  /* Try Yahoo */
+  try {
+    const items = await fromYahoo();
+    if(items.length >= 4){ renderTicker(items); console.log('Ticker: Yahoo'); return; }
+  } catch(e){ console.warn('Yahoo failed',e.message); }
+
+  console.warn('All sources failed — will retry in 60s');
+}
+
 fetchLiveTicker();
 setInterval(fetchLiveTicker, 60000);
 
