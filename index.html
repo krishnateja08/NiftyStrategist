@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Krishna Markets — Intelligence Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   GLASS AURORA — Krishna Markets Intelligence Hub
+   Aurora gradient bg · Frosted glass panels
+   Floating pill nav · iframe content area
+═══════════════════════════════════════════════ */
+:root {
+  --aurora1: rgba(120,40,255,.28);
+  --aurora2: rgba(0,180,255,.22);
+  --aurora3: rgba(0,255,180,.18);
+  --glass-bg: rgba(255,255,255,.05);
+  --glass-border: rgba(255,255,255,.12);
+  --glass-hover: rgba(255,255,255,.10);
+  --text: rgba(255,255,255,.92);
+  --text-dim: rgba(255,255,255,.45);
+  --accent: #7c28ff;
+  --accent2: #00b4ff;
+  --green: #00ffb4;
+  --red: #ff4060;
+}
+
+* { margin:0; padding:0; box-sizing:border-box }
+html, body { height:100%; overflow:hidden }
+
+body {
+  font-family:'DM Sans', sans-serif;
+  background: linear-gradient(135deg, #080018 0%, #0a0028 20%, #000d30 45%, #001828 70%, #000d18 100%);
+  color: var(--text);
+  position: relative;
+}
+
+/* ── Aurora animated background ── */
+body::before {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 15%, var(--aurora1) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 60% at 85% 35%, var(--aurora2) 0%, transparent 70%),
+    radial-gradient(ellipse 55% 45% at 50% 90%, var(--aurora3) 0%, transparent 70%);
+  animation: auroraShift 12s ease-in-out infinite alternate;
+}
+@keyframes auroraShift {
+  0%   { opacity:.8; transform:scale(1) rotate(0deg) }
+  50%  { opacity:1;  transform:scale(1.05) rotate(1deg) }
+  100% { opacity:.7; transform:scale(.97) rotate(-1deg) }
+}
+
+/* subtle grid overlay */
+body::after {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ── LAYOUT ── */
+#app {
+  position:relative; z-index:1;
+  height:100vh;
+  display:flex; flex-direction:column;
+}
+
+/* ── TOP NAV ── */
+#topnav {
+  flex-shrink:0;
+  padding: 12px 20px;
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  background: rgba(8,0,24,.4);
+  border-bottom: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position:relative; z-index:100;
+}
+
+/* Brand */
+.brand {
+  display:flex; align-items:center; gap:10px;
+  margin-right:10px; flex-shrink:0;
+}
+.brand-orb {
+  width:40px; height:40px;
+  background: linear-gradient(135deg,#7c28ff,#00b4ff);
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:20px;
+  box-shadow: 0 0 24px rgba(124,40,255,.5), 0 0 48px rgba(0,180,255,.2);
+  animation: orbPulse 3s ease-in-out infinite;
+  flex-shrink:0;
+}
+@keyframes orbPulse {
+  0%,100% { box-shadow:0 0 24px rgba(124,40,255,.5),0 0 48px rgba(0,180,255,.2) }
+  50%      { box-shadow:0 0 32px rgba(124,40,255,.8),0 0 64px rgba(0,180,255,.35) }
+}
+.brand-name {
+  font-family:'Syne', sans-serif;
+  font-size:17px; font-weight:800; letter-spacing:-.3px;
+  background: linear-gradient(135deg,#fff 30%,#c0e0ff 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  line-height:1.1;
+}
+.brand-sub {
+  font-size:8px; color:var(--text-dim);
+  letter-spacing:2px; text-transform:uppercase; margin-top:2px;
+}
+
+/* Pill nav */
+.pill-nav {
+  display:flex; gap:6px; flex-wrap:wrap; flex:1;
+}
+.pill {
+  display:flex; align-items:center; gap:7px;
+  padding:7px 14px; border-radius:30px; cursor:pointer;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(10px);
+  font-size:11px; color:var(--text-dim); font-weight:600;
+  transition: all .25s ease; white-space:nowrap;
+  font-family:'DM Sans', sans-serif;
+  user-select:none;
+}
+.pill:hover {
+  background: var(--glass-hover);
+  color: var(--text);
+  border-color: rgba(255,255,255,.25);
+  transform: translateY(-1px);
+}
+.pill.active {
+  background: linear-gradient(135deg,rgba(124,40,255,.4),rgba(0,180,255,.3));
+  border-color: rgba(124,40,255,.6);
+  color: #fff;
+  box-shadow: 0 0 20px rgba(124,40,255,.25), inset 0 1px 0 rgba(255,255,255,.15);
+  transform: translateY(-1px);
+}
+.pill-icon { font-size:14px; }
+
+/* Status chips (right side) */
+.nav-right {
+  display:flex; align-items:center; gap:8px; flex-shrink:0; margin-left:auto;
+}
+.status-live {
+  display:flex; align-items:center; gap:6px;
+  background: rgba(0,255,180,.1);
+  border: 1px solid rgba(0,255,180,.25);
+  padding: 5px 12px; border-radius:20px;
+  font-size:10px; font-weight:700; color:var(--green);
+  letter-spacing:.5px;
+}
+.live-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:var(--green);
+  animation: livePulse 1.5s ease-in-out infinite;
+  box-shadow: 0 0 6px var(--green);
+}
+@keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
+
+.refresh-badge {
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.12);
+  padding: 5px 12px; border-radius:20px;
+  font-size:10px; color:var(--text-dim);
+  font-family:'Space Mono', monospace;
+  letter-spacing:.3px;
+}
+#refresh-countdown { color:var(--accent2); font-weight:700 }
+
+/* ── CONTENT FRAME ── */
+#content-frame {
+  flex:1;
+  margin: 12px 16px 12px;
+  background: rgba(255,255,255,.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 20px;
+  overflow: hidden;
+  display:flex; flex-direction:column;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,.4),
+    inset 0 1px 0 rgba(255,255,255,.1),
+    inset 0 -1px 0 rgba(0,0,0,.2);
+  position:relative;
+}
+
+/* Frame header bar */
+#frame-header {
+  flex-shrink:0;
+  background: rgba(255,255,255,.05);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  padding: 10px 20px;
+  display:flex; align-items:center; justify-content:space-between;
+  backdrop-filter: blur(10px);
+}
+#frame-title {
+  font-family:'Syne', sans-serif;
+  font-size:15px; font-weight:700;
+  background: linear-gradient(90deg, #c0e0ff, #e0c0ff);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+  letter-spacing:.2px;
+}
+.frame-chips { display:flex; gap:8px; align-items:center }
+.frame-chip {
+  font-size:9px; padding:4px 10px; border-radius:20px;
+  font-weight:700; letter-spacing:.5px;
+  background: rgba(255,255,255,.07);
+  color: var(--text-dim);
+  border: 1px solid rgba(255,255,255,.1);
+}
+.open-btn {
+  display:flex; align-items:center; gap:5px;
+  padding:4px 12px; border-radius:20px; cursor:pointer;
+  background: rgba(124,40,255,.2);
+  border: 1px solid rgba(124,40,255,.4);
+  color: #c0a0ff; font-size:10px; font-weight:700;
+  transition:.2s; text-decoration:none; letter-spacing:.3px;
+}
+.open-btn:hover { background:rgba(124,40,255,.35); color:#fff }
+
+/* ── IFRAME ── */
+#site-frame {
+  flex:1; width:100%; border:none;
+  background: transparent;
+  display:block;
+}
+
+/* ── FALLBACK (shown when iframe blocked) ── */
+#fallback {
+  display:none;
+  flex:1; flex-direction:column;
+  align-items:center; justify-content:center;
+  gap:20px; padding:40px;
+  text-align:center;
+}
+#fallback .fb-icon { font-size:52px; opacity:.5 }
+#fallback .fb-title {
+  font-family:'Syne',sans-serif; font-size:20px; font-weight:700;
+  color:var(--text-dim);
+}
+#fallback .fb-desc { font-size:13px; color:var(--text-dim); max-width:400px; line-height:1.6 }
+#fallback .fb-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  padding:12px 28px; border-radius:30px;
+  background: linear-gradient(135deg,rgba(124,40,255,.4),rgba(0,180,255,.3));
+  border: 1px solid rgba(124,40,255,.5);
+  color:#fff; font-size:13px; font-weight:700;
+  text-decoration:none; transition:.2s;
+  font-family:'DM Sans',sans-serif;
+}
+#fallback .fb-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(124,40,255,.3) }
+
+/* ── LOADING OVERLAY ── */
+#loading {
+  display:none;
+  position:absolute; inset:0;
+  background: rgba(8,0,24,.6);
+  backdrop-filter:blur(4px);
+  align-items:center; justify-content:center;
+  flex-direction:column; gap:14px;
+  border-radius:20px; z-index:50;
+}
+.spinner {
+  width:36px; height:36px;
+  border:3px solid rgba(255,255,255,.1);
+  border-top-color:#7c28ff;
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+}
+@keyframes spin { to{transform:rotate(360deg)} }
+#loading p {
+  font-size:11px; color:var(--text-dim);
+  letter-spacing:1px; text-transform:uppercase;
+  font-family:'Space Mono',monospace;
+}
+
+/* ── REFRESH PROGRESS BAR ── */
+#progress-bar {
+  position:absolute; bottom:0; left:0; right:0;
+  height:2px; background:transparent; z-index:10; border-radius:0 0 20px 20px; overflow:hidden;
+}
+#progress-fill {
+  height:100%;
+  background:linear-gradient(90deg,#7c28ff,#00b4ff,#00ffb4);
+  width:0%; transition:width linear;
+  box-shadow:0 0 8px rgba(124,40,255,.6);
+}
+
+/* ── MOBILE ── */
+@media(max-width:768px){
+  #topnav { padding:8px 12px; gap:8px }
+  .brand-name { font-size:14px }
+  .brand-sub { display:none }
+  .pill { padding:6px 10px; font-size:10px }
+  .pill-icon { font-size:12px }
+  .nav-right { display:none }
+  #content-frame { margin:8px 10px 10px; border-radius:14px }
+  #frame-header { padding:8px 14px }
+  #frame-title { font-size:12px }
+}
+@media(max-width:480px){
+  .pill-nav { gap:4px }
+  .pill { padding:5px 8px; font-size:9px; border-radius:20px }
+}
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ── TOP NAV ── -->
+  <nav id="topnav">
+
+    <div class="brand">
+      <div class="brand-orb">📊</div>
+      <div>
+        <div class="brand-name">KrishnaMarkets</div>
+        <div class="brand-sub">Intelligence Hub</div>
+      </div>
+    </div>
+
+    <div class="pill-nav" id="pill-nav">
+      <div class="pill active" data-url="https://krishnateja08.github.io/FII-DII_Pulse/" data-title="FII / DII Pulse" onclick="switchSite(this)">
+        <span class="pill-icon">📡</span> FII/DII Pulse
+      </div>
+      <div class="pill" data-url="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" data-title="Nifty 50 Stock Analyzer" onclick="switchSite(this)">
+        <span class="pill-icon">📈</span> Nifty 50
+      </div>
+      <div class="pill" data-url="https://krishnateja08.github.io/Nifty_Indices_scanner/" data-title="Nifty Indices Scanner" onclick="switchSite(this)">
+        <span class="pill-icon">🔍</span> Indices Scanner
+      </div>
+      <div class="pill" data-url="https://krishnateja08.github.io/USA-SP500-Stocks-Review/" data-title="USA S&P 500 Stocks Review" onclick="switchSite(this)">
+        <span class="pill-icon">🌐</span> S&amp;P 500
+      </div>
+      <div class="pill" data-url="https://krishnateja08.github.io/Nifty-1HR_Track/" data-title="Nifty 1HR Track" onclick="switchSite(this)">
+        <span class="pill-icon">⏱️</span> 1HR Track
+      </div>
+      <div class="pill" data-url="https://krishnateja08.github.io/Nifty_option_chain/" data-title="Nifty Option Chain" onclick="switchSite(this)">
+        <span class="pill-icon">⛓️</span> Option Chain
+      </div>
+      <div class="pill" data-url="https://krishnateja08.github.io/Global_Market_News/" data-title="Global Market News" onclick="switchSite(this)">
+        <span class="pill-icon">🗞️</span> Global News
+      </div>
+      <div class="pill" data-url="https://krishnateja08.github.io/optionstrategybuilder/" data-title="Option Strategy Builder" onclick="switchSite(this)">
+        <span class="pill-icon">🧮</span> Strategy Builder
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <div class="status-live">
+        <div class="live-dot"></div>
+        LIVE
+      </div>
+      <div class="refresh-badge">
+        🔄 Auto-refresh in <span id="refresh-countdown">5</span>s
+      </div>
+    </div>
+
+  </nav>
+
+  <!-- ── CONTENT FRAME ── -->
+  <div id="content-frame">
+
+    <!-- Frame header -->
+    <div id="frame-header">
+      <div id="frame-title">FII / DII Pulse</div>
+      <div class="frame-chips">
+        <span class="frame-chip" id="frame-chip-time">--:--</span>
+        <a id="open-tab-btn" class="open-btn" href="https://krishnateja08.github.io/FII-DII_Pulse/" target="_blank">
+          ↗ Open in tab
+        </a>
+      </div>
+    </div>
+
+    <!-- Loading overlay -->
+    <div id="loading">
+      <div class="spinner"></div>
+      <p>Loading dashboard...</p>
+    </div>
+
+    <!-- The iframe — sites load here as-is -->
+    <iframe
+      id="site-frame"
+      src="https://krishnateja08.github.io/FII-DII_Pulse/"
+      allowfullscreen
+      loading="lazy"
+      title="Dashboard Content"
+    ></iframe>
+
+    <!-- Fallback (if iframe blocked) -->
+    <div id="fallback">
+      <div class="fb-icon">🔒</div>
+      <div class="fb-title">This page can't be embedded</div>
+      <div class="fb-desc">
+        This site has security restrictions that prevent it from loading inside a frame.<br>
+        Click below to open it directly in a new tab.
+      </div>
+      <a id="fallback-link" href="#" target="_blank" class="fb-btn">
+        ↗ Open Dashboard in New Tab
+      </a>
+    </div>
+
+    <!-- Auto-refresh progress bar at bottom -->
+    <div id="progress-bar">
+      <div id="progress-fill"></div>
+    </div>
+
+  </div><!-- /content-frame -->
+
+</div><!-- /app -->
+
+<script>
+  /* ═══════════════════════════════════════════
+     KRISHNA MARKETS HUB — Core Logic
+     • switchSite() — loads iframe on pill click
+     • Auto-refresh every 5 seconds
+     • Countdown timer display
+     • Fallback detection for blocked iframes
+     • Clock display in frame header
+  ═══════════════════════════════════════════ */
+
+  const REFRESH_SEC  = 5;   // auto-refresh interval in seconds
+  const iframe       = document.getElementById('site-frame');
+  const frameTitle   = document.getElementById('frame-title');
+  const frameChip    = document.getElementById('frame-chip-time');
+  const openTabBtn   = document.getElementById('open-tab-btn');
+  const fallbackEl   = document.getElementById('fallback');
+  const fallbackLink = document.getElementById('fallback-link');
+  const loadingEl    = document.getElementById('loading');
+  const countdown    = document.getElementById('refresh-countdown');
+  const progressFill = document.getElementById('progress-fill');
+
+  let currentUrl     = 'https://krishnateja08.github.io/FII-DII_Pulse/';
+  let countdownVal   = REFRESH_SEC;
+  let refreshTimer   = null;
+  let countdownTimer = null;
+  let progressTimer  = null;
+
+  /* ── Clock ── */
+  function updateClock() {
+    const now = new Date();
+    const ist = new Intl.DateTimeFormat('en-IN', {
+      timeZone:'Asia/Kolkata',
+      hour:'2-digit', minute:'2-digit', second:'2-digit',
+      hour12:false
+    }).format(now);
+    frameChip.textContent = '🕐 IST ' + ist;
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  /* ── Switch Site ── */
+  function switchSite(el) {
+    // Update active pill
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+
+    const url   = el.dataset.url;
+    const title = el.dataset.title;
+
+    currentUrl = url;
+
+    // Update header
+    frameTitle.textContent = title;
+    openTabBtn.href        = url;
+    fallbackLink.href      = url;
+
+    // Show loading, hide fallback
+    showLoading(true);
+    showFallback(false);
+
+    // Load iframe
+    iframe.style.display = 'block';
+    iframe.src = '';
+    setTimeout(() => { iframe.src = url; }, 80);
+
+    // Reset countdown + progress
+    resetCountdown();
+  }
+
+  /* ── Loading state ── */
+  function showLoading(show) {
+    loadingEl.style.display = show ? 'flex' : 'none';
+  }
+  function showFallback(show) {
+    fallbackEl.style.display = show ? 'flex' : 'none';
+    iframe.style.display      = show ? 'none' : 'block';
+  }
+
+  /* ── iframe load/error events ── */
+  iframe.addEventListener('load', () => {
+    showLoading(false);
+    // Try detecting blocked iframe
+    try {
+      // If we can access contentDocument it's not blocked
+      const doc = iframe.contentDocument || iframe.contentWindow.document;
+      if (!doc || doc.body === null || doc.body.innerHTML === '') {
+        showFallback(true);
+      }
+    } catch(e) {
+      // Cross-origin access denied = still loaded (normal for external sites)
+      // Don't show fallback — it's working
+      showLoading(false);
+    }
+  });
+
+  iframe.addEventListener('error', () => {
+    showLoading(false);
+    showFallback(true);
+  });
+
+  /* ── Auto-refresh every 5 seconds ── */
+  function startCountdown() {
+    countdownVal = REFRESH_SEC;
+    countdown.textContent = countdownVal;
+
+    // Progress bar reset
+    progressFill.style.transition = 'none';
+    progressFill.style.width = '0%';
+    void progressFill.offsetWidth; // force reflow
+    progressFill.style.transition = `width ${REFRESH_SEC}s linear`;
+    progressFill.style.width = '100%';
+
+    // Clear old timers
+    clearInterval(countdownTimer);
+    clearTimeout(refreshTimer);
+
+    // Countdown tick every second
+    countdownTimer = setInterval(() => {
+      countdownVal--;
+      if (countdownVal <= 0) countdownVal = REFRESH_SEC;
+      countdown.textContent = countdownVal;
+    }, 1000);
+
+    // Reload iframe every REFRESH_SEC seconds
+    refreshTimer = setInterval(() => {
+      silentRefresh();
+    }, REFRESH_SEC * 1000);
+  }
+
+  function resetCountdown() {
+    clearInterval(countdownTimer);
+    clearInterval(refreshTimer);
+    startCountdown();
+  }
+
+  function silentRefresh() {
+    // Reload WITHOUT flashing/showing loading spinner
+    // Just swap src to force reload
+    const current = iframe.src;
+    iframe.src = '';
+    setTimeout(() => {
+      iframe.src = current || currentUrl;
+    }, 50);
+
+    // Reset progress bar
+    progressFill.style.transition = 'none';
+    progressFill.style.width = '0%';
+    void progressFill.offsetWidth;
+    progressFill.style.transition = `width ${REFRESH_SEC}s linear`;
+    progressFill.style.width = '100%';
+  }
+
+  /* ── Start on load ── */
+  startCountdown();
+</script>
+
+</body>
+</html>
