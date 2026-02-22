@@ -433,18 +433,6 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:9px 18p
       <div class="mbar-chg" id="mc-crude">···</div>
       <div class="mbar-src" id="ms-crude"></div>
     </div>
-    <div class="mbar-item" id="mi-gold" style="--ic:#ffd700;--is:rgba(255,215,0,.35);">
-      <div class="mbar-name">GOLD</div>
-      <div class="mbar-val" id="mv-gold">···</div>
-      <div class="mbar-chg" id="mc-gold">···</div>
-      <div class="mbar-src" id="ms-gold"></div>
-    </div>
-    <div class="mbar-item" id="mi-silver" style="--ic:#c0c0c0;--is:rgba(192,192,192,.3);">
-      <div class="mbar-name">SILVER</div>
-      <div class="mbar-val" id="mv-silver">···</div>
-      <div class="mbar-chg" id="mc-silver">···</div>
-      <div class="mbar-src" id="ms-silver"></div>
-    </div>
   </div>
 
   <div class="mbar-updated" id="mbar-ts"></div>
@@ -707,30 +695,28 @@ function tick(){
 tick();setInterval(tick,1000);
 
 /* ══════════════════════════════════════════════════════════════
-   MARKET BAR ENGINE v3.0
+   MARKET BAR — Robust Multi-Source / Multi-Proxy Engine
    
-   INDIA  → NSE allIndices API (primary) | Yahoo Finance (fallback)
-   GLOBAL → investing.com page scrape (primary) | Yahoo Finance (fallback)
+   INDIA:  NSE allIndices (primary) → Yahoo Finance (fallback)
+   GLOBAL: Yahoo Finance with 6 proxy fallbacks in sequence
    
-   Gold & Silver now included via investing.com / Yahoo
-   Races all proxies simultaneously — fastest one wins
+   Each proxy is tried in order — first success wins.
+   Silent DOM updates — no layout shift, no flicker.
 ══════════════════════════════════════════════════════════════ */
 
 const MB_MAP = [
-  /* India — NSE primary */
-  { id:'n50',    valId:'mv-n50',    chgId:'mc-n50',    srcId:'ms-n50',    yf:'^NSEI',              nseKey:'NIFTY 50',          invKey:'S&P 500',  prefix:'',   isVix:false },
-  { id:'bn',     valId:'mv-bn',     chgId:'mc-bn',     srcId:'ms-bn',     yf:'^NSEBANK',           nseKey:'NIFTY BANK',        invKey:null,       prefix:'',   isVix:false },
-  { id:'vix',    valId:'mv-vix',    chgId:'mc-vix',    srcId:'ms-vix',    yf:'^INDIAVIX',          nseKey:'INDIA VIX',         invKey:null,       prefix:'',   isVix:true  },
-  { id:'fn',     valId:'mv-fn',     chgId:'mc-fn',     srcId:'ms-fn',     yf:'NIFTY_FIN_SERVICE.NS',nseKey:'NIFTY FIN SERVICE',invKey:null,       prefix:'',   isVix:false },
-  { id:'sx',     valId:'mv-sx',     chgId:'mc-sx',     srcId:'ms-sx',     yf:'^BSESN',             nseKey:'SENSEX',            invKey:null,       prefix:'',   isVix:false },
-  /* Global — investing.com primary, Yahoo fallback */
-  { id:'sp',     valId:'mv-sp',     chgId:'mc-sp',     srcId:'ms-sp',     yf:'^GSPC',              nseKey:null, invKey:'S&P 500',      prefix:'',   isVix:false },
-  { id:'ndq',    valId:'mv-ndq',    chgId:'mc-ndq',    srcId:'ms-ndq',    yf:'^IXIC',              nseKey:null, invKey:'Nasdaq',       prefix:'',   isVix:false },
-  { id:'dji',    valId:'mv-dji',    chgId:'mc-dji',    srcId:'ms-dji',    yf:'^DJI',               nseKey:null, invKey:'Dow Jones',    prefix:'',   isVix:false },
-  { id:'inr',    valId:'mv-inr',    chgId:'mc-inr',    srcId:'ms-inr',    yf:'INR=X',              nseKey:null, invKey:null,           prefix:'',   isVix:false },
-  { id:'crude',  valId:'mv-crude',  chgId:'mc-crude',  srcId:'ms-crude',  yf:'CL=F',               nseKey:null, invKey:'Crude Oil WTI',prefix:'$',  isVix:false },
-  { id:'gold',   valId:'mv-gold',   chgId:'mc-gold',   srcId:'ms-gold',   yf:'GC=F',               nseKey:null, invKey:'Gold',         prefix:'$',  isVix:false },
-  { id:'silver', valId:'mv-silver', chgId:'mc-silver', srcId:'ms-silver', yf:'SI=F',               nseKey:null, invKey:'Silver',       prefix:'$',  isVix:false },
+  /* India — prefer NSE, fallback Yahoo */
+  { id:'n50',   valId:'mv-n50',   chgId:'mc-n50',   srcId:'ms-n50',   yf:'^NSEI',              nseKey:'NIFTY 50',          prefix:'',   isVix:false },
+  { id:'bn',    valId:'mv-bn',    chgId:'mc-bn',     srcId:'ms-bn',    yf:'^NSEBANK',           nseKey:'NIFTY BANK',        prefix:'',   isVix:false },
+  { id:'vix',   valId:'mv-vix',   chgId:'mc-vix',    srcId:'ms-vix',   yf:'^INDIAVIX',          nseKey:'INDIA VIX',         prefix:'',   isVix:true  },
+  { id:'fn',    valId:'mv-fn',    chgId:'mc-fn',     srcId:'ms-fn',    yf:'NIFTY_FIN_SERVICE.NS',nseKey:'NIFTY FIN SERVICE', prefix:'',  isVix:false },
+  { id:'sx',    valId:'mv-sx',    chgId:'mc-sx',     srcId:'ms-sx',    yf:'^BSESN',             nseKey:'SENSEX',            prefix:'',   isVix:false },
+  /* Global — Yahoo Finance only */
+  { id:'sp',    valId:'mv-sp',    chgId:'mc-sp',     srcId:'ms-sp',    yf:'^GSPC',              nseKey:null,                prefix:'',   isVix:false },
+  { id:'ndq',   valId:'mv-ndq',   chgId:'mc-ndq',    srcId:'ms-ndq',   yf:'^IXIC',              nseKey:null,                prefix:'',   isVix:false },
+  { id:'dji',   valId:'mv-dji',   chgId:'mc-dji',    srcId:'ms-dji',   yf:'^DJI',               nseKey:null,                prefix:'',   isVix:false },
+  { id:'inr',   valId:'mv-inr',   chgId:'mc-inr',    srcId:'ms-inr',   yf:'INR=X',              nseKey:null,                prefix:'',   isVix:false },
+  { id:'crude', valId:'mv-crude', chgId:'mc-crude',  srcId:'ms-crude', yf:'CL=F',               nseKey:null,                prefix:'$',  isVix:false },
 ];
 
 function fmtV(n, d=2){
@@ -745,9 +731,11 @@ function silentUpdate(item, price, chgPct, source){
   const chgEl = document.getElementById(item.chgId);
   const srcEl = document.getElementById(item.srcId);
   if(!valEl||!chgEl) return;
+
   const up = chgPct >= 0;
-  const newVal = item.prefix + fmtV(price, 2);
+  const newVal = item.prefix + fmtV(price, item.isVix ? 2 : 2);
   const newChg = (up ? '▲ +' : '▼ ') + Math.abs(chgPct).toFixed(2) + '%';
+
   if(valEl.textContent !== newVal){
     valEl.textContent = newVal;
     valEl.classList.remove('val-updated');
@@ -760,7 +748,7 @@ function silentUpdate(item, price, chgPct, source){
   }
   if(srcEl && source){
     srcEl.textContent = source;
-    srcEl.className = 'mbar-src ' + (source==='NSE' ? 'nse' : source==='INV' ? 'nse' : 'yf');
+    srcEl.className = 'mbar-src ' + (source==='NSE' ? 'nse' : source==='YF' ? 'yf' : 'err');
   }
 }
 
@@ -772,18 +760,24 @@ function setTs(){
   }
 }
 
+/* ─────────────────────────────────────────
+   HELPER: parse proxy response safely
+───────────────────────────────────────── */
 function parseProxyResponse(j){
+  // allorigins wraps in { contents: "..." }
   if(j && typeof j.contents === 'string'){
-    try { return JSON.parse(j.contents); } catch(e){ return null; }
+    try { j = JSON.parse(j.contents); } catch(e){ return null; }
   }
+  // some proxies return plain string
   if(typeof j === 'string'){
-    try { return JSON.parse(j); } catch(e){ return null; }
+    try { j = JSON.parse(j); } catch(e){ return null; }
   }
   return j;
 }
 
 /* ─────────────────────────────────────────
    SOURCE A: NSE India allIndices
+   2 fast proxies, 5s timeout each
 ───────────────────────────────────────── */
 async function fetchNSEIndices(){
   const url = 'https://www.nseindia.com/api/allIndices';
@@ -793,111 +787,28 @@ async function fetchNSEIndices(){
   ];
   for(const px of proxies){
     try{
-      const r = await fetch(px, { signal: AbortSignal.timeout(6000), cache:'no-store' });
+      const r = await fetch(px, { signal: AbortSignal.timeout(5000), cache:'no-store' });
       if(!r.ok) continue;
       let j = parseProxyResponse(await r.json());
       if(!j) continue;
       const data = j.data || [];
       if(data.length >= 2){ console.log('[NSE] ok:', data.length, 'indices'); return data; }
-    } catch(e){ console.warn('[NSE]', e.message); }
+    } catch(e){ console.warn('[NSE] failed:', e.message); }
   }
   return [];
 }
 
 /* ─────────────────────────────────────────
-   SOURCE B: investing.com page scrape
-   Fetches the analysis page which contains
-   all global prices in its plain text.
-   Parses with regex — no API key needed.
-───────────────────────────────────────── */
-async function fetchInvestingCom(){
-  const url = 'https://www.investing.com/analysis/stock-markets';
-  const proxies = [
-    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-    `https://corsproxy.io/?${encodeURIComponent(url)}`,
-  ];
-
-  for(const px of proxies){
-    try{
-      const r = await fetch(px, { signal: AbortSignal.timeout(10000), cache:'no-store' });
-      if(!r.ok) continue;
-      let raw = await r.json();
-      // allorigins wraps in .contents
-      const text = raw.contents || (typeof raw === 'string' ? raw : null);
-      if(!text || text.length < 5000) continue;
-
-      console.log('[INV] page fetched, length:', text.length);
-
-      // Parse key/value pairs from the text using patterns like:
-      // [S&P 500](url) 
-
- 6,909.51 
-
- +47.62 
-
- +0.69%
-      const data = {};
-
-      const patterns = [
-        { key:'S&P 500',       regex:/S&P 500[^
-]*
-+[\s]*([\d,]+\.?\d*)
-+[\s]*([\+\-][\d,\.]+)
-+[\s]*([\+\-][\d\.]+)%/ },
-        { key:'Nasdaq',        regex:/Nasdaq[^
-]*
-+[\s]*([\d,]+\.?\d*)
-+[\s]*([\+\-][\d,\.]+)
-+[\s]*([\+\-][\d\.]+)%/ },
-        { key:'Dow Jones',     regex:/Dow Jones[^
-]*
-+[\s]*([\d,]+\.?\d*)
-+[\s]*([\+\-][\d,\.]+)
-+[\s]*([\+\-][\d\.]+)%/ },
-        { key:'Crude Oil WTI', regex:/Crude Oil WTI[^
-]*
-+[\s]*([\d,]+\.?\d*)
-+[\s]*([\+\-][\d,\.]+)
-+[\s]*([\+\-][\d\.]+)%/ },
-        { key:'Gold',          regex:/Gold Futures[^
-]*
-+[\s]*([\d,]+\.?\d*)
-+[\s]*([\+\-][\d,\.]+)
-+[\s]*([\+\-][\d\.]+)%/ },
-        { key:'Silver',        regex:/Silver Futures[^
-]*
-+[\s]*([\d,]+\.?\d*)
-+[\s]*([\+\-][\d,\.]+)
-+[\s]*([\+\-][\d\.]+)%/ },
-      ];
-
-      for(const p of patterns){
-        const m = text.match(p.regex);
-        if(m){
-          const price = parseFloat(m[1].replace(/,/g,''));
-          const chgPct = parseFloat(m[3]);
-          if(!isNaN(price)){
-            data[p.key] = { price, chgPct };
-            console.log('[INV]', p.key, price, chgPct+'%');
-          }
-        }
-      }
-
-      if(Object.keys(data).length >= 2) return data;
-    } catch(e){ console.warn('[INV] failed:', e.message); }
-  }
-  return {};
-}
-
-/* ─────────────────────────────────────────
-   SOURCE C: Yahoo Finance — race all proxies
-   Used as fallback for anything not from NSE/INV
+   SOURCE B: Yahoo Finance
+   Race all proxies simultaneously — fastest wins
+   This avoids the sequential 9s×8 = 72s delay!
 ───────────────────────────────────────── */
 async function fetchYahoo(){
   const syms = MB_MAP.map(x => x.yf).join(',');
-  const yfBase  = `https://query2.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
+  const yfBase = `https://query2.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
   const yfBase1 = yfBase.replace('query2','query1');
 
+  // Build ALL candidate URLs
   const candidates = [
     `https://corsproxy.io/?${encodeURIComponent(yfBase)}`,
     `https://corsproxy.io/?${encodeURIComponent(yfBase1)}`,
@@ -905,11 +816,14 @@ async function fetchYahoo(){
     `https://api.allorigins.win/get?url=${encodeURIComponent(yfBase1)}`,
   ];
 
+  // Race them all — return first valid result
   return new Promise((resolve) => {
-    let settled = 0, resolved = false;
+    let settled = 0;
+    let resolved = false;
+
     candidates.forEach(px => {
-      fetch(px, { signal: AbortSignal.timeout(9000), cache:'no-store' })
-        .then(r => r.ok ? r.json() : Promise.reject('bad'))
+      fetch(px, { signal: AbortSignal.timeout(8000), cache:'no-store' })
+        .then(r => r.ok ? r.json() : Promise.reject('bad status'))
         .then(raw => {
           const j = parseProxyResponse(raw);
           if(!j) return;
@@ -920,23 +834,29 @@ async function fetchYahoo(){
             resolve(results);
           }
         })
-        .catch(e => console.warn('[YF]', e.message||e))
-        .finally(() => { settled++; if(settled===candidates.length && !resolved) resolve([]); });
+        .catch(e => console.warn('[YF] failed:', e.message || e))
+        .finally(() => {
+          settled++;
+          // All failed
+          if(settled === candidates.length && !resolved){
+            console.error('[YF] all proxies failed');
+            resolve([]);
+          }
+        });
     });
   });
 }
 
 /* ─────────────────────────────────────────
-   MAIN REFRESH
-   Step 1: NSE → Indian indices immediately
-   Step 2: investing.com → Global prices
-   Step 3: Yahoo → fill anything still missing
+   MAIN REFRESH — NSE fires first, YF updates globals
+   NSE data shows immediately; Yahoo fills in after
 ───────────────────────────────────────── */
 async function refreshMarketBar(){
   let updated = 0;
 
-  /* ── STEP 1: NSE — fast, update Indians immediately ── */
+  // Step 1: fetch NSE fast and update Indian indices immediately
   const nseArr = await fetchNSEIndices();
+
   for(const item of MB_MAP){
     if(!item.nseKey || !nseArr.length) continue;
     const found = nseArr.find(d =>
@@ -950,26 +870,18 @@ async function refreshMarketBar(){
     }
   }
   if(updated > 0) setTs();
+  console.log(`[MBar] NSE updated ${updated} items`);
 
-  /* ── STEP 2: investing.com — global indices ── */
-  const invData = await fetchInvestingCom();
-  for(const item of MB_MAP){
-    if(!item.invKey) continue;
-    const d = invData[item.invKey];
-    if(d){
-      silentUpdate(item, d.price, d.chgPct, 'INV');
-      updated++;
-    }
-  }
-  if(updated > 0) setTs();
-
-  /* ── STEP 3: Yahoo — fill anything still showing ··· ── */
+  // Step 2: fetch Yahoo in background for global + any NSE misses
   const yfArr = await fetchYahoo();
+
   for(const item of MB_MAP){
+    // Only use YF for items that NSE didn't already fill
     const valEl = document.getElementById(item.valId);
     if(!valEl) continue;
-    const alreadyFilled = valEl.textContent !== '···' && valEl.textContent !== '—';
-    if(alreadyFilled) continue;
+    const alreadyFilled = item.nseKey && valEl.textContent !== '···' && valEl.textContent !== '—';
+    if(alreadyFilled) continue; // NSE already got it, skip
+
     const q = yfArr.find(x => x.symbol === item.yf);
     if(q?.regularMarketPrice != null){
       silentUpdate(item, q.regularMarketPrice, q.regularMarketChangePercent || 0, 'YF');
@@ -977,12 +889,13 @@ async function refreshMarketBar(){
     }
   }
   if(updated > 0) setTs();
-  console.log(`[MBar] Total: ${updated}/${MB_MAP.length} updated`);
+  console.log(`[MBar] Total updated: ${updated}/${MB_MAP.length}`);
+
 }
 
-/* Kick off immediately, then every 60 seconds (investing.com rate limit friendly) */
+/* Kick off immediately, then every 30 seconds */
 refreshMarketBar();
-setInterval(refreshMarketBar, 60000);
+setInterval(refreshMarketBar, 30000);
 
 /* ══════════════════════════════════════════════
    TICKER — Multi-Source Engine
@@ -1047,7 +960,7 @@ async function fromYahooTicker(){
     {s:'RELIANCE',yf:'RELIANCE.NS',p:'₹'},{s:'TCS',yf:'TCS.NS',p:'₹'},{s:'HDFCBANK',yf:'HDFCBANK.NS',p:'₹'},
     {s:'INFY',yf:'INFY.NS',p:'₹'},{s:'ICICIBANK',yf:'ICICIBANK.NS',p:'₹'},{s:'SBIN',yf:'SBIN.NS',p:'₹'},
     {s:'ITC',yf:'ITC.NS',p:'₹'},{s:'S&P 500',yf:'^GSPC',p:''},{s:'NASDAQ',yf:'^IXIC',p:''},
-    {s:'USD/INR',yf:'INR=X',p:''},{s:'CRUDE',yf:'CL=F',p:'$'},{s:'GOLD',yf:'GC=F',p:'$'},{s:'SILVER',yf:'SI=F',p:'$'},
+    {s:'USD/INR',yf:'INR=X',p:''},{s:'CRUDE',yf:'CL=F',p:'$'},
   ];
   const syms=YF_SYMS.map(x=>x.yf).join(',');
   const base=`https://query2.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
