@@ -718,13 +718,13 @@ var MB_MAP = [
   {id:'vix',   valId:'mv-vix',   chgId:'mc-vix',   srcId:'ms-vix',   yfSym:'^INDIAVIX',           fhSym:null,              nseKey:'INDIA VIX',         prefix:'',  isVix:true},
   {id:'fn',    valId:'mv-fn',    chgId:'mc-fn',    srcId:'ms-fn',    yfSym:'NIFTY_FIN_SERVICE.NS',fhSym:null,              nseKey:'NIFTY FIN SERVICE', prefix:'',  isVix:false},
   {id:'sx',    valId:'mv-sx',    chgId:'mc-sx',    srcId:'ms-sx',    yfSym:'^BSESN',              fhSym:null,              nseKey:'SENSEX',            prefix:'',  isVix:false},
-  {id:'sp',    valId:'mv-sp',    chgId:'mc-sp',    srcId:'ms-sp',    yfSym:'^GSPC',               fhSym:'OANDA:SPX500_USD',nseKey:null, prefix:'',  isVix:false},
-  {id:'ndq',   valId:'mv-ndq',   chgId:'mc-ndq',   srcId:'ms-ndq',   yfSym:'^IXIC',               fhSym:'OANDA:NAS100_USD',nseKey:null, prefix:'',  isVix:false},
-  {id:'dji',   valId:'mv-dji',   chgId:'mc-dji',   srcId:'ms-dji',   yfSym:'^DJI',                fhSym:'OANDA:US30_USD',  nseKey:null, prefix:'',  isVix:false},
-  {id:'inr',   valId:'mv-inr',   chgId:'mc-inr',   srcId:'ms-inr',   yfSym:'INR=X',               fhSym:'OANDA:USD_INR',   nseKey:null, prefix:'',  isVix:false},
-  {id:'crude', valId:'mv-crude', chgId:'mc-crude', srcId:'ms-crude', yfSym:'CL=F',                fhSym:'OANDA:USOIL_USD', nseKey:null, prefix:'$', isVix:false},
-  {id:'gold',  valId:'mv-gold',  chgId:'mc-gold',  srcId:'ms-gold',  yfSym:'GC=F',                fhSym:'OANDA:XAU_USD',   nseKey:null, prefix:'$', isVix:false},
-  {id:'silver',valId:'mv-silver',chgId:'mc-silver',srcId:'ms-silver',yfSym:'SI=F',                fhSym:'OANDA:XAG_USD',   nseKey:null, prefix:'$', isVix:false},
+  {id:'sp',    valId:'mv-sp',    chgId:'mc-sp',    srcId:'ms-sp',    yfSym:'^GSPC',               fhSym:null, nseKey:null, prefix:'',  isVix:false},
+  {id:'ndq',   valId:'mv-ndq',   chgId:'mc-ndq',   srcId:'ms-ndq',   yfSym:'^IXIC',               fhSym:null, nseKey:null, prefix:'',  isVix:false},
+  {id:'dji',   valId:'mv-dji',   chgId:'mc-dji',   srcId:'ms-dji',   yfSym:'^DJI',                fhSym:null, nseKey:null, prefix:'',  isVix:false},
+  {id:'inr',   valId:'mv-inr',   chgId:'mc-inr',   srcId:'ms-inr',   yfSym:'INR=X',               fhSym:null, nseKey:null, prefix:'',  isVix:false},
+  {id:'crude', valId:'mv-crude', chgId:'mc-crude', srcId:'ms-crude', yfSym:'CL=F',                fhSym:null, nseKey:null, prefix:'$', isVix:false},
+  {id:'gold',  valId:'mv-gold',  chgId:'mc-gold',  srcId:'ms-gold',  yfSym:'GC=F',                fhSym:null, nseKey:null, prefix:'$', isVix:false},
+  {id:'silver',valId:'mv-silver',chgId:'mc-silver',srcId:'ms-silver',yfSym:'SI=F',                fhSym:null, nseKey:null, prefix:'$', isVix:false},
 ];
 
 function fmtV(n,d){
@@ -806,7 +806,7 @@ function fetchFinnhub(){
   });
 }
 
-/* ══ SOURCE 3: Yahoo Finance — race proxies simultaneously ══ */
+/* ══ SOURCE 3: Yahoo Finance — multiple proxies with fallback ══ */
 function fetchYahoo(){
   var syms=MB_MAP.map(function(x){return x.yfSym;}).join(',');
   var fields='regularMarketPrice,regularMarketChangePercent';
@@ -817,19 +817,38 @@ function fetchYahoo(){
     'https://corsproxy.io/?'+encodeURIComponent(q2),
     'https://api.allorigins.win/get?url='+encodeURIComponent(q1),
     'https://api.allorigins.win/get?url='+encodeURIComponent(q2),
+    'https://thingproxy.freeboard.io/fetch/'+q1,
+    'https://yacdn.org/proxy/'+q1,
   ];
+  function parseYF(j){
+    if(j&&j.contents){try{j=JSON.parse(j.contents);}catch(e){return [];}}
+    return (j&&j.quoteResponse&&j.quoteResponse.result)||[];
+  }
   return new Promise(function(resolve){
     var done=false,n=0;
     list.forEach(function(px){
-      fetch(px,{signal:AbortSignal.timeout(9000),cache:'no-store'})
-        .then(function(r){return r.ok?r.json():Promise.reject();})
+      fetch(px,{signal:AbortSignal.timeout(10000),cache:'no-store'})
+        .then(function(r){return r.ok?r.json():Promise.reject('status '+r.status);})
         .then(function(j){
-          if(j&&j.contents){try{j=JSON.parse(j.contents);}catch(e){return;}}
-          var res=(j&&j.quoteResponse&&j.quoteResponse.result)||[];
-          if(res.length>0&&!done){done=true;console.log('[YF]',res.length,'ok');resolve(res);}
-        }).catch(function(){}).finally(function(){n++;if(n===list.length&&!done)resolve([]);});
+          var res=parseYF(j);
+          if(res.length>0&&!done){done=true;console.log('[YF] OK got',res.length,'quotes');resolve(res);}
+        })
+        .catch(function(e){console.warn('[YF proxy fail]',e);})
+        .finally(function(){n++;if(n===list.length&&!done){console.warn('[YF] All proxies failed');resolve([]);}});
     });
   });
+}
+
+/* ══ SOURCE 4: Open Exchange Rates — free USD/INR fallback (no key needed) ══ */
+function fetchForexFallback(){
+  var inrEl=document.getElementById('mv-inr');
+  if(inrEl&&inrEl.textContent!=='···'&&inrEl.textContent!=='—') return Promise.resolve({});
+  return fetch('https://open.er-api.com/v6/latest/USD',{signal:AbortSignal.timeout(6000),cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(j){
+      if(j&&j.rates&&j.rates.INR){console.log('[FX] USD/INR',j.rates.INR);return {inr:{price:j.rates.INR,chgPct:0}};}
+      return {};
+    }).catch(function(){return {};});
 }
 
 /* ══ MAIN REFRESH ══ */
@@ -856,6 +875,13 @@ function refreshMarketBar(){
     if(updated>0) setTs();
     console.log('[MBar] updated',updated,'/',MB_MAP.length);
     buildTicker();
+    /* Source 4: Forex fallback — fills USD/INR if still missing */
+    fetchForexFallback().then(function(fx){
+      if(fx&&fx.inr){
+        var item=MB_MAP.find(function(x){return x.id==='inr';});
+        if(item){silentUpdate(item,fx.inr.price,fx.inr.chgPct,'FX');buildTicker();}
+      }
+    });
   });
 }
 
