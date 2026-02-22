@@ -800,19 +800,78 @@ function tick(){
 }
 tick();setInterval(tick,1000);
 
-/* ── Live Ticker ── */
-const T=[
-  {s:'NIFTY 50',v:'23,450',c:'+0.42%',u:1},{s:'SENSEX',v:'77,210',c:'+0.38%',u:1},
-  {s:'BANK NIFTY',v:'51,230',c:'-0.21%',u:0},{s:'RELIANCE',v:'₹2,845',c:'+1.20%',u:1},
-  {s:'TCS',v:'₹4,102',c:'-0.50%',u:0},{s:'HDFCBANK',v:'₹1,724',c:'+0.80%',u:1},
-  {s:'INFY',v:'₹1,890',c:'+1.10%',u:1},{s:'S&P 500',v:'6,052',c:'+0.29%',u:1},
-  {s:'GOLD',v:'₹73,400',c:'+0.60%',u:1},{s:'USD/INR',v:'83.92',c:'-0.02%',u:0},
-  {s:'CRUDE',v:'$82.40',c:'+0.45%',u:1}
+/* ── Live Ticker via Yahoo Finance ── */
+const SYMBOLS = [
+  { s: 'NIFTY 50',    yf: '^NSEI',      prefix: '',  decimals: 0 },
+  { s: 'SENSEX',      yf: '^BSESN',     prefix: '',  decimals: 0 },
+  { s: 'BANK NIFTY',  yf: '^NSEBANK',   prefix: '',  decimals: 0 },
+  { s: 'FINNIFTY',    yf: 'NIFTY_FIN_SERVICE.NS', prefix: '', decimals: 0 },
+  { s: 'RELIANCE',    yf: 'RELIANCE.NS', prefix: '₹', decimals: 1 },
+  { s: 'TCS',         yf: 'TCS.NS',      prefix: '₹', decimals: 1 },
+  { s: 'HDFCBANK',    yf: 'HDFCBANK.NS', prefix: '₹', decimals: 1 },
+  { s: 'INFY',        yf: 'INFY.NS',     prefix: '₹', decimals: 1 },
+  { s: 'ICICIBANK',   yf: 'ICICIBANK.NS',prefix: '₹', decimals: 1 },
+  { s: 'S&P 500',     yf: '^GSPC',       prefix: '',  decimals: 0 },
+  { s: 'USD/INR',     yf: 'INR=X',       prefix: '',  decimals: 2 },
+  { s: 'GOLD',        yf: 'GC=F',        prefix: '$', decimals: 1 },
+  { s: 'CRUDE',       yf: 'CL=F',        prefix: '$', decimals: 2 },
 ];
-document.getElementById('tkr').innerHTML=
-  [...T,...T].map(t=>
-    `<span class="ti"><span class="s">${t.s}</span><span>${t.v}</span><span class="${t.u?'up':'dn'}">${t.c}</span></span>`
+
+function fmtNum(n, decimals) {
+  if (n >= 1000) return n.toLocaleString('en-IN', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+  return n.toFixed(decimals);
+}
+
+function renderTicker(items) {
+  const el = document.getElementById('tkr');
+  const html = [...items, ...items].map(t =>
+    `<span class="ti"><span class="s">${t.s}</span><span>${t.v}</span><span class="${t.u ? 'up' : 'dn'}">${t.c}</span></span>`
   ).join('');
+  el.innerHTML = html;
+}
+
+async function fetchLiveTicker() {
+  const tickers = SYMBOLS.map(s => s.yf).join('%2C');
+  const url = `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${tickers}&fields=regularMarketPrice,regularMarketChangePercent,regularMarketChange`;
+  // Use allorigins CORS proxy
+  const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+
+  try {
+    const res = await fetch(proxy, { cache: 'no-store' });
+    const json = await res.json();
+    const data = JSON.parse(json.contents);
+    const quotes = data?.quoteResponse?.result || [];
+
+    const items = SYMBOLS.map(sym => {
+      const q = quotes.find(r => r.symbol === sym.yf);
+      if (!q) return { s: sym.s, v: '—', c: '—', u: 1 };
+      const price = q.regularMarketPrice;
+      const chgPct = q.regularMarketChangePercent;
+      const up = chgPct >= 0;
+      return {
+        s: sym.s,
+        v: sym.prefix + fmtNum(price, sym.decimals),
+        c: (up ? '+' : '') + chgPct.toFixed(2) + '%',
+        u: up ? 1 : 0
+      };
+    });
+
+    renderTicker(items);
+    // Update NIFTY 50 and SENSEX in stats bar too
+    const n50 = quotes.find(r => r.symbol === '^NSEI');
+    if (n50) {
+      const statV = document.querySelector('.sb[data-stat="nifty"] .v');
+      if (statV) statV.textContent = fmtNum(n50.regularMarketPrice, 0);
+    }
+  } catch(err) {
+    console.warn('Ticker fetch failed, retrying...', err);
+    // On error keep showing last data or show placeholder
+  }
+}
+
+// Initial load + refresh every 60s
+fetchLiveTicker();
+setInterval(fetchLiveTicker, 60000);
 
 /* ── Last Opened ── */
 const l=sessionStorage.getItem('lo');
