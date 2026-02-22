@@ -74,10 +74,7 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .pill.g{border-color:rgba(0,255,136,.3);color:var(--grn);background:rgba(0,255,136,.04)}
 .pill.p{border-color:rgba(255,0,144,.3);color:var(--pink);background:rgba(255,0,144,.04)}
 
-/* ══════════════════════════════════════════
-   SAMPLE E — SPLIT PANEL MARKET BAR
-   India | Global — silent bg refresh
-══════════════════════════════════════════ */
+/* ══ MARKET BAR ══ */
 .mbar{
   display:grid;
   grid-template-columns:38px 1fr 38px 1fr;
@@ -86,11 +83,9 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   position:relative;z-index:5;
   overflow:hidden;
 }
-/* rainbow bottom line */
 .mbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,var(--cyan),var(--pink),var(--yel),var(--pur),var(--cyan));opacity:.35;}
 
-/* Section labels (vertical text) */
 .mbar-label{
   display:flex;align-items:center;justify-content:center;flex-direction:column;
   gap:4px;padding:6px 4px;flex-shrink:0;
@@ -112,11 +107,9 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .mbar-label.india .mbar-label-txt{color:var(--cyan);}
 .mbar-label.global .mbar-label-txt{color:var(--yel);}
 
-/* Items container */
 .mbar-items{display:flex;overflow-x:auto;scrollbar-width:none;align-items:stretch;}
 .mbar-items::-webkit-scrollbar{display:none;}
 
-/* Individual item */
 .mbar-item{
   display:flex;flex-direction:column;justify-content:center;
   padding:7px 16px 6px;
@@ -127,7 +120,6 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .mbar-item:hover{background:rgba(0,245,255,.03);}
 .mbar-item:last-child{border-right:none;}
 
-/* Coloured top micro-line per item */
 .mbar-item::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
   background:var(--ic,rgba(0,245,255,.3));opacity:.4;}
 
@@ -140,7 +132,6 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   color:var(--ic,var(--tx));
   text-shadow:0 0 8px var(--is,rgba(0,245,255,.3));
   line-height:1;white-space:nowrap;
-  /* smooth number transition - no layout shift */
   transition:color .3s;
 }
 .mbar-chg{
@@ -151,17 +142,21 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .mbar-chg.dn{color:var(--red);}
 .mbar-chg.vix{color:var(--yel);}
 
-/* VIX gets yellow colour */
 .mbar-item.is-vix .mbar-val{color:var(--yel);text-shadow:0 0 8px rgba(255,224,0,.35);}
 
-/* Flash animation on silent update — briefly pulse the value */
 @keyframes val-flash{0%{opacity:.4}50%{opacity:1}100%{opacity:1}}
 .val-updated{animation:val-flash .5s ease;}
 
-/* Separator between India/Global */
-.mbar-divider{width:1px;background:linear-gradient(180deg,transparent,rgba(0,245,255,.15),transparent);flex-shrink:0;}
+/* Data source indicator */
+.mbar-src{
+  position:absolute;bottom:2px;left:8px;
+  font-family:'Orbitron',monospace;font-size:5px;letter-spacing:1px;
+  opacity:.25;
+}
+.mbar-src.nse{color:var(--cyan);}
+.mbar-src.yf{color:var(--yel);}
+.mbar-src.err{color:var(--red);}
 
-/* Last updated indicator (tiny, non-disruptive) */
 .mbar-updated{
   position:absolute;bottom:2px;right:6px;
   font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1px;color:rgba(0,245,255,.2);
@@ -195,7 +190,7 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .sec-txt{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;font-weight:600;text-shadow:0 0 10px rgba(0,245,255,.4);}
 .sec-bdg{margin-left:auto;font-family:'Orbitron',sans-serif;font-size:8px;color:var(--pink);border:1px solid rgba(255,0,144,.3);padding:2px 10px;letter-spacing:2px;background:rgba(255,0,144,.05);}
 
-/* ══ GROUPS (Sample C pods) ══ */
+/* ══ GROUPS ══ */
 .groups{display:flex;flex-direction:column;gap:0;margin:14px 18px 18px;}
 .sc-group{position:relative;border:1px solid var(--ga,rgba(0,245,255,.15));margin-bottom:14px;}
 .sc-group:last-child{margin-bottom:0;}
@@ -357,11 +352,7 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:9px 18p
   </div>
 </header>
 
-<!-- ══════════════════════════════════════
-     SAMPLE E — LIVE MARKET BAR
-     India (Cyan) | Global (Yellow)
-     Values update silently in background
-══════════════════════════════════════ -->
+<!-- ══ LIVE MARKET BAR ══ -->
 <div class="mbar" id="mbar">
 
   <!-- INDIA LABEL -->
@@ -376,26 +367,31 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:9px 18p
       <div class="mbar-name">NIFTY 50</div>
       <div class="mbar-val" id="mv-n50">···</div>
       <div class="mbar-chg" id="mc-n50">···</div>
+      <div class="mbar-src" id="ms-n50"></div>
     </div>
     <div class="mbar-item" id="mi-bn" style="--ic:var(--pink);--is:rgba(255,0,144,.3);">
       <div class="mbar-name">BANK NIFTY</div>
       <div class="mbar-val" id="mv-bn">···</div>
       <div class="mbar-chg" id="mc-bn">···</div>
+      <div class="mbar-src" id="ms-bn"></div>
     </div>
     <div class="mbar-item is-vix" id="mi-vix" style="--ic:var(--yel);--is:rgba(255,224,0,.3);">
       <div class="mbar-name">INDIA VIX</div>
       <div class="mbar-val" id="mv-vix">···</div>
       <div class="mbar-chg vix" id="mc-vix">···</div>
+      <div class="mbar-src" id="ms-vix"></div>
     </div>
     <div class="mbar-item" id="mi-fn" style="--ic:var(--grn);--is:rgba(0,255,136,.3);">
       <div class="mbar-name">FINNIFTY</div>
       <div class="mbar-val" id="mv-fn">···</div>
       <div class="mbar-chg" id="mc-fn">···</div>
+      <div class="mbar-src" id="ms-fn"></div>
     </div>
     <div class="mbar-item" id="mi-sx" style="--ic:var(--t2);--is:rgba(0,245,255,.2);">
       <div class="mbar-name">SENSEX</div>
       <div class="mbar-val" id="mv-sx">···</div>
       <div class="mbar-chg" id="mc-sx">···</div>
+      <div class="mbar-src" id="ms-sx"></div>
     </div>
   </div>
 
@@ -411,30 +407,34 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:9px 18p
       <div class="mbar-name">S&amp;P 500</div>
       <div class="mbar-val" id="mv-sp">···</div>
       <div class="mbar-chg" id="mc-sp">···</div>
+      <div class="mbar-src" id="ms-sp"></div>
     </div>
     <div class="mbar-item" id="mi-ndq" style="--ic:var(--pur);--is:rgba(157,0,255,.35);">
       <div class="mbar-name">NASDAQ</div>
       <div class="mbar-val" id="mv-ndq">···</div>
       <div class="mbar-chg" id="mc-ndq">···</div>
+      <div class="mbar-src" id="ms-ndq"></div>
     </div>
     <div class="mbar-item" id="mi-dji" style="--ic:var(--cyan);--is:rgba(0,245,255,.2);">
       <div class="mbar-name">DOW JONES</div>
       <div class="mbar-val" id="mv-dji">···</div>
       <div class="mbar-chg" id="mc-dji">···</div>
+      <div class="mbar-src" id="ms-dji"></div>
     </div>
     <div class="mbar-item" id="mi-inr" style="--ic:var(--yel);--is:rgba(255,224,0,.25);">
       <div class="mbar-name">USD/INR</div>
       <div class="mbar-val" id="mv-inr">···</div>
       <div class="mbar-chg" id="mc-inr">···</div>
+      <div class="mbar-src" id="ms-inr"></div>
     </div>
     <div class="mbar-item" id="mi-crude" style="--ic:rgba(255,160,0,.9);--is:rgba(255,160,0,.25);">
       <div class="mbar-name">CRUDE OIL</div>
       <div class="mbar-val" id="mv-crude">···</div>
       <div class="mbar-chg" id="mc-crude">···</div>
+      <div class="mbar-src" id="ms-crude"></div>
     </div>
   </div>
 
-  <!-- last updated timestamp (silent, tiny) -->
   <div class="mbar-updated" id="mbar-ts"></div>
 </div>
 
@@ -664,7 +664,7 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:9px 18p
 
 <!-- ══ FOOTER ══ -->
 <footer>
-  <div class="fl"><span>NIFTY INDIAN MARKETS HUB</span> // CYBER_NEON v2.0 // 8_NODES_ACTIVE</div>
+  <div class="fl"><span>NIFTY INDIAN MARKETS HUB</span> // CYBER_NEON v2.1 // 8_NODES_ACTIVE</div>
   <div class="fr">SELECT_NODE → OPEN // BACK → RETURN_TO_HUB</div>
 </footer>
 </div><!-- /#app -->
@@ -694,162 +694,223 @@ function tick(){
 }
 tick();setInterval(tick,1000);
 
-/* ══════════════════════════════════════════════════
-   MARKET BAR — Silent Background Refresh Engine
-   Updates only the text content of existing DOM nodes
-   → zero layout shift, zero flicker, no page reload
-══════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════════════════
+   MARKET BAR — Robust Multi-Source / Multi-Proxy Engine
+   
+   INDIA:  NSE allIndices (primary) → Yahoo Finance (fallback)
+   GLOBAL: Yahoo Finance with 6 proxy fallbacks in sequence
+   
+   Each proxy is tried in order — first success wins.
+   Silent DOM updates — no layout shift, no flicker.
+══════════════════════════════════════════════════════════════ */
 
-/* Map each field to its DOM ids */
 const MB_MAP = [
-  /* India */
-  { id:'n50',  valId:'mv-n50',  chgId:'mc-n50',  yf:'^NSEI',        nseKey:'NIFTY 50',       prefix:'',   isVix:false },
-  { id:'bn',   valId:'mv-bn',   chgId:'mc-bn',   yf:'^NSEBANK',     nseKey:'NIFTY BANK',     prefix:'',   isVix:false },
-  { id:'vix',  valId:'mv-vix',  chgId:'mc-vix',  yf:'^INDIAVIX',    nseKey:'INDIA VIX',      prefix:'',   isVix:true  },
-  { id:'fn',   valId:'mv-fn',   chgId:'mc-fn',   yf:'NIFTY_FIN_SERVICE.NS', nseKey:'NIFTY FIN SERVICE', prefix:'', isVix:false },
-  { id:'sx',   valId:'mv-sx',   chgId:'mc-sx',   yf:'^BSESN',       nseKey:'SENSEX',         prefix:'',   isVix:false },
-  /* Global */
-  { id:'sp',   valId:'mv-sp',   chgId:'mc-sp',   yf:'^GSPC',        nseKey:null,             prefix:'',   isVix:false },
-  { id:'ndq',  valId:'mv-ndq',  chgId:'mc-ndq',  yf:'^IXIC',        nseKey:null,             prefix:'',   isVix:false },
-  { id:'dji',  valId:'mv-dji',  chgId:'mc-dji',  yf:'^DJI',         nseKey:null,             prefix:'',   isVix:false },
-  { id:'inr',  valId:'mv-inr',  chgId:'mc-inr',  yf:'INR=X',        nseKey:null,             prefix:'',   isVix:false },
-  { id:'crude',valId:'mv-crude',chgId:'mc-crude', yf:'CL=F',         nseKey:null,             prefix:'$',  isVix:false },
+  /* India — prefer NSE, fallback Yahoo */
+  { id:'n50',   valId:'mv-n50',   chgId:'mc-n50',   srcId:'ms-n50',   yf:'^NSEI',              nseKey:'NIFTY 50',          prefix:'',   isVix:false },
+  { id:'bn',    valId:'mv-bn',    chgId:'mc-bn',     srcId:'ms-bn',    yf:'^NSEBANK',           nseKey:'NIFTY BANK',        prefix:'',   isVix:false },
+  { id:'vix',   valId:'mv-vix',   chgId:'mc-vix',    srcId:'ms-vix',   yf:'^INDIAVIX',          nseKey:'INDIA VIX',         prefix:'',   isVix:true  },
+  { id:'fn',    valId:'mv-fn',    chgId:'mc-fn',     srcId:'ms-fn',    yf:'NIFTY_FIN_SERVICE.NS',nseKey:'NIFTY FIN SERVICE', prefix:'',  isVix:false },
+  { id:'sx',    valId:'mv-sx',    chgId:'mc-sx',     srcId:'ms-sx',    yf:'^BSESN',             nseKey:'SENSEX',            prefix:'',   isVix:false },
+  /* Global — Yahoo Finance only */
+  { id:'sp',    valId:'mv-sp',    chgId:'mc-sp',     srcId:'ms-sp',    yf:'^GSPC',              nseKey:null,                prefix:'',   isVix:false },
+  { id:'ndq',   valId:'mv-ndq',   chgId:'mc-ndq',    srcId:'ms-ndq',   yf:'^IXIC',              nseKey:null,                prefix:'',   isVix:false },
+  { id:'dji',   valId:'mv-dji',   chgId:'mc-dji',    srcId:'ms-dji',   yf:'^DJI',               nseKey:null,                prefix:'',   isVix:false },
+  { id:'inr',   valId:'mv-inr',   chgId:'mc-inr',    srcId:'ms-inr',   yf:'INR=X',              nseKey:null,                prefix:'',   isVix:false },
+  { id:'crude', valId:'mv-crude', chgId:'mc-crude',  srcId:'ms-crude', yf:'CL=F',               nseKey:null,                prefix:'$',  isVix:false },
 ];
 
-function fmtV(n,d=2){
+function fmtV(n, d=2){
   if(n==null||isNaN(n)) return '—';
-  return n>=1000 ? n.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}) : n.toFixed(d);
+  return n>=1000
+    ? n.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d})
+    : n.toFixed(d);
 }
 
-/* Silently update a single field — only touches textContent, no DOM rebuild */
-function silentUpdate(item, price, chgPct) {
+function silentUpdate(item, price, chgPct, source){
   const valEl = document.getElementById(item.valId);
   const chgEl = document.getElementById(item.chgId);
+  const srcEl = document.getElementById(item.srcId);
   if(!valEl||!chgEl) return;
 
   const up = chgPct >= 0;
-  const newVal = item.prefix + fmtV(price, item.isVix ? 2 : (price>=1000?2:2));
-  const newChg = (up?'▲ +':'▼ ') + Math.abs(chgPct).toFixed(2) + '%';
+  const newVal = item.prefix + fmtV(price, item.isVix ? 2 : 2);
+  const newChg = (up ? '▲ +' : '▼ ') + Math.abs(chgPct).toFixed(2) + '%';
 
-  /* Only update DOM if value actually changed — avoids unnecessary repaints */
-  if(valEl.textContent !== newVal) {
+  if(valEl.textContent !== newVal){
     valEl.textContent = newVal;
     valEl.classList.remove('val-updated');
-    void valEl.offsetWidth; /* force reflow to restart animation */
+    void valEl.offsetWidth;
     valEl.classList.add('val-updated');
   }
-
-  if(chgEl.textContent !== newChg) {
+  if(chgEl.textContent !== newChg){
     chgEl.textContent = newChg;
-    /* Update colour class */
-    if(item.isVix) {
-      chgEl.className = 'mbar-chg vix';
-    } else {
-      chgEl.className = up ? 'mbar-chg up' : 'mbar-chg dn';
-    }
+    chgEl.className = item.isVix ? 'mbar-chg vix' : (up ? 'mbar-chg up' : 'mbar-chg dn');
+  }
+  if(srcEl && source){
+    srcEl.textContent = source;
+    srcEl.className = 'mbar-src ' + (source==='NSE' ? 'nse' : source==='YF' ? 'yf' : 'err');
   }
 }
 
-function setTs() {
+function setTs(){
   const ts = document.getElementById('mbar-ts');
-  if(ts) {
+  if(ts){
     const now = new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
     ts.textContent = 'UPD ' + now;
   }
 }
 
-/* ── Source A: NSE India allIndices (best for Indian indices) ── */
-async function fetchNSEIndices() {
+/* ─────────────────────────────────────────
+   SOURCE A: NSE India allIndices
+   Tried with 3 CORS proxies in sequence
+───────────────────────────────────────── */
+async function fetchNSEIndices(){
   const url = 'https://www.nseindia.com/api/allIndices';
   const proxies = [
     `https://corsproxy.io/?${encodeURIComponent(url)}`,
     `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+    `https://proxy.cors.sh/${url}`,
   ];
-  for(const px of proxies) {
-    try {
-      const r = await fetch(px,{signal:AbortSignal.timeout(7000),cache:'no-store'});
+  for(const px of proxies){
+    try{
+      const r = await fetch(px, {
+        signal: AbortSignal.timeout(7000),
+        cache: 'no-store',
+        headers: { 'Accept': 'application/json' }
+      });
+      if(!r.ok) continue;
       let j = await r.json();
-      if(j.contents) j = JSON.parse(j.contents);
+      if(j.contents) j = JSON.parse(j.contents); // allorigins wraps in .contents
       const data = j.data || [];
-      if(data.length < 2) continue;
-      return data;
-    } catch(e){}
+      if(data.length >= 2) return data;
+    } catch(e){ console.warn('[NSE] proxy failed:', px, e.message); }
   }
   return [];
 }
 
-/* ── Source B: Yahoo Finance (India VIX + Global indices) ── */
-async function fetchYahoo() {
-  const syms = MB_MAP.map(x=>x.yf).join(',');
-  const url = `https://query1.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
-  const url2 = url.replace('query1','query2');
-  const proxies = [
-    `https://corsproxy.io/?${encodeURIComponent(url)}`,
-    `https://corsproxy.io/?${encodeURIComponent(url2)}`,
-    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-    `https://api.allorigins.win/get?url=${encodeURIComponent(url2)}`,
+/* ─────────────────────────────────────────
+   SOURCE B: Yahoo Finance v8 quote API
+   6 proxies tried in order for reliability.
+   Covers ALL global indices + fallback India.
+   
+   Proxies used:
+   1. corsproxy.io (query2) — most reliable
+   2. corsproxy.io (query1) — alternate endpoint
+   3. allorigins.win (query2)
+   4. allorigins.win (query1)
+   5. thingproxy.freeboard.io
+   6. cors-anywhere via herokuapp (backup)
+───────────────────────────────────────── */
+async function fetchYahoo(){
+  const syms = MB_MAP.map(x => x.yf).join(',');
+  const fields = 'regularMarketPrice,regularMarketChangePercent,regularMarketPreviousClose';
+
+  const YF_URLS = [
+    `https://query2.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=${fields}`,
+    `https://query1.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=${fields}`,
   ];
-  for(const px of proxies) {
-    try {
-      const r = await fetch(px,{signal:AbortSignal.timeout(8000),cache:'no-store'});
-      let j = await r.json();
-      if(j.contents) j = JSON.parse(j.contents);
-      const results = j?.quoteResponse?.result || [];
-      if(results.length > 0) return results;
-    } catch(e){}
+
+  const PROXY_TEMPLATES = [
+    (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    (u) => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
+    (u) => `https://thingproxy.freeboard.io/fetch/${u}`,
+    (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+  ];
+
+  /* Try each proxy × each YF URL until one works */
+  for(const tmpl of PROXY_TEMPLATES){
+    for(const yfUrl of YF_URLS){
+      const px = tmpl(yfUrl);
+      try{
+        const r = await fetch(px, {
+          signal: AbortSignal.timeout(9000),
+          cache: 'no-store',
+          headers: { 'Accept': 'application/json' }
+        });
+        if(!r.ok) continue;
+        let j = await r.json();
+
+        /* allorigins wraps body in j.contents as a string */
+        if(j.contents){
+          try { j = JSON.parse(j.contents); } catch(e){ continue; }
+        }
+
+        /* codetabs returns raw text sometimes */
+        if(typeof j === 'string'){
+          try { j = JSON.parse(j); } catch(e){ continue; }
+        }
+
+        const results = j?.quoteResponse?.result || [];
+        if(results.length > 0){
+          console.log('[YF] success via proxy:', px.split('?')[0]);
+          return results;
+        }
+      } catch(e){
+        console.warn('[YF] proxy failed:', px.split('?')[0], e.message);
+      }
+    }
   }
+
+  console.error('[YF] All proxies exhausted — no data');
   return [];
 }
 
-/* ── Main silent refresh function ── */
-async function refreshMarketBar() {
+/* ─────────────────────────────────────────
+   MAIN REFRESH — runs every 30s silently
+───────────────────────────────────────── */
+async function refreshMarketBar(){
   let updated = 0;
 
   /* Fetch both in parallel for speed */
-  const [nseData, yfData] = await Promise.allSettled([fetchNSEIndices(), fetchYahoo()]);
-  const nseArr = nseData.status==='fulfilled' ? nseData.value : [];
-  const yfArr  = yfData.status==='fulfilled'  ? yfData.value  : [];
+  const [nseRes, yfRes] = await Promise.allSettled([fetchNSEIndices(), fetchYahoo()]);
+  const nseArr = nseRes.status === 'fulfilled' ? nseRes.value : [];
+  const yfArr  = yfRes.status  === 'fulfilled' ? yfRes.value  : [];
 
-  for(const item of MB_MAP) {
-    let price=null, chgPct=null;
+  console.log(`[MBar] NSE: ${nseArr.length} indices | YF: ${yfArr.length} quotes`);
 
-    /* Try NSE first for Indian indices */
-    if(item.nseKey && nseArr.length) {
+  for(const item of MB_MAP){
+    let price = null, chgPct = null, source = null;
+
+    /* 1) Try NSE first for Indian indices */
+    if(item.nseKey && nseArr.length){
       const found = nseArr.find(d =>
-        d.index===item.nseKey || d.indexSymbol===item.nseKey ||
-        (d.index||'').toLowerCase()===item.nseKey.toLowerCase()
+        d.index === item.nseKey ||
+        d.indexSymbol === item.nseKey ||
+        (d.index||'').toLowerCase() === item.nseKey.toLowerCase()
       );
-      if(found && found.last!=null) {
+      if(found && found.last != null){
         price  = parseFloat(found.last);
         chgPct = parseFloat(found.percentChange);
+        source = 'NSE';
       }
     }
 
-    /* Fall back to Yahoo for anything not found in NSE */
-    if((price==null) && yfArr.length) {
-      const q = yfArr.find(x=>x.symbol===item.yf);
-      if(q?.regularMarketPrice!=null) {
+    /* 2) Fallback to Yahoo Finance for any item not found via NSE */
+    if(price == null && yfArr.length){
+      const q = yfArr.find(x => x.symbol === item.yf);
+      if(q?.regularMarketPrice != null){
         price  = q.regularMarketPrice;
         chgPct = q.regularMarketChangePercent || 0;
+        source = 'YF';
       }
     }
 
-    if(price!=null && chgPct!=null) {
-      silentUpdate(item, price, chgPct);
+    if(price != null && chgPct != null){
+      silentUpdate(item, price, chgPct, source);
       updated++;
     }
   }
 
   if(updated > 0) setTs();
+  console.log(`[MBar] Updated ${updated}/${MB_MAP.length} items`);
 }
 
-/* Kick off immediately, then every 30 seconds silently */
+/* Kick off immediately, then every 30 seconds */
 refreshMarketBar();
 setInterval(refreshMarketBar, 30000);
 
 /* ══════════════════════════════════════════════
    TICKER — Multi-Source Engine
-   NSE → Groww → Yahoo
 ══════════════════════════════════════════════ */
 const TICKER_STOCKS=[
   {s:'RELIANCE',sym:'RELIANCE',prefix:'₹'},{s:'TCS',sym:'TCS',prefix:'₹'},
@@ -867,23 +928,40 @@ function renderTicker(items){
   const tkr=document.getElementById('tkr');
   tkr.innerHTML=[...items,...items].map(t=>`<span class="ti"><span class="s">${t.s}</span><span>${t.v}</span><span class="${t.u?'up':'dn'}">${t.c}</span></span>`).join('');
 }
-async function fromNSE(){
+async function fromNSETicker(){
   const items=[];
-  const idxUrl='https://www.nseindia.com/api/allIndices';
-  const ir=await fetch(`https://corsproxy.io/?${encodeURIComponent(idxUrl)}`,{headers:{'Accept':'application/json'},signal:AbortSignal.timeout(7000),cache:'no-store'});
-  const idxData=await ir.json();
-  const indices=idxData.data||[];
+  const proxies=[
+    `https://corsproxy.io/?${encodeURIComponent('https://www.nseindia.com/api/allIndices')}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent('https://www.nseindia.com/api/allIndices')}`,
+  ];
+  let indices=[];
+  for(const px of proxies){
+    try{
+      const r=await fetch(px,{signal:AbortSignal.timeout(7000),cache:'no-store',headers:{'Accept':'application/json'}});
+      let j=await r.json();
+      if(j.contents)j=JSON.parse(j.contents);
+      indices=j.data||[];
+      if(indices.length>=2) break;
+    }catch(e){}
+  }
   for(const ti of TICKER_INDICES){
     const found=indices.find(i=>i.index===ti.key||i.indexSymbol===ti.key);
     if(found){const up=parseFloat(found.percentChange)>=0;items.push({s:ti.s,v:fmt(found.last,2),c:(up?'+':'')+parseFloat(found.percentChange).toFixed(2)+'%',u:up?1:0});}
   }
+  /* Try NSE equity quotes for stocks */
   for(const st of TICKER_STOCKS){
     try{
       const sUrl=`https://www.nseindia.com/api/quote-equity?symbol=${encodeURIComponent(st.sym)}`;
-      const sr=await fetch(`https://corsproxy.io/?${encodeURIComponent(sUrl)}`,{headers:{'Accept':'application/json'},signal:AbortSignal.timeout(5000),cache:'no-store'});
-      const sd=await sr.json();
-      const price=sd?.priceInfo?.lastPrice,chg=sd?.priceInfo?.pChange;
-      if(price!=null){const up=chg>=0;items.push({s:st.s,v:st.prefix+fmt(price,2),c:(up?'+':'')+parseFloat(chg).toFixed(2)+'%',u:up?1:0});}
+      const proxies2=[`https://corsproxy.io/?${encodeURIComponent(sUrl)}`,`https://api.allorigins.win/get?url=${encodeURIComponent(sUrl)}`];
+      for(const px2 of proxies2){
+        try{
+          const sr=await fetch(px2,{signal:AbortSignal.timeout(5000),cache:'no-store',headers:{'Accept':'application/json'}});
+          let sd=await sr.json();
+          if(sd.contents)sd=JSON.parse(sd.contents);
+          const price=sd?.priceInfo?.lastPrice,chg=sd?.priceInfo?.pChange;
+          if(price!=null){const up=chg>=0;items.push({s:st.s,v:st.prefix+fmt(price,2),c:(up?'+':'')+parseFloat(chg).toFixed(2)+'%',u:up?1:0});break;}
+        }catch(e){}
+      }
     }catch(e){}
   }
   return items;
@@ -897,13 +975,20 @@ async function fromYahooTicker(){
     {s:'USD/INR',yf:'INR=X',p:''},{s:'CRUDE',yf:'CL=F',p:'$'},
   ];
   const syms=YF_SYMS.map(x=>x.yf).join(',');
-  const base=`https://query1.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
-  const proxies=[`https://corsproxy.io/?${encodeURIComponent(base)}`,`https://api.allorigins.win/get?url=${encodeURIComponent(base)}`];
+  const base=`https://query2.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
+  const proxies=[
+    `https://corsproxy.io/?${encodeURIComponent(base)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(base)}`,
+    `https://thingproxy.freeboard.io/fetch/${base}`,
+    `https://corsproxy.io/?${encodeURIComponent(base.replace('query2','query1'))}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(base.replace('query2','query1'))}`,
+  ];
   for(const px of proxies){
     try{
-      const r=await fetch(px,{signal:AbortSignal.timeout(7000),cache:'no-store'});
+      const r=await fetch(px,{signal:AbortSignal.timeout(8000),cache:'no-store',headers:{'Accept':'application/json'}});
       let raw=await r.json();
       if(raw.contents)raw=JSON.parse(raw.contents);
+      if(typeof raw==='string')raw=JSON.parse(raw);
       const quotes=raw?.quoteResponse?.result||[];
       if(!quotes.length)continue;
       return YF_SYMS.map(sym=>{const q=quotes.find(x=>x.symbol===sym.yf);if(!q?.regularMarketPrice)return null;const up=q.regularMarketChangePercent>=0;return{s:sym.s,v:sym.p+fmt(q.regularMarketPrice,2),c:(up?'+':'')+q.regularMarketChangePercent.toFixed(2)+'%',u:up?1:0};}).filter(Boolean);
@@ -912,7 +997,7 @@ async function fromYahooTicker(){
   return[];
 }
 async function fetchLiveTicker(){
-  try{const items=await fromNSE();if(items.length>=4){renderTicker(items);return;}}catch(e){}
+  try{const items=await fromNSETicker();if(items.length>=4){renderTicker(items);return;}}catch(e){}
   try{const items=await fromYahooTicker();if(items.length>=4){renderTicker(items);return;}}catch(e){}
 }
 fetchLiveTicker();
