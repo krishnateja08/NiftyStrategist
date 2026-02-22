@@ -761,148 +761,136 @@ function setTs(){
 }
 
 /* ─────────────────────────────────────────
+   HELPER: parse proxy response safely
+───────────────────────────────────────── */
+function parseProxyResponse(j){
+  // allorigins wraps in { contents: "..." }
+  if(j && typeof j.contents === 'string'){
+    try { j = JSON.parse(j.contents); } catch(e){ return null; }
+  }
+  // some proxies return plain string
+  if(typeof j === 'string'){
+    try { j = JSON.parse(j); } catch(e){ return null; }
+  }
+  return j;
+}
+
+/* ─────────────────────────────────────────
    SOURCE A: NSE India allIndices
-   Tried with 3 CORS proxies in sequence
+   2 fast proxies, 5s timeout each
 ───────────────────────────────────────── */
 async function fetchNSEIndices(){
   const url = 'https://www.nseindia.com/api/allIndices';
   const proxies = [
     `https://corsproxy.io/?${encodeURIComponent(url)}`,
     `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-    `https://proxy.cors.sh/${url}`,
   ];
   for(const px of proxies){
     try{
-      const r = await fetch(px, {
-        signal: AbortSignal.timeout(7000),
-        cache: 'no-store',
-        headers: { 'Accept': 'application/json' }
-      });
+      const r = await fetch(px, { signal: AbortSignal.timeout(5000), cache:'no-store' });
       if(!r.ok) continue;
-      let j = await r.json();
-      if(j.contents) j = JSON.parse(j.contents); // allorigins wraps in .contents
+      let j = parseProxyResponse(await r.json());
+      if(!j) continue;
       const data = j.data || [];
-      if(data.length >= 2) return data;
-    } catch(e){ console.warn('[NSE] proxy failed:', px, e.message); }
+      if(data.length >= 2){ console.log('[NSE] ok:', data.length, 'indices'); return data; }
+    } catch(e){ console.warn('[NSE] failed:', e.message); }
   }
   return [];
 }
 
 /* ─────────────────────────────────────────
-   SOURCE B: Yahoo Finance v8 quote API
-   6 proxies tried in order for reliability.
-   Covers ALL global indices + fallback India.
-   
-   Proxies used:
-   1. corsproxy.io (query2) — most reliable
-   2. corsproxy.io (query1) — alternate endpoint
-   3. allorigins.win (query2)
-   4. allorigins.win (query1)
-   5. thingproxy.freeboard.io
-   6. cors-anywhere via herokuapp (backup)
+   SOURCE B: Yahoo Finance
+   Race all proxies simultaneously — fastest wins
+   This avoids the sequential 9s×8 = 72s delay!
 ───────────────────────────────────────── */
 async function fetchYahoo(){
   const syms = MB_MAP.map(x => x.yf).join(',');
-  const fields = 'regularMarketPrice,regularMarketChangePercent,regularMarketPreviousClose';
+  const yfBase = `https://query2.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
+  const yfBase1 = yfBase.replace('query2','query1');
 
-  const YF_URLS = [
-    `https://query2.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=${fields}`,
-    `https://query1.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=${fields}`,
+  // Build ALL candidate URLs
+  const candidates = [
+    `https://corsproxy.io/?${encodeURIComponent(yfBase)}`,
+    `https://corsproxy.io/?${encodeURIComponent(yfBase1)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(yfBase)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(yfBase1)}`,
   ];
 
-  const PROXY_TEMPLATES = [
-    (u) => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-    (u) => `https://api.allorigins.win/get?url=${encodeURIComponent(u)}`,
-    (u) => `https://thingproxy.freeboard.io/fetch/${u}`,
-    (u) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
-  ];
+  // Race them all — return first valid result
+  return new Promise((resolve) => {
+    let settled = 0;
+    let resolved = false;
 
-  /* Try each proxy × each YF URL until one works */
-  for(const tmpl of PROXY_TEMPLATES){
-    for(const yfUrl of YF_URLS){
-      const px = tmpl(yfUrl);
-      try{
-        const r = await fetch(px, {
-          signal: AbortSignal.timeout(9000),
-          cache: 'no-store',
-          headers: { 'Accept': 'application/json' }
+    candidates.forEach(px => {
+      fetch(px, { signal: AbortSignal.timeout(8000), cache:'no-store' })
+        .then(r => r.ok ? r.json() : Promise.reject('bad status'))
+        .then(raw => {
+          const j = parseProxyResponse(raw);
+          if(!j) return;
+          const results = j?.quoteResponse?.result || [];
+          if(results.length > 0 && !resolved){
+            resolved = true;
+            console.log('[YF] ok via:', px.split('?')[0], '|', results.length, 'quotes');
+            resolve(results);
+          }
+        })
+        .catch(e => console.warn('[YF] failed:', e.message || e))
+        .finally(() => {
+          settled++;
+          // All failed
+          if(settled === candidates.length && !resolved){
+            console.error('[YF] all proxies failed');
+            resolve([]);
+          }
         });
-        if(!r.ok) continue;
-        let j = await r.json();
-
-        /* allorigins wraps body in j.contents as a string */
-        if(j.contents){
-          try { j = JSON.parse(j.contents); } catch(e){ continue; }
-        }
-
-        /* codetabs returns raw text sometimes */
-        if(typeof j === 'string'){
-          try { j = JSON.parse(j); } catch(e){ continue; }
-        }
-
-        const results = j?.quoteResponse?.result || [];
-        if(results.length > 0){
-          console.log('[YF] success via proxy:', px.split('?')[0]);
-          return results;
-        }
-      } catch(e){
-        console.warn('[YF] proxy failed:', px.split('?')[0], e.message);
-      }
-    }
-  }
-
-  console.error('[YF] All proxies exhausted — no data');
-  return [];
+    });
+  });
 }
 
 /* ─────────────────────────────────────────
-   MAIN REFRESH — runs every 30s silently
+   MAIN REFRESH — NSE fires first, YF updates globals
+   NSE data shows immediately; Yahoo fills in after
 ───────────────────────────────────────── */
 async function refreshMarketBar(){
   let updated = 0;
 
-  /* Fetch both in parallel for speed */
-  const [nseRes, yfRes] = await Promise.allSettled([fetchNSEIndices(), fetchYahoo()]);
-  const nseArr = nseRes.status === 'fulfilled' ? nseRes.value : [];
-  const yfArr  = yfRes.status  === 'fulfilled' ? yfRes.value  : [];
-
-  console.log(`[MBar] NSE: ${nseArr.length} indices | YF: ${yfArr.length} quotes`);
+  // Step 1: fetch NSE fast and update Indian indices immediately
+  const nseArr = await fetchNSEIndices();
 
   for(const item of MB_MAP){
-    let price = null, chgPct = null, source = null;
-
-    /* 1) Try NSE first for Indian indices */
-    if(item.nseKey && nseArr.length){
-      const found = nseArr.find(d =>
-        d.index === item.nseKey ||
-        d.indexSymbol === item.nseKey ||
-        (d.index||'').toLowerCase() === item.nseKey.toLowerCase()
-      );
-      if(found && found.last != null){
-        price  = parseFloat(found.last);
-        chgPct = parseFloat(found.percentChange);
-        source = 'NSE';
-      }
-    }
-
-    /* 2) Fallback to Yahoo Finance for any item not found via NSE */
-    if(price == null && yfArr.length){
-      const q = yfArr.find(x => x.symbol === item.yf);
-      if(q?.regularMarketPrice != null){
-        price  = q.regularMarketPrice;
-        chgPct = q.regularMarketChangePercent || 0;
-        source = 'YF';
-      }
-    }
-
-    if(price != null && chgPct != null){
-      silentUpdate(item, price, chgPct, source);
+    if(!item.nseKey || !nseArr.length) continue;
+    const found = nseArr.find(d =>
+      d.index === item.nseKey ||
+      d.indexSymbol === item.nseKey ||
+      (d.index||'').toLowerCase() === item.nseKey.toLowerCase()
+    );
+    if(found && found.last != null){
+      silentUpdate(item, parseFloat(found.last), parseFloat(found.percentChange), 'NSE');
       updated++;
     }
   }
-
   if(updated > 0) setTs();
-  console.log(`[MBar] Updated ${updated}/${MB_MAP.length} items`);
+  console.log(`[MBar] NSE updated ${updated} items`);
+
+  // Step 2: fetch Yahoo in background for global + any NSE misses
+  const yfArr = await fetchYahoo();
+
+  for(const item of MB_MAP){
+    // Only use YF for items that NSE didn't already fill
+    const valEl = document.getElementById(item.valId);
+    if(!valEl) continue;
+    const alreadyFilled = item.nseKey && valEl.textContent !== '···' && valEl.textContent !== '—';
+    if(alreadyFilled) continue; // NSE already got it, skip
+
+    const q = yfArr.find(x => x.symbol === item.yf);
+    if(q?.regularMarketPrice != null){
+      silentUpdate(item, q.regularMarketPrice, q.regularMarketChangePercent || 0, 'YF');
+      updated++;
+    }
+  }
+  if(updated > 0) setTs();
+  console.log(`[MBar] Total updated: ${updated}/${MB_MAP.length}`);
+
 }
 
 /* Kick off immediately, then every 30 seconds */
