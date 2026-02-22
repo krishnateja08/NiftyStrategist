@@ -13,7 +13,453 @@
 ═══════════════════════════════════════════════ */
 :root {
   --aurora1: rgba(120,40,255,.28);
+  --aurora2: rgba(0,180,255,.22);<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Krishna Markets — Intelligence Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --aurora1: rgba(120,40,255,.28);
   --aurora2: rgba(0,180,255,.22);
+  --aurora3: rgba(0,255,180,.18);
+  --glass:   rgba(255,255,255,.06);
+  --glass2:  rgba(255,255,255,.11);
+  --border:  rgba(255,255,255,.12);
+  --text:    rgba(255,255,255,.92);
+  --dim:     rgba(255,255,255,.42);
+  --green:   #00ffb4;
+  --purple:  #7c28ff;
+  --blue:    #00b4ff;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
+html { height:100%; scroll-behavior:smooth }
+body {
+  min-height:100vh;
+  font-family:'DM Sans', sans-serif;
+  color:var(--text);
+  background:linear-gradient(135deg,#080018 0%,#0a0028 20%,#000d30 45%,#001828 70%,#000d18 100%);
+  overflow-x:hidden;
+}
+
+/* Aurora BG */
+body::before {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(ellipse 65% 55% at 15% 15%, var(--aurora1) 0%, transparent 70%),
+    radial-gradient(ellipse 55% 65% at 85% 35%, var(--aurora2) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 50% 92%, var(--aurora3) 0%, transparent 70%);
+  animation:auroraShift 14s ease-in-out infinite alternate;
+}
+@keyframes auroraShift {
+  0%   { opacity:.8;  transform:scale(1) }
+  50%  { opacity:1;   transform:scale(1.06) }
+  100% { opacity:.75; transform:scale(.97) }
+}
+body::after {
+  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    linear-gradient(rgba(255,255,255,.016) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.016) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+
+#app { position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; padding-bottom:40px }
+
+/* ── HEADER ── */
+header {
+  padding:28px 32px 0;
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
+}
+.brand { display:flex; align-items:center; gap:14px }
+.brand-orb {
+  width:52px; height:52px;
+  background:linear-gradient(135deg,#7c28ff,#00b4ff);
+  border-radius:50%; display:flex; align-items:center; justify-content:center;
+  font-size:24px; flex-shrink:0;
+  box-shadow:0 0 30px rgba(124,40,255,.5),0 0 60px rgba(0,180,255,.2);
+  animation:orbPulse 3s ease-in-out infinite;
+}
+@keyframes orbPulse {
+  0%,100% { box-shadow:0 0 30px rgba(124,40,255,.5),0 0 60px rgba(0,180,255,.2) }
+  50%     { box-shadow:0 0 44px rgba(124,40,255,.8),0 0 80px rgba(0,180,255,.35) }
+}
+.brand-name {
+  font-family:'Syne',sans-serif; font-size:26px; font-weight:800; letter-spacing:-.5px;
+  background:linear-gradient(135deg,#fff 30%,#b0d8ff 100%);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1.1;
+}
+.brand-sub { font-size:10px; color:var(--dim); letter-spacing:2.5px; text-transform:uppercase; margin-top:4px }
+
+.header-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap }
+.status-live {
+  display:flex; align-items:center; gap:7px;
+  background:rgba(0,255,180,.08); border:1px solid rgba(0,255,180,.2);
+  padding:7px 16px; border-radius:30px;
+  font-size:11px; font-weight:700; color:var(--green); letter-spacing:.8px;
+}
+.live-dot {
+  width:7px; height:7px; border-radius:50%; background:var(--green);
+  animation:livePulse 1.5s ease-in-out infinite; box-shadow:0 0 8px var(--green);
+}
+@keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.7)} }
+.clock-badge {
+  background:var(--glass); border:1px solid var(--border);
+  padding:7px 14px; border-radius:30px;
+  font-size:11px; color:var(--dim); font-family:'Space Mono',monospace;
+}
+#clock-ist { color:var(--blue); font-weight:700 }
+
+/* ── HERO ── */
+.hero { padding:18px 32px 0; max-width:620px }
+.hero p {
+  font-size:13px; color:var(--dim); line-height:1.7;
+  font-family:'DM Sans',sans-serif;
+}
+.hero p span {
+  background:linear-gradient(90deg,#c0e0ff,#e0c0ff);
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:600;
+}
+
+/* ── STATS ROW ── */
+.stats-row { display:flex; gap:12px; flex-wrap:wrap; padding:22px 32px 0 }
+.stat-chip {
+  display:flex; align-items:center; gap:10px;
+  background:var(--glass); border:1px solid var(--border);
+  border-radius:14px; padding:10px 18px; backdrop-filter:blur(10px);
+}
+.stat-chip-icon { font-size:20px }
+.stat-chip-val { font-family:'Space Mono',monospace; font-size:15px; font-weight:700; color:#fff }
+.stat-chip-label { font-size:10px; color:var(--dim); margin-top:1px }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  padding:30px 32px 14px;
+  font-family:'Syne',sans-serif; font-size:11px; font-weight:700;
+  color:var(--dim); letter-spacing:3px; text-transform:uppercase;
+  display:flex; align-items:center; gap:10px;
+}
+.section-label::before {
+  content:''; width:3px; height:16px;
+  background:linear-gradient(180deg,var(--purple),var(--blue));
+  border-radius:2px; flex-shrink:0;
+}
+
+/* ── GRID ── */
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:16px; padding:0 32px;
+}
+
+/* ── CARD ── */
+.card {
+  background:var(--glass); border:1px solid var(--border);
+  border-radius:20px; padding:24px;
+  cursor:pointer; transition:all .3s ease;
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  position:relative; overflow:hidden;
+  text-decoration:none; display:flex; flex-direction:column;
+  min-height:190px;
+}
+/* top accent bar */
+.card::after {
+  content:''; position:absolute; top:0; left:20px; right:20px; height:2px;
+  border-radius:0 0 4px 4px;
+  background:var(--card-accent,linear-gradient(90deg,var(--purple),var(--blue)));
+  opacity:.7; transition:.3s;
+}
+.card:hover {
+  transform:translateY(-7px);
+  border-color:rgba(255,255,255,.26);
+  box-shadow:0 24px 60px rgba(0,0,0,.45),0 0 40px rgba(124,40,255,.15),inset 0 1px 0 rgba(255,255,255,.15);
+}
+.card:hover::after { opacity:1; left:0; right:0; border-radius:0 }
+.card:active { transform:translateY(-2px) scale(.99) }
+
+/* accent colours per card */
+.card:nth-child(1){ --card-accent:linear-gradient(90deg,#7c28ff,#00b4ff) }
+.card:nth-child(2){ --card-accent:linear-gradient(90deg,#00c853,#69f0ae) }
+.card:nth-child(3){ --card-accent:linear-gradient(90deg,#ff6d00,#ffab40) }
+.card:nth-child(4){ --card-accent:linear-gradient(90deg,#0091ea,#40c4ff) }
+.card:nth-child(5){ --card-accent:linear-gradient(90deg,#aa00ff,#e040fb) }
+.card:nth-child(6){ --card-accent:linear-gradient(90deg,#d50000,#ff5252) }
+.card:nth-child(7){ --card-accent:linear-gradient(90deg,#00bcd4,#80deea) }
+.card:nth-child(8){ --card-accent:linear-gradient(90deg,#f9a825,#ffd54f) }
+
+.card-num {
+  position:absolute; top:16px; right:18px;
+  font-family:'Space Mono',monospace; font-size:10px; color:rgba(255,255,255,.12); font-weight:700;
+}
+.card-icon {
+  width:48px; height:48px;
+  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12);
+  border-radius:14px; display:flex; align-items:center; justify-content:center;
+  font-size:24px; margin-bottom:14px; transition:.3s; flex-shrink:0;
+}
+.card:hover .card-icon { background:rgba(255,255,255,.13); transform:scale(1.08) }
+.card-title {
+  font-family:'Syne',sans-serif; font-size:16px; font-weight:700;
+  color:#fff; margin-bottom:6px; line-height:1.2;
+}
+.card-desc { font-size:12px; color:var(--dim); line-height:1.65; flex:1 }
+.card-footer {
+  display:flex; align-items:center; justify-content:space-between; margin-top:16px;
+}
+.card-tag {
+  font-size:9px; font-weight:700; letter-spacing:1px;
+  padding:3px 10px; border-radius:20px;
+  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
+  color:var(--dim); text-transform:uppercase;
+}
+.card-arrow {
+  width:32px; height:32px;
+  background:linear-gradient(135deg,rgba(124,40,255,.25),rgba(0,180,255,.18));
+  border:1px solid rgba(124,40,255,.35); border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; color:#c0a0ff; transition:.3s;
+}
+.card:hover .card-arrow { background:linear-gradient(135deg,rgba(124,40,255,.55),rgba(0,180,255,.4)); color:#fff; transform:translateX(3px) }
+
+/* ripple */
+@keyframes ripple { 0%{transform:scale(0);opacity:.5} 100%{transform:scale(4);opacity:0} }
+.ripple-el {
+  position:absolute; width:60px; height:60px; border-radius:50%;
+  background:rgba(124,40,255,.3); pointer-events:none;
+  animation:ripple .6s ease-out forwards; transform-origin:center;
+}
+
+/* ── FOOTER ── */
+footer {
+  margin-top:40px; padding:20px 32px;
+  border-top:1px solid rgba(255,255,255,.06);
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
+}
+.footer-l { font-size:11px; color:rgba(255,255,255,.18); font-family:'Space Mono',monospace }
+.footer-r { font-size:11px; color:rgba(255,255,255,.15) }
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  header,.hero,.stats-row,.section-label,.grid { padding-left:20px; padding-right:20px }
+  .grid { grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px }
+}
+@media(max-width:600px){
+  .brand-name { font-size:20px } .brand-orb { width:42px; height:42px; font-size:20px }
+  .grid { grid-template-columns:1fr 1fr; gap:10px }
+  .card { padding:16px; min-height:160px }
+  .card-icon { width:38px; height:38px; font-size:18px; margin-bottom:10px }
+  .card-title { font-size:13px }
+  .card-desc { display:none }
+  .clock-badge { display:none }
+  footer { padding:16px 20px }
+}
+@media(max-width:380px){ .grid { grid-template-columns:1fr } }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- HEADER -->
+  <header>
+    <div class="brand">
+      <div class="brand-orb">📊</div>
+      <div>
+        <div class="brand-name">KrishnaMarkets</div>
+        <div class="brand-sub">Intelligence Hub · 8 Dashboards</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="status-live"><div class="live-dot"></div>ALL SYSTEMS LIVE</div>
+      <div class="clock-badge">🕐 IST <span id="clock-ist">--:--:--</span></div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <p>Your complete market intelligence suite —
+      <span>click any dashboard to open it instantly.</span>
+      Press the browser Back button anytime to return here.
+    </p>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-chip">
+      <div class="stat-chip-icon">🗂️</div>
+      <div><div class="stat-chip-val">8</div><div class="stat-chip-label">Dashboards</div></div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-chip-icon">🇮🇳</div>
+      <div><div class="stat-chip-val">NSE · BSE</div><div class="stat-chip-label">Indian Markets</div></div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-chip-icon">🌐</div>
+      <div><div class="stat-chip-val">S&amp;P 500</div><div class="stat-chip-label">US Markets</div></div>
+    </div>
+    <div class="stat-chip">
+      <div class="stat-chip-icon">🕐</div>
+      <div><div class="stat-chip-val" id="last-chip">—</div><div class="stat-chip-label">Last Opened</div></div>
+    </div>
+  </div>
+
+  <!-- SECTION -->
+  <div class="section-label">Select Dashboard</div>
+
+  <!-- GRID -->
+  <div class="grid">
+
+    <a class="card" href="https://krishnateja08.github.io/FII-DII_Pulse/" onclick="go(event,'FII/DII Pulse')">
+      <div class="card-num">01</div>
+      <div class="card-icon">📡</div>
+      <div class="card-title">FII / DII Pulse</div>
+      <div class="card-desc">Sector-wise institutional activity — FII & DII bulk/block deals with technical signals & RSI.</div>
+      <div class="card-footer">
+        <span class="card-tag">NSE · Bulk Deals</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="card" href="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" onclick="go(event,'Nifty 50 Analyzer')">
+      <div class="card-num">02</div>
+      <div class="card-icon">📈</div>
+      <div class="card-title">Nifty 50 Analyzer</div>
+      <div class="card-desc">Deep technical analysis of all Nifty 50 stocks — RSI, MACD, EMA, support & resistance levels.</div>
+      <div class="card-footer">
+        <span class="card-tag">NSE · Nifty 50</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="card" href="https://krishnateja08.github.io/Nifty_Indices_scanner/" onclick="go(event,'Nifty Indices Scanner')">
+      <div class="card-num">03</div>
+      <div class="card-icon">🔍</div>
+      <div class="card-title">Nifty Indices Scanner</div>
+      <div class="card-desc">Real-time scanner across all Nifty indices — momentum, breakouts and sector rotation signals.</div>
+      <div class="card-footer">
+        <span class="card-tag">NSE · Indices</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="card" href="https://krishnateja08.github.io/USA-SP500-Stocks-Review/" onclick="go(event,'S&P 500 Review')">
+      <div class="card-num">04</div>
+      <div class="card-icon">🌐</div>
+      <div class="card-title">USA S&amp;P 500 Review</div>
+      <div class="card-desc">Comprehensive S&P 500 stock review — US market analysis, sector performance and signals.</div>
+      <div class="card-footer">
+        <span class="card-tag">NYSE · S&amp;P 500</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="card" href="https://krishnateja08.github.io/Nifty-1HR_Track/" onclick="go(event,'Nifty 1HR Track')">
+      <div class="card-num">05</div>
+      <div class="card-icon">⏱️</div>
+      <div class="card-title">Nifty 1HR Track</div>
+      <div class="card-desc">Hourly Nifty movement tracking — intraday trend analysis and short-term momentum signals.</div>
+      <div class="card-footer">
+        <span class="card-tag">NSE · Intraday</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="card" href="https://krishnateja08.github.io/Nifty_option_chain/" onclick="go(event,'Nifty Option Chain')">
+      <div class="card-num">06</div>
+      <div class="card-icon">⛓️</div>
+      <div class="card-title">Nifty Option Chain</div>
+      <div class="card-desc">Live option chain analysis — OI buildup, PCR ratio, max pain and key strike price levels.</div>
+      <div class="card-footer">
+        <span class="card-tag">NSE · Options</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="card" href="https://krishnateja08.github.io/Global_Market_News/" onclick="go(event,'Global Market News')">
+      <div class="card-num">07</div>
+      <div class="card-icon">🗞️</div>
+      <div class="card-title">Global Market News</div>
+      <div class="card-desc">Curated global market news — macro events, earnings, central bank decisions and market moves.</div>
+      <div class="card-footer">
+        <span class="card-tag">Global · News</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+    <a class="card" href="https://krishnateja08.github.io/optionstrategybuilder/" onclick="go(event,'Strategy Builder')">
+      <div class="card-num">08</div>
+      <div class="card-icon">🧮</div>
+      <div class="card-title">Option Strategy Builder</div>
+      <div class="card-desc">Build and visualise options strategies — P&L charts, Greeks, breakeven for any strike & expiry.</div>
+      <div class="card-footer">
+        <span class="card-tag">NSE · Strategies</span>
+        <div class="card-arrow">→</div>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-l">KRISHNAMARKETS HUB · v2.0 · GLASS AURORA</div>
+    <div class="footer-r">Click card → opens dashboard &nbsp;·&nbsp; Browser Back → returns here</div>
+  </footer>
+
+</div>
+
+<script>
+  /* ── IST Clock ── */
+  function tick() {
+    document.getElementById('clock-ist').textContent =
+      new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ── Last opened chip ── */
+  const last = sessionStorage.getItem('lastOpened');
+  if (last) document.getElementById('last-chip').textContent = last;
+
+  /* ── Navigate same window with ripple ── */
+  function go(e, name) {
+    e.preventDefault();
+    const card = e.currentTarget;
+    const url  = card.href;
+
+    // Save to session
+    sessionStorage.setItem('lastOpened', name);
+
+    // Ripple
+    const r = document.createElement('div');
+    r.className = 'ripple-el';
+    const rect = card.getBoundingClientRect();
+    r.style.left = (e.clientX - rect.left - 30) + 'px';
+    r.style.top  = (e.clientY - rect.top  - 30) + 'px';
+    card.appendChild(r);
+    setTimeout(() => r.remove(), 700);
+
+    // Navigate after ripple
+    setTimeout(() => { window.location.href = url; }, 220);
+  }
+
+  /* ── Staggered entrance ── */
+  document.querySelectorAll('.card').forEach((c, i) => {
+    c.style.opacity   = '0';
+    c.style.transform = 'translateY(22px)';
+    c.style.transition = `opacity .5s ease ${i*.07}s, transform .5s ease ${i*.07}s, box-shadow .3s, border-color .3s`;
+    setTimeout(() => { c.style.opacity='1'; c.style.transform='translateY(0)'; }, 80 + i*70);
+  });
+
+  document.querySelectorAll('.stat-chip').forEach((c, i) => {
+    c.style.opacity   = '0';
+    c.style.transform = 'translateY(10px)';
+    c.style.transition = `opacity .4s ease ${.25+i*.07}s, transform .4s ease ${.25+i*.07}s`;
+    setTimeout(() => { c.style.opacity='1'; c.style.transform='translateY(0)'; }, 50);
+  });
+</script>
+</body>
+</html>
+
   --aurora3: rgba(0,255,180,.18);
   --glass-bg: rgba(255,255,255,.05);
   --glass-border: rgba(255,255,255,.12);
