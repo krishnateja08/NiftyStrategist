@@ -231,29 +231,33 @@ header::after{
 }
 
 /* ══════════════════════════════════════
-   GRID — strict 2 columns, compact
+   GRID — CSS columns (true masonry)
+   Each card is ONLY as tall as its own content
 ══════════════════════════════════════ */
 .grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:1px;
-  background:rgba(0,245,255,.06);
+  column-count:2;
+  column-gap:0;
   border:1px solid var(--bc);
   margin:14px 18px 18px;
-  align-items:start;
 }
 
 /* ══════════════════════════════════════
-   CARD — height = content, no stretch
+   CARD — must not break across columns
 ══════════════════════════════════════ */
 .card{
+  break-inside:avoid;
   background:var(--panel);
   padding:16px 20px 14px;
   cursor:pointer;text-decoration:none;
   display:block;
   position:relative;overflow:hidden;
   transition:background .15s;
+  border-bottom:1px solid rgba(0,245,255,.1);
+  box-sizing:border-box;
+  width:100%;
 }
+/* right border on left-column cards (odd ones) */
+.card:nth-child(odd){border-right:1px solid rgba(0,245,255,.1)}
 
 /* scan-line sweep on hover */
 .card::before{
@@ -395,7 +399,8 @@ footer{
   .stats{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:700px){
-  .grid{grid-template-columns:1fr;margin:10px;align-items:stretch}
+  .grid{column-count:1;margin:10px}
+  .card:nth-child(odd){border-right:none}
   .stats{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:560px){
@@ -418,8 +423,24 @@ footer{
   .hright{gap:4px}
   .pill{padding:4px 8px;font-size:8px}
 }
-</style>
-</head>
+/* ── AUTO-REFRESH COUNTDOWN ── */
+.rfsh{
+  display:flex;align-items:center;gap:6px;
+  font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1.5px;
+  color:var(--yel);
+}
+.rfsh-ring{
+  width:14px;height:14px;flex-shrink:0;position:relative;
+}
+.rfsh-ring svg{transform:rotate(-90deg);width:14px;height:14px;}
+.rfsh-ring circle{fill:none;stroke:rgba(255,224,0,.2);stroke-width:2;}
+.rfsh-ring .arc{
+  stroke:var(--yel);stroke-width:2;
+  stroke-dasharray:38;stroke-dashoffset:0;
+  transition:stroke-dashoffset 1s linear;
+  filter:drop-shadow(0 0 3px var(--yel));
+}
+
 <body>
 <div id="scan"></div>
 <div id="app">
@@ -429,6 +450,12 @@ footer{
   <div class="tb-l">SYS://KRISHNAMARKETS_HUB <span class="ver">// VER_2.0 // NODE:8/8</span></div>
   <div class="tb-r">
     <span class="live"><span class="dot"></span>SIGNAL_OK</span>
+    <span class="rfsh">
+      <span class="rfsh-ring">
+        <svg viewBox="0 0 14 14"><circle cx="7" cy="7" r="6"/><circle class="arc" id="arc" cx="7" cy="7" r="6"/></svg>
+      </span>
+      AUTO·REFRESH <span id="rcd">5s</span>
+    </span>
     <span>IST <span class="v" id="ct">--:--:--</span></span>
   </div>
 </div>
@@ -601,7 +628,7 @@ footer{
 </div><!-- /#app -->
 
 <script>
-/* ── IST Clock — updates both topbar + header ── */
+/* ── IST Clock ── */
 function tick(){
   const t=new Intl.DateTimeFormat('en-IN',{
     timeZone:'Asia/Kolkata',
@@ -612,6 +639,30 @@ function tick(){
 }
 tick();
 setInterval(tick,1000);
+
+/* ── Auto Refresh every 5 seconds with countdown ── */
+const REFRESH_SEC=5;
+const arc=document.getElementById('arc');
+const rcd=document.getElementById('rcd');
+const circumference=38; // 2 * π * r(6) ≈ 37.7
+
+let remaining=REFRESH_SEC;
+
+function updateCountdown(){
+  remaining--;
+  rcd.textContent=remaining+'s';
+  // animate ring: full at 5s, empty at 0s
+  const offset=circumference*(1-(remaining/REFRESH_SEC));
+  arc.style.strokeDashoffset=offset;
+  if(remaining<=0){
+    window.location.reload();
+  }
+}
+
+// initialise ring
+arc.style.strokeDashoffset=0;
+rcd.textContent=REFRESH_SEC+'s';
+setInterval(updateCountdown,1000);
 
 /* ── Live Ticker ── */
 const T=[
@@ -636,7 +687,6 @@ function go(e,n){
   e.preventDefault();
   const card=e.currentTarget;
   sessionStorage.setItem('lo',n);
-  // ripple element
   const r=document.createElement('div');
   r.className='rpl';
   const b=card.getBoundingClientRect();
@@ -644,7 +694,6 @@ function go(e,n){
   r.style.top =(e.clientY-b.top -30)+'px';
   card.appendChild(r);
   setTimeout(()=>r.remove(),600);
-  // navigate after brief delay
   setTimeout(()=>{window.location.href=card.href;},220);
 }
 
