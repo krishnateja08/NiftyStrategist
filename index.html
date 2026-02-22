@@ -3,1765 +3,242 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Krishna Markets — Intelligence Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<style><!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>KrishnaMarkets — Intelligence Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0a;--panel:#111;--p2:#161616;--amber:#ffb300;--green:#00e676;--red:#ff1744;--cyan:#00e5ff;--b1:#242424;--b2:#2e2e2e;--tx:#d4d4d4;--t2:#888;--t3:#555}
+body{min-height:100vh;background:var(--bg);color:var(--tx);font-family:'IBM Plex Mono',monospace;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:9;pointer-events:none;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.04) 2px,rgba(0,0,0,.04) 4px)}
+#app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
 
-/* ── RESET & BASE ── */
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
-html { height:100%; scroll-behavior:smooth }
+/* TOPBAR */
+.tb{background:#000;border-bottom:1px solid var(--amber);padding:4px 18px;display:flex;justify-content:space-between;font-size:10px;letter-spacing:1px}
+.tb-l{color:var(--amber);font-weight:600}
+.tb-r{display:flex;gap:18px;color:var(--t3)}
+.tb-r span{color:var(--t2)}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 7px var(--green);animation:blink 1.4s infinite;margin-right:5px;vertical-align:middle}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
 
-:root {
-  --bg:      #0a0a0a;
-  --panel:   #111111;
-  --panel2:  #141414;
-  --amber:   #ffb300;
-  --amber2:  #ff8f00;
-  --amber3:  #ffe082;
-  --green:   #00e676;
-  --red:     #ff1744;
-  --cyan:    #00e5ff;
-  --purple:  #ce93d8;
-  --border:  #242424;
-  --border2: #2e2e2e;
-  --border3: #383838;
-  --text:    #d4d4d4;
-  --text2:   #888888;
-  --text3:   #555555;
-  --dim:     #444444;
-}
+/* HEADER */
+header{background:var(--panel);border-bottom:2px solid var(--b2);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;position:sticky;top:0;z-index:90}
+.brand{display:flex;align-items:center;gap:14px}
+.logo{width:48px;height:48px;border:2px solid var(--amber);background:#000;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 0 16px rgba(255,179,0,.25);animation:glow 3s ease-in-out infinite}
+@keyframes glow{0%,100%{box-shadow:0 0 16px rgba(255,179,0,.25)}50%{box-shadow:0 0 28px rgba(255,179,0,.5)}}
+.bname{font-size:20px;font-weight:700;color:var(--amber);letter-spacing:2px;text-transform:uppercase}
+.bsub{font-size:9px;color:var(--t3);letter-spacing:3px;margin-top:4px}
+.hright{display:flex;gap:8px;flex-wrap:wrap}
+.pill{border:1px solid var(--b2);padding:5px 12px;font-size:10px;letter-spacing:1px;color:var(--t2)}
+.pill.live{border-color:rgba(0,230,118,.3);color:var(--green)}
+.pill.am{border-color:rgba(255,179,0,.3);color:var(--amber)}
 
-body {
-  min-height:100vh;
-  background:var(--bg);
-  color:var(--text);
-  font-family:'IBM Plex Mono', monospace;
-  overflow-x:hidden;
-}
+/* TICKER */
+.tkr{background:#000;border-bottom:1px solid var(--b1);padding:5px 0;overflow:hidden;white-space:nowrap;position:relative}
+.tkr::before,.tkr::after{content:'';position:absolute;top:0;bottom:0;width:60px;z-index:2;pointer-events:none}
+.tkr::before{left:0;background:linear-gradient(90deg,#000,transparent)}
+.tkr::after{right:0;background:linear-gradient(-90deg,#000,transparent)}
+.tkr-t{display:inline-flex;animation:scroll 28s linear infinite}
+@keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ti{display:inline-flex;align-items:center;gap:8px;padding:0 20px;font-size:11px;border-right:1px solid var(--b1)}
+.ti-s{color:var(--cyan);font-size:9px;letter-spacing:1px;font-weight:600}
+.up{color:var(--green)}.dn{color:var(--red)}
 
-/* CRT scanline overlay */
-body::before {
-  content:''; position:fixed; inset:0; z-index:999; pointer-events:none;
-  background:repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0,0,0,.045) 2px,
-    rgba(0,0,0,.045) 4px
-  );
-}
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--b2);background:var(--b1);gap:1px}
+.sb{background:var(--panel);padding:13px 18px;position:relative}
+.sb::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--sc,var(--amber))}
+.sb-l{font-size:9px;color:var(--t3);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+.sb-v{font-size:18px;font-weight:700;color:var(--sc,var(--amber));letter-spacing:.5px}
+.sb-s{font-size:9px;color:var(--t3);margin-top:4px}
 
-/* Subtle vignette */
-body::after {
-  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-  background:radial-gradient(ellipse 90% 80% at 50% 50%, transparent 60%, rgba(0,0,0,.5) 100%);
-}
+/* SECTION */
+.sec{padding:14px 18px 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--b1)}
+.sec-bar{width:3px;height:14px;background:var(--amber)}
+.sec-txt{font-size:10px;color:var(--amber);letter-spacing:3px;text-transform:uppercase;font-weight:600}
+.sec-bdg{margin-left:auto;font-size:9px;color:var(--t3);border:1px solid var(--b2);padding:2px 10px;letter-spacing:1px}
 
-#app {
-  position:relative; z-index:1;
-  min-height:100vh;
-  display:flex; flex-direction:column;
-}
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1px;background:var(--b1);border:1px solid var(--b1);margin:14px 18px;flex:1}
 
-/* ════════════════════════════════════════════
-   TOP STATUS BAR
-════════════════════════════════════════════ */
-.topbar {
-  background:#000;
-  border-bottom:1px solid var(--amber);
-  padding:4px 20px;
-  display:flex; align-items:center; justify-content:space-between;
-  flex-shrink:0;
-}
-.topbar-left {
-  display:flex; align-items:center; gap:20px;
-  font-size:10px; letter-spacing:1.5px; font-weight:600;
-  color:var(--amber);
-}
-.topbar-left .sep { color:var(--border3); font-weight:400 }
-.topbar-right {
-  display:flex; align-items:center; gap:20px;
-  font-size:10px; letter-spacing:1px; color:var(--text3);
-}
-.topbar-right .val  { color:var(--text2) }
-.topbar-right .live { color:var(--green); font-weight:700 }
-.live-dot {
-  display:inline-block;
-  width:6px; height:6px; border-radius:50%;
-  background:var(--green);
-  box-shadow:0 0 8px var(--green);
-  animation:ldot 1.4s ease-in-out infinite;
-  margin-right:5px; vertical-align:middle;
-}
-@keyframes ldot { 0%,100%{opacity:1} 50%{opacity:.1} }
+/* CARD */
+.card{background:var(--panel);padding:20px;cursor:pointer;text-decoration:none;display:flex;flex-direction:column;min-height:188px;position:relative;overflow:hidden;transition:background .14s}
+.card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ca,var(--amber));transform:scaleY(0);transform-origin:bottom;transition:.2s}
+.card::after{content:'';position:absolute;bottom:12px;right:12px;width:16px;height:16px;border-bottom:1px solid var(--b2);border-right:1px solid var(--b2);transition:.2s}
+.card:hover{background:var(--p2)}
+.card:hover::before{transform:scaleY(1)}
+.card:hover::after{border-color:var(--ca,var(--amber));width:20px;height:20px}
+.card:nth-child(1){--ca:#ffb300}.card:nth-child(2){--ca:#00e676}.card:nth-child(3){--ca:#ff6d00}
+.card:nth-child(4){--ca:#00e5ff}.card:nth-child(5){--ca:#e040fb}.card:nth-child(6){--ca:#ff1744}
+.card:nth-child(7){--ca:#40c4ff}.card:nth-child(8){--ca:#ffd740}
+.cnum{font-size:9px;color:var(--t3);letter-spacing:2px;margin-bottom:14px;text-transform:uppercase}
+.cnum span{color:var(--ca,var(--amber));margin-right:5px}
+.ctop{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+.cico{width:42px;height:42px;border:1px solid var(--b2);background:#000;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;transition:.15s}
+.card:hover .cico{border-color:var(--ca,var(--amber))}
+.ctitle{font-size:14px;font-weight:600;color:#fff;line-height:1.25;margin-bottom:3px}
+.ccat{font-size:9px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase}
+.cdesc{font-size:11px;color:var(--t2);line-height:1.7;flex:1;font-family:'IBM Plex Sans',sans-serif}
+.cfoot{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding-top:11px;border-top:1px solid var(--b1)}
+.ctag{font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase}
+.carr{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--ca,var(--amber));letter-spacing:1px;font-weight:600;transition:.2s}
+.carr-ln{width:20px;height:1px;background:var(--ca,var(--amber));transition:width .2s}
+.card:hover .carr{gap:10px}.card:hover .carr-ln{width:30px}
 
-/* ════════════════════════════════════════════
-   MAIN HEADER
-════════════════════════════════════════════ */
-header {
-  background:var(--panel);
-  border-bottom:2px solid var(--border2);
-  padding:16px 20px;
-  display:flex; align-items:center; justify-content:space-between;
-  flex-wrap:wrap; gap:16px; flex-shrink:0;
-  position:sticky; top:0; z-index:90;
-  box-shadow:0 2px 0 var(--border2);
-}
+/* RIPPLE */
+@keyframes rpl{0%{transform:scale(0);opacity:.4}100%{transform:scale(4);opacity:0}}
+.rpl{position:absolute;width:60px;height:60px;border-radius:50%;background:rgba(255,179,0,.18);pointer-events:none;animation:rpl .55s ease-out forwards;transform-origin:center}
 
-.brand { display:flex; align-items:center; gap:16px }
+/* FOOTER */
+footer{background:#000;border-top:1px solid var(--b1);padding:10px 18px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.fl{font-size:9px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase}
+.fl span{color:var(--amber)}
+.fr{font-size:9px;color:var(--b2)}
 
-.brand-box {
-  width:52px; height:52px; flex-shrink:0;
-  border:2px solid var(--amber);
-  background:#000;
-  display:flex; align-items:center; justify-content:center;
-  font-size:24px;
-  box-shadow:0 0 18px rgba(255,179,0,.28), inset 0 0 12px rgba(255,179,0,.06);
-  animation:boxglow 3s ease-in-out infinite;
+/* RESPONSIVE */
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.grid{margin:10px}}
+@media(max-width:640px){
+  header{padding:10px 12px}.bsub,.hright .pill.am{display:none}
+  .bname{font-size:17px}.logo{width:40px;height:40px;font-size:19px}
+  .stats{grid-template-columns:repeat(2,1fr)}.sb-v{font-size:15px}
+  .grid{grid-template-columns:1fr 1fr;gap:1px;margin:8px}
+  .card{padding:12px;min-height:160px}.cdesc{display:none}
+  .ctitle{font-size:12px}.cico{width:34px;height:34px;font-size:17px}
+  .tkr{display:none}
 }
-@keyframes boxglow {
-  0%,100% { box-shadow:0 0 18px rgba(255,179,0,.28), inset 0 0 12px rgba(255,179,0,.06) }
-  50%     { box-shadow:0 0 32px rgba(255,179,0,.5),  inset 0 0 16px rgba(255,179,0,.1) }
-}
-
-.brand-name {
-  font-size:22px; font-weight:700;
-  color:var(--amber); letter-spacing:2px; text-transform:uppercase;
-  text-shadow:0 0 24px rgba(255,179,0,.25);
-  line-height:1;
-}
-.brand-sub {
-  font-size:9px; color:var(--text3);
-  letter-spacing:3px; margin-top:5px;
-  text-transform:uppercase;
-}
-
-.header-right { display:flex; gap:10px; align-items:center; flex-wrap:wrap }
-
-.hpill {
-  display:flex; align-items:center; gap:7px;
-  border:1px solid var(--border2);
-  padding:6px 14px; font-size:10px; letter-spacing:1.5px;
-  color:var(--text2); text-transform:uppercase;
-  background:rgba(255,255,255,.02);
-  white-space:nowrap;
-}
-.hpill.amber {
-  border-color:rgba(255,179,0,.3);
-  color:var(--amber);
-  background:rgba(255,179,0,.04);
-}
-.hpill.live {
-  border-color:rgba(0,230,118,.3);
-  color:var(--green);
-  background:rgba(0,230,118,.04);
-}
-#clock-ist { color:var(--cyan); font-weight:600; font-size:11px }
-
-/* ════════════════════════════════════════════
-   LIVE TICKER STRIP
-════════════════════════════════════════════ */
-.ticker-wrap {
-  background:#000;
-  border-bottom:1px solid var(--border);
-  padding:6px 0;
-  overflow:hidden; white-space:nowrap;
-  position:relative; flex-shrink:0;
-}
-.ticker-wrap::before, .ticker-wrap::after {
-  content:''; position:absolute; top:0; bottom:0; width:80px; z-index:2; pointer-events:none;
-}
-.ticker-wrap::before { left:0;  background:linear-gradient(90deg,#000,transparent) }
-.ticker-wrap::after  { right:0; background:linear-gradient(-90deg,#000,transparent) }
-
-.ticker-track {
-  display:inline-flex;
-  animation:tickscroll 32s linear infinite;
-}
-@keyframes tickscroll {
-  from { transform:translateX(0) }
-  to   { transform:translateX(-50%) }
-}
-.tick-item {
-  display:inline-flex; align-items:center; gap:10px;
-  padding:0 24px; font-size:11px;
-  border-right:1px solid var(--border);
-}
-.tick-sym  { color:var(--cyan); font-weight:600; letter-spacing:1px; font-size:10px }
-.tick-val  { color:var(--text) }
-.tick-up   { color:var(--green); font-size:10px }
-.tick-dn   { color:var(--red);   font-size:10px }
-.tick-sep  { color:var(--border3); font-size:14px; padding:0 4px; border-right:none }
-
-/* ════════════════════════════════════════════
-   STATS BAR — 4 panels
-════════════════════════════════════════════ */
-.stats-bar {
-  display:grid; grid-template-columns:repeat(4,1fr);
-  border-bottom:1px solid var(--border2);
-  background:var(--border);
-  gap:1px; flex-shrink:0;
-}
-.stat-box {
-  background:var(--panel);
-  padding:14px 20px;
-  position:relative; overflow:hidden;
-}
-.stat-box::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:2px;
-  background:var(--sb-color, var(--amber));
-  box-shadow:0 0 8px var(--sb-color, var(--amber));
-}
-/* subtle bg number watermark */
-.stat-box::after {
-  content:var(--sb-wm,'');
-  position:absolute; bottom:-8px; right:12px;
-  font-size:48px; font-weight:700;
-  color:rgba(255,255,255,.025); pointer-events:none;
-  line-height:1;
-}
-.stat-label {
-  font-size:9px; color:var(--text3); letter-spacing:2.5px;
-  text-transform:uppercase; margin-bottom:7px; font-weight:500;
-}
-.stat-val {
-  font-size:19px; font-weight:700;
-  color:var(--sb-color, var(--amber));
-  letter-spacing:.5px; line-height:1;
-}
-.stat-sub { font-size:10px; color:var(--text3); margin-top:5px }
-
-/* ════════════════════════════════════════════
-   SECTION HEADER
-════════════════════════════════════════════ */
-.section-hdr {
-  padding:18px 20px 12px;
-  display:flex; align-items:center; gap:12px; flex-shrink:0;
-  border-bottom:1px solid var(--border);
-}
-.section-hdr-bar  { width:3px; height:16px; background:var(--amber); flex-shrink:0 }
-.section-hdr-text {
-  font-size:10px; color:var(--amber);
-  letter-spacing:3px; text-transform:uppercase; font-weight:600;
-}
-.section-hdr-sub {
-  font-size:9px; color:var(--text3); letter-spacing:1px; margin-left:6px;
-}
-.section-hdr-badge {
-  margin-left:auto; font-size:9px; color:var(--text3);
-  border:1px solid var(--border2); padding:3px 12px;
-  letter-spacing:2px; text-transform:uppercase;
-  background:var(--panel);
-}
-
-/* ════════════════════════════════════════════
-   CARD GRID
-════════════════════════════════════════════ */
-.grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill, minmax(300px, 1fr));
-  gap:1px;
-  background:var(--border);
-  border:1px solid var(--border);
-  margin:16px 20px;
-  flex:1;
-}
-
-/* ════════════════════════════════════════════
-   CARD
-════════════════════════════════════════════ */
-.card {
-  background:var(--panel);
-  padding:22px 22px 20px;
-  cursor:pointer; text-decoration:none;
-  display:flex; flex-direction:column;
-  min-height:200px;
-  position:relative; overflow:hidden;
-  transition:background .15s ease;
-}
-
-/* Animated left accent bar on hover */
-.card::before {
-  content:''; position:absolute;
-  left:0; top:0; bottom:0; width:3px;
-  background:var(--c-accent, var(--amber));
-  transform:scaleY(0); transform-origin:bottom;
-  transition:transform .22s ease;
-}
-.card:hover::before { transform:scaleY(1) }
-
-/* Bottom-right bracket */
-.card::after {
-  content:''; position:absolute;
-  bottom:14px; right:14px;
-  width:18px; height:18px;
-  border-bottom:1px solid var(--border2);
-  border-right:1px solid var(--border2);
-  transition:.2s;
-}
-.card:hover { background:var(--panel2) }
-.card:hover::after {
-  border-color:var(--c-accent, var(--amber));
-  width:22px; height:22px;
-  bottom:12px; right:12px;
-}
-.card:active { background:#181818 }
-
-/* per-card accent colours */
-.card:nth-child(1) { --c-accent:#ffb300 }
-.card:nth-child(2) { --c-accent:#00e676 }
-.card:nth-child(3) { --c-accent:#ff6d00 }
-.card:nth-child(4) { --c-accent:#00e5ff }
-.card:nth-child(5) { --c-accent:#e040fb }
-.card:nth-child(6) { --c-accent:#ff1744 }
-.card:nth-child(7) { --c-accent:#40c4ff }
-.card:nth-child(8) { --c-accent:#ffd740 }
-
-/* card inner layout */
-.card-num {
-  font-size:9px; color:var(--text3);
-  letter-spacing:2px; margin-bottom:16px;
-  text-transform:uppercase;
-}
-.card-num span { color:var(--c-accent, var(--amber)); margin-right:6px }
-
-.card-top {
-  display:flex; align-items:flex-start; gap:14px; margin-bottom:14px;
-}
-.card-icon {
-  width:46px; height:46px; flex-shrink:0;
-  border:1px solid var(--border2); background:#000;
-  display:flex; align-items:center; justify-content:center;
-  font-size:22px;
-  transition:.2s;
-}
-.card:hover .card-icon { border-color:var(--c-accent, var(--amber)) }
-
-.card-title {
-  font-size:15px; font-weight:600; color:#fff;
-  line-height:1.25; letter-spacing:.3px; margin-bottom:4px;
-}
-.card-cat {
-  font-size:9px; color:var(--text3);
-  letter-spacing:2px; text-transform:uppercase;
-}
-.card-desc {
-  font-size:11px; color:var(--text2);
-  line-height:1.75; flex:1;
-  font-family:'IBM Plex Sans', sans-serif; font-weight:400;
-}
-
-.card-footer {
-  display:flex; align-items:center; justify-content:space-between;
-  margin-top:16px; padding-top:13px;
-  border-top:1px solid var(--border);
-}
-.card-tag {
-  font-size:9px; color:var(--text3);
-  letter-spacing:1.5px; text-transform:uppercase;
-}
-.card-arrow {
-  display:flex; align-items:center; gap:7px;
-  font-size:10px; color:var(--c-accent, var(--amber));
-  letter-spacing:1px; text-transform:uppercase;
-  transition:.2s; font-weight:600;
-}
-.card:hover .card-arrow { gap:12px }
-.arrow-line {
-  width:22px; height:1px;
-  background:var(--c-accent, var(--amber));
-  transition:width .2s;
-}
-.card:hover .arrow-line { width:32px }
-
-/* ripple */
-@keyframes ripple { 0%{transform:scale(0);opacity:.4} 100%{transform:scale(4);opacity:0} }
-.ripple-el {
-  position:absolute; width:60px; height:60px; border-radius:50%;
-  background:rgba(255,179,0,.2); pointer-events:none;
-  animation:ripple .55s ease-out forwards; transform-origin:center;
-}
-
-/* ════════════════════════════════════════════
-   FOOTER
-════════════════════════════════════════════ */
-footer {
-  background:#000;
-  border-top:1px solid var(--border);
-  padding:11px 20px;
-  display:flex; align-items:center; justify-content:space-between;
-  flex-wrap:wrap; gap:8px; flex-shrink:0;
-}
-.footer-l {
-  font-size:9px; color:var(--text3);
-  letter-spacing:2px; text-transform:uppercase;
-}
-.footer-l span { color:var(--amber) }
-.footer-r { font-size:9px; color:var(--dim); letter-spacing:1px }
-
-/* ════════════════════════════════════════════
-   RESPONSIVE
-════════════════════════════════════════════ */
-@media (max-width: 900px) {
-  .stats-bar { grid-template-columns:repeat(2,1fr) }
-  .grid { margin:12px }
-  .topbar-left .sep,
-  .topbar-left .v2  { display:none }
-}
-@media (max-width: 650px) {
-  .topbar           { padding:4px 12px }
-  .topbar-right     { gap:12px }
-  header            { padding:12px 14px; position:relative }
-  .brand-name       { font-size:18px; letter-spacing:1px }
-  .brand-box        { width:42px; height:42px; font-size:20px }
-  .brand-sub        { display:none }
-  .hpill.amber      { display:none }
-  .stats-bar        { grid-template-columns:repeat(2,1fr) }
-  .stat-val         { font-size:16px }
-  .grid             { grid-template-columns:1fr 1fr; gap:1px; margin:10px }
-  .card             { padding:14px; min-height:170px }
-  .card-top         { gap:10px }
-  .card-icon        { width:36px; height:36px; font-size:17px }
-  .card-title       { font-size:12px }
-  .card-desc        { display:none }
-  .card-footer      { margin-top:10px; padding-top:8px }
-  .section-hdr-badge { display:none }
-  .ticker-wrap      { display:none }
-  footer            { padding:10px 14px }
-}
-@media (max-width: 420px) {
-  .grid { grid-template-columns:1fr }
-}
-
+@media(max-width:400px){.grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 <div id="app">
 
-  <!-- ── TOP STATUS BAR ── -->
-  <div class="topbar">
-    <div class="topbar-left">
-      <span>KRISHNAMARKETS HUB</span>
-      <span class="sep">|</span>
-      <span class="v2">TERMINAL v2.0</span>
-      <span class="sep">|</span>
-      <span>8 MODULES</span>
-    </div>
-    <div class="topbar-right">
-      <span>NSE <span class="val">09:15–15:30</span></span>
-      <span>BSE <span class="val">09:15–15:30</span></span>
-      <span class="live"><span class="live-dot"></span>ALL SYSTEMS LIVE</span>
-      <span>IST <span class="val" id="clock-topbar">--:--:--</span></span>
+<!-- TOPBAR -->
+<div class="tb">
+  <div class="tb-l">KRISHNAMARKETS HUB &nbsp;|&nbsp; TERMINAL v2.0 &nbsp;|&nbsp; 8 MODULES</div>
+  <div class="tb-r">
+    <span class="live" style="color:var(--green)"><span class="dot"></span>LIVE</span>
+    <span>IST <span id="ct">--:--:--</span></span>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="brand">
+    <div class="logo">📊</div>
+    <div>
+      <div class="bname">KrishnaMarkets</div>
+      <div class="bsub">Intelligence Hub · 8 Dashboards Active</div>
     </div>
   </div>
-
-  <!-- ── HEADER ── -->
-  <header>
-    <div class="brand">
-      <div class="brand-box">📊</div>
-      <div>
-        <div class="brand-name">KrishnaMarkets</div>
-        <div class="brand-sub">Intelligence Hub · 8 Dashboards Active</div>
-      </div>
-    </div>
-    <div class="header-right">
-      <div class="hpill live"><span class="live-dot"></span>LIVE FEED</div>
-      <div class="hpill amber">NSE · BSE · NYSE</div>
-      <div class="hpill">🕐 IST <span id="clock-ist">--:--:--</span></div>
-    </div>
-  </header>
-
-  <!-- ── LIVE TICKER ── -->
-  <div class="ticker-wrap">
-    <div class="ticker-track" id="ticker-track"><!-- JS fills this --></div>
+  <div class="hright">
+    <div class="pill live"><span class="dot"></span>LIVE FEED</div>
+    <div class="pill am">NSE · BSE · NYSE</div>
+    <div class="pill">IST <span id="ch">--:--:--</span></div>
   </div>
+</header>
 
-  <!-- ── STATS BAR ── -->
-  <div class="stats-bar">
-    <div class="stat-box" style="--sb-color:#ffb300;--sb-wm:'8'">
-      <div class="stat-label">Dashboards</div>
-      <div class="stat-val">08</div>
-      <div class="stat-sub">All systems operational</div>
-    </div>
-    <div class="stat-box" style="--sb-color:#00e676;--sb-wm:'IN'">
-      <div class="stat-label">Indian Markets</div>
-      <div class="stat-val">NSE · BSE</div>
-      <div class="stat-sub">Nifty · Sensex · Options</div>
-    </div>
-    <div class="stat-box" style="--sb-color:#00e5ff;--sb-wm:'US'">
-      <div class="stat-label">US Markets</div>
-      <div class="stat-val">S&amp;P 500</div>
-      <div class="stat-sub">500 stocks tracked</div>
-    </div>
-    <div class="stat-box" style="--sb-color:#ce93d8;--sb-wm:'◈'">
-      <div class="stat-label">Last Opened</div>
-      <div class="stat-val" id="last-chip" style="font-size:13px;padding-top:3px">—</div>
-      <div class="stat-sub">Session history</div>
-    </div>
-  </div>
+<!-- TICKER -->
+<div class="tkr"><div class="tkr-t" id="tkr"></div></div>
 
-  <!-- ── SECTION HEADER ── -->
-  <div class="section-hdr">
-    <div class="section-hdr-bar"></div>
-    <div class="section-hdr-text">Select Dashboard Module</div>
-    <div class="section-hdr-sub">— click any card to open instantly</div>
-    <div class="section-hdr-badge">8 / 8 ONLINE</div>
-  </div>
+<!-- STATS -->
+<div class="stats">
+  <div class="sb" style="--sc:#ffb300"><div class="sb-l">Dashboards</div><div class="sb-v">08</div><div class="sb-s">All operational</div></div>
+  <div class="sb" style="--sc:#00e676"><div class="sb-l">Indian Markets</div><div class="sb-v">NSE · BSE</div><div class="sb-s">Nifty · Sensex · OPT</div></div>
+  <div class="sb" style="--sc:#00e5ff"><div class="sb-l">US Markets</div><div class="sb-v">S&amp;P 500</div><div class="sb-s">500 stocks tracked</div></div>
+  <div class="sb" style="--sc:#ce93d8"><div class="sb-l">Last Opened</div><div class="sb-v" id="lc" style="font-size:13px;padding-top:2px">—</div><div class="sb-s">This session</div></div>
+</div>
 
-  <!-- ── CARD GRID ── -->
-  <div class="grid">
+<!-- SECTION -->
+<div class="sec">
+  <div class="sec-bar"></div>
+  <div class="sec-txt">Select Dashboard Module</div>
+  <div class="sec-bdg">8 / 8 ONLINE</div>
+</div>
 
-    <!-- 01 -->
-    <a class="card" href="https://krishnateja08.github.io/FII-DII_Pulse/" onclick="go(event,'FII/DII Pulse')">
-      <div class="card-num"><span>01</span>INSTITUTIONAL</div>
-      <div class="card-top">
-        <div class="card-icon">📡</div>
-        <div>
-          <div class="card-title">FII / DII Pulse</div>
-          <div class="card-cat">NSE · Bulk Deals · Block Deals</div>
-        </div>
-      </div>
-      <div class="card-desc">Sector-wise institutional activity — FII &amp; DII bulk/block deals with technical signals &amp; RSI.</div>
-      <div class="card-footer">
-        <span class="card-tag">NSE · Bulk Deals</span>
-        <span class="card-arrow"><span class="arrow-line"></span>OPEN</span>
-      </div>
-    </a>
+<!-- GRID -->
+<div class="grid">
 
-    <!-- 02 -->
-    <a class="card" href="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" onclick="go(event,'Nifty 50 Analyzer')">
-      <div class="card-num"><span>02</span>ANALYSIS</div>
-      <div class="card-top">
-        <div class="card-icon">📈</div>
-        <div>
-          <div class="card-title">Nifty 50 Analyzer</div>
-          <div class="card-cat">NSE · Nifty 50 · Technicals</div>
-        </div>
-      </div>
-      <div class="card-desc">Deep technical analysis of all Nifty 50 stocks — RSI, MACD, EMA, support &amp; resistance levels.</div>
-      <div class="card-footer">
-        <span class="card-tag">NSE · Nifty 50</span>
-        <span class="card-arrow"><span class="arrow-line"></span>OPEN</span>
-      </div>
-    </a>
+  <a class="card" href="https://krishnateja08.github.io/FII-DII_Pulse/" onclick="go(event,'FII/DII Pulse')">
+    <div class="cnum"><span>01</span>INSTITUTIONAL</div>
+    <div class="ctop"><div class="cico">📡</div><div><div class="ctitle">FII / DII Pulse</div><div class="ccat">NSE · Bulk &amp; Block Deals</div></div></div>
+    <div class="cdesc">Sector-wise institutional activity — FII &amp; DII bulk/block deals with technical signals &amp; RSI.</div>
+    <div class="cfoot"><span class="ctag">NSE · Bulk Deals</span><span class="carr"><span class="carr-ln"></span>OPEN</span></div>
+  </a>
 
-    <!-- 03 -->
-    <a class="card" href="https://krishnateja08.github.io/Nifty_Indices_scanner/" onclick="go(event,'Nifty Indices Scanner')">
-      <div class="card-num"><span>03</span>SCANNER</div>
-      <div class="card-top">
-        <div class="card-icon">🔍</div>
-        <div>
-          <div class="card-title">Nifty Indices Scanner</div>
-          <div class="card-cat">NSE · All Indices · Momentum</div>
-        </div>
-      </div>
-      <div class="card-desc">Real-time scanner across all Nifty indices — momentum, breakouts and sector rotation signals.</div>
-      <div class="card-footer">
-        <span class="card-tag">NSE · Indices</span>
-        <span class="card-arrow"><span class="arrow-line"></span>OPEN</span>
-      </div>
-    </a>
+  <a class="card" href="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" onclick="go(event,'Nifty 50 Analyzer')">
+    <div class="cnum"><span>02</span>ANALYSIS</div>
+    <div class="ctop"><div class="cico">📈</div><div><div class="ctitle">Nifty 50 Analyzer</div><div class="ccat">NSE · Nifty 50 · Technicals</div></div></div>
+    <div class="cdesc">Deep technical analysis of all Nifty 50 stocks — RSI, MACD, EMA, support &amp; resistance levels.</div>
+    <div class="cfoot"><span class="ctag">NSE · Nifty 50</span><span class="carr"><span class="carr-ln"></span>OPEN</span></div>
+  </a>
 
-    <!-- 04 -->
-    <a class="card" href="https://krishnateja08.github.io/USA-SP500-Stocks-Review/" onclick="go(event,'S&P 500 Review')">
-      <div class="card-num"><span>04</span>GLOBAL</div>
-      <div class="card-top">
-        <div class="card-icon">🌐</div>
-        <div>
-          <div class="card-title">USA S&amp;P 500 Review</div>
-          <div class="card-cat">NYSE · S&amp;P 500 · 500 Stocks</div>
-        </div>
-      </div>
-      <div class="card-desc">Comprehensive S&amp;P 500 stock review — US market analysis, sector performance and signals.</div>
-      <div class="card-footer">
-        <span class="card-tag">NYSE · S&amp;P 500</span>
-        <span class="card-arrow"><span class="arrow-line"></span>OPEN</span>
-      </div>
-    </a>
+  <a class="card" href="https://krishnateja08.github.io/Nifty_Indices_scanner/" onclick="go(event,'Nifty Indices Scanner')">
+    <div class="cnum"><span>03</span>SCANNER</div>
+    <div class="ctop"><div class="cico">🔍</div><div><div class="ctitle">Nifty Indices Scanner</div><div class="ccat">NSE · All Indices · Momentum</div></div></div>
+    <div class="cdesc">Real-time scanner across all Nifty indices — momentum, breakouts and sector rotation signals.</div>
+    <div class="cfoot"><span class="ctag">NSE · Indices</span><span class="carr"><span class="carr-ln"></span>OPEN</span></div>
+  </a>
 
-    <!-- 05 -->
-    <a class="card" href="https://krishnateja08.github.io/Nifty-1HR_Track/" onclick="go(event,'Nifty 1HR Track')">
-      <div class="card-num"><span>05</span>INTRADAY</div>
-      <div class="card-top">
-        <div class="card-icon">⏱️</div>
-        <div>
-          <div class="card-title">Nifty 1HR Track</div>
-          <div class="card-cat">NSE · Intraday · Hourly</div>
-        </div>
-      </div>
-      <div class="card-desc">Hourly Nifty movement tracking — intraday trend analysis and short-term momentum signals.</div>
-      <div class="card-footer">
-        <span class="card-tag">NSE · Intraday</span>
-        <span class="card-arrow"><span class="arrow-line"></span>OPEN</span>
-      </div>
-    </a>
+  <a class="card" href="https://krishnateja08.github.io/USA-SP500-Stocks-Review/" onclick="go(event,'S&P 500 Review')">
+    <div class="cnum"><span>04</span>GLOBAL</div>
+    <div class="ctop"><div class="cico">🌐</div><div><div class="ctitle">USA S&amp;P 500 Review</div><div class="ccat">NYSE · S&amp;P 500 · 500 Stocks</div></div></div>
+    <div class="cdesc">Comprehensive S&amp;P 500 stock review — US market analysis, sector performance and signals.</div>
+    <div class="cfoot"><span class="ctag">NYSE · S&amp;P 500</span><span class="carr"><span class="carr-ln"></span>OPEN</span></div>
+  </a>
 
-    <!-- 06 -->
-    <a class="card" href="https://krishnateja08.github.io/Nifty_option_chain/" onclick="go(event,'Nifty Option Chain')">
-      <div class="card-num"><span>06</span>OPTIONS</div>
-      <div class="card-top">
-        <div class="card-icon">⛓️</div>
-        <div>
-          <div class="card-title">Nifty Option Chain</div>
-          <div class="card-cat">NSE · Options · OI · PCR</div>
-        </div>
-      </div>
-      <div class="card-desc">Live option chain analysis — OI buildup, PCR ratio, max pain and key strike price levels.</div>
-      <div class="card-footer">
-        <span class="card-tag">NSE · Options</span>
-        <span class="card-arrow"><span class="arrow-line"></span>OPEN</span>
-      </div>
-    </a>
+  <a class="card" href="https://krishnateja08.github.io/Nifty-1HR_Track/" onclick="go(event,'Nifty 1HR Track')">
+    <div class="cnum"><span>05</span>INTRADAY</div>
+    <div class="ctop"><div class="cico">⏱️</div><div><div class="ctitle">Nifty 1HR Track</div><div class="ccat">NSE · Intraday · Hourly</div></div></div>
+    <div class="cdesc">Hourly Nifty movement tracking — intraday trend analysis and short-term momentum signals.</div>
+    <div class="cfoot"><span class="ctag">NSE · Intraday</span><span class="carr"><span class="carr-ln"></span>OPEN</span></div>
+  </a>
 
-    <!-- 07 -->
-    <a class="card" href="https://krishnateja08.github.io/Global_Market_News/" onclick="go(event,'Global Market News')">
-      <div class="card-num"><span>07</span>INTELLIGENCE</div>
-      <div class="card-top">
-        <div class="card-icon">🗞️</div>
-        <div>
-          <div class="card-title">Global Market News</div>
-          <div class="card-cat">Global · Macro · Earnings</div>
-        </div>
-      </div>
-      <div class="card-desc">Curated global market news — macro events, earnings, central bank decisions and market moves.</div>
-      <div class="card-footer">
-        <span class="card-tag">Global · News</span>
-        <span class="card-arrow"><span class="arrow-line"></span>OPEN</span>
-      </div>
-    </a>
+  <a class="card" href="https://krishnateja08.github.io/Nifty_option_chain/" onclick="go(event,'Nifty Option Chain')">
+    <div class="cnum"><span>06</span>OPTIONS</div>
+    <div class="ctop"><div class="cico">⛓️</div><div><div class="ctitle">Nifty Option Chain</div><div class="ccat">NSE · Options · OI · PCR</div></div></div>
+    <div class="cdesc">Live option chain analysis — OI buildup, PCR ratio, max pain and key strike price levels.</div>
+    <div class="cfoot"><span class="ctag">NSE · Options</span><span class="carr"><span class="carr-ln"></span>OPEN</span></div>
+  </a>
 
-    <!-- 08 -->
-    <a class="card" href="https://krishnateja08.github.io/optionstrategybuilder/" onclick="go(event,'Strategy Builder')">
-      <div class="card-num"><span>08</span>STRATEGY</div>
-      <div class="card-top">
-        <div class="card-icon">🧮</div>
-        <div>
-          <div class="card-title">Option Strategy Builder</div>
-          <div class="card-cat">NSE · P&amp;L · Greeks · Charts</div>
-        </div>
-      </div>
-      <div class="card-desc">Build and visualise options strategies — P&amp;L charts, Greeks, breakeven for any strike &amp; expiry.</div>
-      <div class="card-footer">
-        <span class="card-tag">NSE · Strategies</span>
-        <span class="card-arrow"><span class="arrow-line"></span>OPEN</span>
-      </div>
-    </a>
+  <a class="card" href="https://krishnateja08.github.io/Global_Market_News/" onclick="go(event,'Global Market News')">
+    <div class="cnum"><span>07</span>INTELLIGENCE</div>
+    <div class="ctop"><div class="cico">🗞️</div><div><div class="ctitle">Global Market News</div><div class="ccat">Global · Macro · Earnings</div></div></div>
+    <div class="cdesc">Curated global market news — macro events, earnings, central bank decisions and market moves.</div>
+    <div class="cfoot"><span class="ctag">Global · News</span><span class="carr"><span class="carr-ln"></span>OPEN</span></div>
+  </a>
 
-  </div>
-
-  <!-- ── FOOTER ── -->
-  <footer>
-    <div class="footer-l"><span>KRISHNAMARKETS HUB</span> · TERMINAL v2.0 · 8 MODULES ACTIVE</div>
-    <div class="footer-r">Click card → opens dashboard &nbsp;·&nbsp; Browser Back → returns here</div>
-  </footer>
-
-</div><!-- /#app -->
-
-<script>
-/* ── IST Clock ── */
-function tick() {
-  const t = new Intl.DateTimeFormat('en-IN', {
-    timeZone:'Asia/Kolkata',
-    hour:'2-digit', minute:'2-digit', second:'2-digit', hour12:false
-  }).format(new Date());
-  document.getElementById('clock-ist').textContent    = t;
-  document.getElementById('clock-topbar').textContent = t;
-}
-tick();
-setInterval(tick, 1000);
-
-/* ── Ticker ── */
-const TICKS = [
-  { sym:'NIFTY 50',  val:'23,450.20', chg:'+0.42%', up:true  },
-  { sym:'SENSEX',    val:'77,210.50', chg:'+0.38%', up:true  },
-  { sym:'BANK NIFTY',val:'51,230.80', chg:'-0.21%', up:false },
-  { sym:'RELIANCE',  val:'₹2,845',   chg:'+1.20%', up:true  },
-  { sym:'TCS',       val:'₹4,102',   chg:'-0.50%', up:false },
-  { sym:'HDFCBANK',  val:'₹1,724',   chg:'+0.80%', up:true  },
-  { sym:'INFY',      val:'₹1,890',   chg:'+1.10%', up:true  },
-  { sym:'ICICIBANK', val:'₹1,102',   chg:'+0.65%', up:true  },
-  { sym:'AXISBANK',  val:'₹1,088',   chg:'-0.30%', up:false },
-  { sym:'S&P 500',   val:'6,052.30', chg:'+0.29%', up:true  },
-  { sym:'NASDAQ',    val:'19,870',   chg:'-0.14%', up:false },
-  { sym:'GOLD',      val:'₹73,400',  chg:'+0.60%', up:true  },
-  { sym:'USD/INR',   val:'83.92',    chg:'-0.02%', up:false },
-  { sym:'CRUDE OIL', val:'$82.40',   chg:'+0.45%', up:true  },
-];
-
-const doubled = [...TICKS, ...TICKS];
-document.getElementById('ticker-track').innerHTML = doubled.map(t => `
-  <span class="tick-item">
-    <span class="tick-sym">${t.sym}</span>
-    <span class="tick-val">${t.val}</span>
-    <span class="${t.up ? 'tick-up' : 'tick-dn'}">${t.chg}</span>
-  </span>`
-).join('');
-
-/* ── Last Opened ── */
-const last = sessionStorage.getItem('lastOpened');
-if (last) document.getElementById('last-chip').textContent = last;
-
-/* ── Navigate with ripple ── */
-function go(e, name) {
-  e.preventDefault();
-  const card = e.currentTarget;
-  const url  = card.href;
-
-  sessionStorage.setItem('lastOpened', name);
-
-  // ripple
-  const r    = document.createElement('div');
-  r.className = 'ripple-el';
-  const rect  = card.getBoundingClientRect();
-  r.style.left = (e.clientX - rect.left  - 30) + 'px';
-  r.style.top  = (e.clientY - rect.top   - 30) + 'px';
-  card.appendChild(r);
-  setTimeout(() => r.remove(), 600);
-
-  setTimeout(() => { window.location.href = url; }, 220);
-}
-
-/* ── Staggered entrance ── */
-document.querySelectorAll('.card').forEach((c, i) => {
-  c.style.opacity   = '0';
-  c.style.transform = 'translateY(16px)';
-  c.style.transition = `opacity .45s ease ${i * .06}s, transform .45s ease ${i * .06}s, background .15s`;
-  setTimeout(() => {
-    c.style.opacity   = '1';
-    c.style.transform = 'translateY(0)';
-  }, 80 + i * 60);
-});
-
-document.querySelectorAll('.stat-box').forEach((c, i) => {
-  c.style.opacity   = '0';
-  c.style.transform = 'translateY(8px)';
-  c.style.transition = `opacity .35s ease ${.15 + i * .06}s, transform .35s ease ${.15 + i * .06}s`;
-  setTimeout(() => {
-    c.style.opacity   = '1';
-    c.style.transform = 'translateY(0)';
-  }, 50);
-});
-</script>
-</body>
-</html>
-
-/* ═══════════════════════════════════════════════
-   GLASS AURORA — Krishna Markets Intelligence Hub
-   Aurora gradient bg · Frosted glass panels
-   Floating pill nav · iframe content area
-═══════════════════════════════════════════════ */
-:root {
-  --aurora1: rgba(120,40,255,.28);
-  --aurora2: rgba(0,180,255,.22);<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Krishna Markets — Intelligence Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<style>
-:root {
-  --aurora1: rgba(120,40,255,.28);
-  --aurora2: rgba(0,180,255,.22);
-  --aurora3: rgba(0,255,180,.18);
-  --glass:   rgba(255,255,255,.06);
-  --glass2:  rgba(255,255,255,.11);
-  --border:  rgba(255,255,255,.12);
-  --text:    rgba(255,255,255,.92);
-  --dim:     rgba(255,255,255,.42);
-  --green:   #00ffb4;
-  --purple:  #7c28ff;
-  --blue:    #00b4ff;
-}
-*, *::before, *::after { margin:0; padding:0; box-sizing:border-box }
-html { height:100%; scroll-behavior:smooth }
-body {
-  min-height:100vh;
-  font-family:'DM Sans', sans-serif;
-  color:var(--text);
-  background:linear-gradient(135deg,#080018 0%,#0a0028 20%,#000d30 45%,#001828 70%,#000d18 100%);
-  overflow-x:hidden;
-}
-
-/* Aurora BG */
-body::before {
-  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-  background:
-    radial-gradient(ellipse 65% 55% at 15% 15%, var(--aurora1) 0%, transparent 70%),
-    radial-gradient(ellipse 55% 65% at 85% 35%, var(--aurora2) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 50% at 50% 92%, var(--aurora3) 0%, transparent 70%);
-  animation:auroraShift 14s ease-in-out infinite alternate;
-}
-@keyframes auroraShift {
-  0%   { opacity:.8;  transform:scale(1) }
-  50%  { opacity:1;   transform:scale(1.06) }
-  100% { opacity:.75; transform:scale(.97) }
-}
-body::after {
-  content:''; position:fixed; inset:0; z-index:0; pointer-events:none;
-  background:
-    linear-gradient(rgba(255,255,255,.016) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.016) 1px,transparent 1px);
-  background-size:40px 40px;
-}
-
-#app { position:relative; z-index:1; min-height:100vh; display:flex; flex-direction:column; padding-bottom:40px }
-
-/* ── HEADER ── */
-header {
-  padding:28px 32px 0;
-  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:16px;
-}
-.brand { display:flex; align-items:center; gap:14px }
-.brand-orb {
-  width:52px; height:52px;
-  background:linear-gradient(135deg,#7c28ff,#00b4ff);
-  border-radius:50%; display:flex; align-items:center; justify-content:center;
-  font-size:24px; flex-shrink:0;
-  box-shadow:0 0 30px rgba(124,40,255,.5),0 0 60px rgba(0,180,255,.2);
-  animation:orbPulse 3s ease-in-out infinite;
-}
-@keyframes orbPulse {
-  0%,100% { box-shadow:0 0 30px rgba(124,40,255,.5),0 0 60px rgba(0,180,255,.2) }
-  50%     { box-shadow:0 0 44px rgba(124,40,255,.8),0 0 80px rgba(0,180,255,.35) }
-}
-.brand-name {
-  font-family:'Syne',sans-serif; font-size:26px; font-weight:800; letter-spacing:-.5px;
-  background:linear-gradient(135deg,#fff 30%,#b0d8ff 100%);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; line-height:1.1;
-}
-.brand-sub { font-size:10px; color:var(--dim); letter-spacing:2.5px; text-transform:uppercase; margin-top:4px }
-
-.header-right { display:flex; align-items:center; gap:10px; flex-wrap:wrap }
-.status-live {
-  display:flex; align-items:center; gap:7px;
-  background:rgba(0,255,180,.08); border:1px solid rgba(0,255,180,.2);
-  padding:7px 16px; border-radius:30px;
-  font-size:11px; font-weight:700; color:var(--green); letter-spacing:.8px;
-}
-.live-dot {
-  width:7px; height:7px; border-radius:50%; background:var(--green);
-  animation:livePulse 1.5s ease-in-out infinite; box-shadow:0 0 8px var(--green);
-}
-@keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.3;transform:scale(.7)} }
-.clock-badge {
-  background:var(--glass); border:1px solid var(--border);
-  padding:7px 14px; border-radius:30px;
-  font-size:11px; color:var(--dim); font-family:'Space Mono',monospace;
-}
-#clock-ist { color:var(--blue); font-weight:700 }
-
-/* ── HERO ── */
-.hero { padding:18px 32px 0; max-width:620px }
-.hero p {
-  font-size:13px; color:var(--dim); line-height:1.7;
-  font-family:'DM Sans',sans-serif;
-}
-.hero p span {
-  background:linear-gradient(90deg,#c0e0ff,#e0c0ff);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:600;
-}
-
-/* ── STATS ROW ── */
-.stats-row { display:flex; gap:12px; flex-wrap:wrap; padding:22px 32px 0 }
-.stat-chip {
-  display:flex; align-items:center; gap:10px;
-  background:var(--glass); border:1px solid var(--border);
-  border-radius:14px; padding:10px 18px; backdrop-filter:blur(10px);
-}
-.stat-chip-icon { font-size:20px }
-.stat-chip-val { font-family:'Space Mono',monospace; font-size:15px; font-weight:700; color:#fff }
-.stat-chip-label { font-size:10px; color:var(--dim); margin-top:1px }
-
-/* ── SECTION LABEL ── */
-.section-label {
-  padding:30px 32px 14px;
-  font-family:'Syne',sans-serif; font-size:11px; font-weight:700;
-  color:var(--dim); letter-spacing:3px; text-transform:uppercase;
-  display:flex; align-items:center; gap:10px;
-}
-.section-label::before {
-  content:''; width:3px; height:16px;
-  background:linear-gradient(180deg,var(--purple),var(--blue));
-  border-radius:2px; flex-shrink:0;
-}
-
-/* ── GRID ── */
-.grid {
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-  gap:16px; padding:0 32px;
-}
-
-/* ── CARD ── */
-.card {
-  background:var(--glass); border:1px solid var(--border);
-  border-radius:20px; padding:24px;
-  cursor:pointer; transition:all .3s ease;
-  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
-  position:relative; overflow:hidden;
-  text-decoration:none; display:flex; flex-direction:column;
-  min-height:190px;
-}
-/* top accent bar */
-.card::after {
-  content:''; position:absolute; top:0; left:20px; right:20px; height:2px;
-  border-radius:0 0 4px 4px;
-  background:var(--card-accent,linear-gradient(90deg,var(--purple),var(--blue)));
-  opacity:.7; transition:.3s;
-}
-.card:hover {
-  transform:translateY(-7px);
-  border-color:rgba(255,255,255,.26);
-  box-shadow:0 24px 60px rgba(0,0,0,.45),0 0 40px rgba(124,40,255,.15),inset 0 1px 0 rgba(255,255,255,.15);
-}
-.card:hover::after { opacity:1; left:0; right:0; border-radius:0 }
-.card:active { transform:translateY(-2px) scale(.99) }
-
-/* accent colours per card */
-.card:nth-child(1){ --card-accent:linear-gradient(90deg,#7c28ff,#00b4ff) }
-.card:nth-child(2){ --card-accent:linear-gradient(90deg,#00c853,#69f0ae) }
-.card:nth-child(3){ --card-accent:linear-gradient(90deg,#ff6d00,#ffab40) }
-.card:nth-child(4){ --card-accent:linear-gradient(90deg,#0091ea,#40c4ff) }
-.card:nth-child(5){ --card-accent:linear-gradient(90deg,#aa00ff,#e040fb) }
-.card:nth-child(6){ --card-accent:linear-gradient(90deg,#d50000,#ff5252) }
-.card:nth-child(7){ --card-accent:linear-gradient(90deg,#00bcd4,#80deea) }
-.card:nth-child(8){ --card-accent:linear-gradient(90deg,#f9a825,#ffd54f) }
-
-.card-num {
-  position:absolute; top:16px; right:18px;
-  font-family:'Space Mono',monospace; font-size:10px; color:rgba(255,255,255,.12); font-weight:700;
-}
-.card-icon {
-  width:48px; height:48px;
-  background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12);
-  border-radius:14px; display:flex; align-items:center; justify-content:center;
-  font-size:24px; margin-bottom:14px; transition:.3s; flex-shrink:0;
-}
-.card:hover .card-icon { background:rgba(255,255,255,.13); transform:scale(1.08) }
-.card-title {
-  font-family:'Syne',sans-serif; font-size:16px; font-weight:700;
-  color:#fff; margin-bottom:6px; line-height:1.2;
-}
-.card-desc { font-size:12px; color:var(--dim); line-height:1.65; flex:1 }
-.card-footer {
-  display:flex; align-items:center; justify-content:space-between; margin-top:16px;
-}
-.card-tag {
-  font-size:9px; font-weight:700; letter-spacing:1px;
-  padding:3px 10px; border-radius:20px;
-  background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1);
-  color:var(--dim); text-transform:uppercase;
-}
-.card-arrow {
-  width:32px; height:32px;
-  background:linear-gradient(135deg,rgba(124,40,255,.25),rgba(0,180,255,.18));
-  border:1px solid rgba(124,40,255,.35); border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:14px; color:#c0a0ff; transition:.3s;
-}
-.card:hover .card-arrow { background:linear-gradient(135deg,rgba(124,40,255,.55),rgba(0,180,255,.4)); color:#fff; transform:translateX(3px) }
-
-/* ripple */
-@keyframes ripple { 0%{transform:scale(0);opacity:.5} 100%{transform:scale(4);opacity:0} }
-.ripple-el {
-  position:absolute; width:60px; height:60px; border-radius:50%;
-  background:rgba(124,40,255,.3); pointer-events:none;
-  animation:ripple .6s ease-out forwards; transform-origin:center;
-}
-
-/* ── FOOTER ── */
-footer {
-  margin-top:40px; padding:20px 32px;
-  border-top:1px solid rgba(255,255,255,.06);
-  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
-}
-.footer-l { font-size:11px; color:rgba(255,255,255,.18); font-family:'Space Mono',monospace }
-.footer-r { font-size:11px; color:rgba(255,255,255,.15) }
-
-/* ── RESPONSIVE ── */
-@media(max-width:900px){
-  header,.hero,.stats-row,.section-label,.grid { padding-left:20px; padding-right:20px }
-  .grid { grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:12px }
-}
-@media(max-width:600px){
-  .brand-name { font-size:20px } .brand-orb { width:42px; height:42px; font-size:20px }
-  .grid { grid-template-columns:1fr 1fr; gap:10px }
-  .card { padding:16px; min-height:160px }
-  .card-icon { width:38px; height:38px; font-size:18px; margin-bottom:10px }
-  .card-title { font-size:13px }
-  .card-desc { display:none }
-  .clock-badge { display:none }
-  footer { padding:16px 20px }
-}
-@media(max-width:380px){ .grid { grid-template-columns:1fr } }
-</style>
-</head>
-<body>
-<div id="app">
-
-  <!-- HEADER -->
-  <header>
-    <div class="brand">
-      <div class="brand-orb">📊</div>
-      <div>
-        <div class="brand-name">KrishnaMarkets</div>
-        <div class="brand-sub">Intelligence Hub · 8 Dashboards</div>
-      </div>
-    </div>
-    <div class="header-right">
-      <div class="status-live"><div class="live-dot"></div>ALL SYSTEMS LIVE</div>
-      <div class="clock-badge">🕐 IST <span id="clock-ist">--:--:--</span></div>
-    </div>
-  </header>
-
-  <!-- HERO -->
-  <div class="hero">
-    <p>Your complete market intelligence suite —
-      <span>click any dashboard to open it instantly.</span>
-      Press the browser Back button anytime to return here.
-    </p>
-  </div>
-
-  <!-- STATS -->
-  <div class="stats-row">
-    <div class="stat-chip">
-      <div class="stat-chip-icon">🗂️</div>
-      <div><div class="stat-chip-val">8</div><div class="stat-chip-label">Dashboards</div></div>
-    </div>
-    <div class="stat-chip">
-      <div class="stat-chip-icon">🇮🇳</div>
-      <div><div class="stat-chip-val">NSE · BSE</div><div class="stat-chip-label">Indian Markets</div></div>
-    </div>
-    <div class="stat-chip">
-      <div class="stat-chip-icon">🌐</div>
-      <div><div class="stat-chip-val">S&amp;P 500</div><div class="stat-chip-label">US Markets</div></div>
-    </div>
-    <div class="stat-chip">
-      <div class="stat-chip-icon">🕐</div>
-      <div><div class="stat-chip-val" id="last-chip">—</div><div class="stat-chip-label">Last Opened</div></div>
-    </div>
-  </div>
-
-  <!-- SECTION -->
-  <div class="section-label">Select Dashboard</div>
-
-  <!-- GRID -->
-  <div class="grid">
-
-    <a class="card" href="https://krishnateja08.github.io/FII-DII_Pulse/" onclick="go(event,'FII/DII Pulse')">
-      <div class="card-num">01</div>
-      <div class="card-icon">📡</div>
-      <div class="card-title">FII / DII Pulse</div>
-      <div class="card-desc">Sector-wise institutional activity — FII & DII bulk/block deals with technical signals & RSI.</div>
-      <div class="card-footer">
-        <span class="card-tag">NSE · Bulk Deals</span>
-        <div class="card-arrow">→</div>
-      </div>
-    </a>
-
-    <a class="card" href="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" onclick="go(event,'Nifty 50 Analyzer')">
-      <div class="card-num">02</div>
-      <div class="card-icon">📈</div>
-      <div class="card-title">Nifty 50 Analyzer</div>
-      <div class="card-desc">Deep technical analysis of all Nifty 50 stocks — RSI, MACD, EMA, support & resistance levels.</div>
-      <div class="card-footer">
-        <span class="card-tag">NSE · Nifty 50</span>
-        <div class="card-arrow">→</div>
-      </div>
-    </a>
-
-    <a class="card" href="https://krishnateja08.github.io/Nifty_Indices_scanner/" onclick="go(event,'Nifty Indices Scanner')">
-      <div class="card-num">03</div>
-      <div class="card-icon">🔍</div>
-      <div class="card-title">Nifty Indices Scanner</div>
-      <div class="card-desc">Real-time scanner across all Nifty indices — momentum, breakouts and sector rotation signals.</div>
-      <div class="card-footer">
-        <span class="card-tag">NSE · Indices</span>
-        <div class="card-arrow">→</div>
-      </div>
-    </a>
-
-    <a class="card" href="https://krishnateja08.github.io/USA-SP500-Stocks-Review/" onclick="go(event,'S&P 500 Review')">
-      <div class="card-num">04</div>
-      <div class="card-icon">🌐</div>
-      <div class="card-title">USA S&amp;P 500 Review</div>
-      <div class="card-desc">Comprehensive S&P 500 stock review — US market analysis, sector performance and signals.</div>
-      <div class="card-footer">
-        <span class="card-tag">NYSE · S&amp;P 500</span>
-        <div class="card-arrow">→</div>
-      </div>
-    </a>
-
-    <a class="card" href="https://krishnateja08.github.io/Nifty-1HR_Track/" onclick="go(event,'Nifty 1HR Track')">
-      <div class="card-num">05</div>
-      <div class="card-icon">⏱️</div>
-      <div class="card-title">Nifty 1HR Track</div>
-      <div class="card-desc">Hourly Nifty movement tracking — intraday trend analysis and short-term momentum signals.</div>
-      <div class="card-footer">
-        <span class="card-tag">NSE · Intraday</span>
-        <div class="card-arrow">→</div>
-      </div>
-    </a>
-
-    <a class="card" href="https://krishnateja08.github.io/Nifty_option_chain/" onclick="go(event,'Nifty Option Chain')">
-      <div class="card-num">06</div>
-      <div class="card-icon">⛓️</div>
-      <div class="card-title">Nifty Option Chain</div>
-      <div class="card-desc">Live option chain analysis — OI buildup, PCR ratio, max pain and key strike price levels.</div>
-      <div class="card-footer">
-        <span class="card-tag">NSE · Options</span>
-        <div class="card-arrow">→</div>
-      </div>
-    </a>
-
-    <a class="card" href="https://krishnateja08.github.io/Global_Market_News/" onclick="go(event,'Global Market News')">
-      <div class="card-num">07</div>
-      <div class="card-icon">🗞️</div>
-      <div class="card-title">Global Market News</div>
-      <div class="card-desc">Curated global market news — macro events, earnings, central bank decisions and market moves.</div>
-      <div class="card-footer">
-        <span class="card-tag">Global · News</span>
-        <div class="card-arrow">→</div>
-      </div>
-    </a>
-
-    <a class="card" href="https://krishnateja08.github.io/optionstrategybuilder/" onclick="go(event,'Strategy Builder')">
-      <div class="card-num">08</div>
-      <div class="card-icon">🧮</div>
-      <div class="card-title">Option Strategy Builder</div>
-      <div class="card-desc">Build and visualise options strategies — P&L charts, Greeks, breakeven for any strike & expiry.</div>
-      <div class="card-footer">
-        <span class="card-tag">NSE · Strategies</span>
-        <div class="card-arrow">→</div>
-      </div>
-    </a>
-
-  </div>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="footer-l">KRISHNAMARKETS HUB · v2.0 · GLASS AURORA</div>
-    <div class="footer-r">Click card → opens dashboard &nbsp;·&nbsp; Browser Back → returns here</div>
-  </footer>
+  <a class="card" href="https://krishnateja08.github.io/optionstrategybuilder/" onclick="go(event,'Strategy Builder')">
+    <div class="cnum"><span>08</span>STRATEGY</div>
+    <div class="ctop"><div class="cico">🧮</div><div><div class="ctitle">Option Strategy Builder</div><div class="ccat">NSE · P&amp;L · Greeks · Charts</div></div></div>
+    <div class="cdesc">Build and visualise options strategies — P&amp;L charts, Greeks, breakeven for any strike &amp; expiry.</div>
+    <div class="cfoot"><span class="ctag">NSE · Strategies</span><span class="carr"><span class="carr-ln"></span>OPEN</span></div>
+  </a>
 
 </div>
 
+<!-- FOOTER -->
+<footer>
+  <div class="fl"><span>KRISHNAMARKETS HUB</span> · TERMINAL v2.0 · 8 MODULES ACTIVE</div>
+  <div class="fr">Click card → opens dashboard · Back → returns here</div>
+</footer>
+
+</div>
 <script>
-  /* ── IST Clock ── */
-  function tick() {
-    document.getElementById('clock-ist').textContent =
-      new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());
-  }
-  tick(); setInterval(tick, 1000);
+// Clock
+function tick(){const t=new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());document.getElementById('ct').textContent=t;document.getElementById('ch').textContent=t;}
+tick();setInterval(tick,1000);
 
-  /* ── Last opened chip ── */
-  const last = sessionStorage.getItem('lastOpened');
-  if (last) document.getElementById('last-chip').textContent = last;
+// Ticker
+const T=[{s:'NIFTY 50',v:'23,450',c:'+0.42%',u:1},{s:'SENSEX',v:'77,210',c:'+0.38%',u:1},{s:'BANK NIFTY',v:'51,230',c:'-0.21%',u:0},{s:'RELIANCE',v:'₹2,845',c:'+1.20%',u:1},{s:'TCS',v:'₹4,102',c:'-0.50%',u:0},{s:'HDFCBANK',v:'₹1,724',c:'+0.80%',u:1},{s:'INFY',v:'₹1,890',c:'+1.10%',u:1},{s:'S&P 500',v:'6,052',c:'+0.29%',u:1},{s:'GOLD',v:'₹73,400',c:'+0.60%',u:1},{s:'USD/INR',v:'83.92',c:'-0.02%',u:0},{s:'CRUDE',v:'$82.40',c:'+0.45%',u:1}];
+document.getElementById('tkr').innerHTML=[...T,...T].map(t=>`<span class="ti"><span class="ti-s">${t.s}</span><span>${t.v}</span><span class="${t.u?'up':'dn'}">${t.c}</span></span>`).join('');
 
-  /* ── Navigate same window with ripple ── */
-  function go(e, name) {
-    e.preventDefault();
-    const card = e.currentTarget;
-    const url  = card.href;
+// Last opened
+const l=sessionStorage.getItem('lo');if(l)document.getElementById('lc').textContent=l;
 
-    // Save to session
-    sessionStorage.setItem('lastOpened', name);
+// Navigate + ripple
+function go(e,n){e.preventDefault();const c=e.currentTarget;sessionStorage.setItem('lo',n);const r=document.createElement('div');r.className='rpl';const b=c.getBoundingClientRect();r.style.left=(e.clientX-b.left-30)+'px';r.style.top=(e.clientY-b.top-30)+'px';c.appendChild(r);setTimeout(()=>r.remove(),600);setTimeout(()=>{window.location.href=c.href;},220);}
 
-    // Ripple
-    const r = document.createElement('div');
-    r.className = 'ripple-el';
-    const rect = card.getBoundingClientRect();
-    r.style.left = (e.clientX - rect.left - 30) + 'px';
-    r.style.top  = (e.clientY - rect.top  - 30) + 'px';
-    card.appendChild(r);
-    setTimeout(() => r.remove(), 700);
-
-    // Navigate after ripple
-    setTimeout(() => { window.location.href = url; }, 220);
-  }
-
-  /* ── Staggered entrance ── */
-  document.querySelectorAll('.card').forEach((c, i) => {
-    c.style.opacity   = '0';
-    c.style.transform = 'translateY(22px)';
-    c.style.transition = `opacity .5s ease ${i*.07}s, transform .5s ease ${i*.07}s, box-shadow .3s, border-color .3s`;
-    setTimeout(() => { c.style.opacity='1'; c.style.transform='translateY(0)'; }, 80 + i*70);
-  });
-
-  document.querySelectorAll('.stat-chip').forEach((c, i) => {
-    c.style.opacity   = '0';
-    c.style.transform = 'translateY(10px)';
-    c.style.transition = `opacity .4s ease ${.25+i*.07}s, transform .4s ease ${.25+i*.07}s`;
-    setTimeout(() => { c.style.opacity='1'; c.style.transform='translateY(0)'; }, 50);
-  });
+// Entrance
+document.querySelectorAll('.card').forEach((c,i)=>{c.style.cssText+=`opacity:0;transform:translateY(14px);transition:opacity .4s ease ${i*.06}s,transform .4s ease ${i*.06}s,background .14s`;setTimeout(()=>{c.style.opacity='1';c.style.transform='none';},70+i*55);});
 </script>
-</body>
-</html>
-
-  --aurora3: rgba(0,255,180,.18);
-  --glass-bg: rgba(255,255,255,.05);
-  --glass-border: rgba(255,255,255,.12);
-  --glass-hover: rgba(255,255,255,.10);
-  --text: rgba(255,255,255,.92);
-  --text-dim: rgba(255,255,255,.45);
-  --accent: #7c28ff;
-  --accent2: #00b4ff;
-  --green: #00ffb4;
-  --red: #ff4060;
-}
-
-* { margin:0; padding:0; box-sizing:border-box }
-html, body { height:100%; overflow:hidden }
-
-body {
-  font-family:'DM Sans', sans-serif;
-  background: linear-gradient(135deg, #080018 0%, #0a0028 20%, #000d30 45%, #001828 70%, #000d18 100%);
-  color: var(--text);
-  position: relative;
-}
-
-/* ── Aurora animated background ── */
-body::before {
-  content:'';
-  position:fixed; inset:0; z-index:0; pointer-events:none;
-  background:
-    radial-gradient(ellipse 60% 50% at 15% 15%, var(--aurora1) 0%, transparent 70%),
-    radial-gradient(ellipse 50% 60% at 85% 35%, var(--aurora2) 0%, transparent 70%),
-    radial-gradient(ellipse 55% 45% at 50% 90%, var(--aurora3) 0%, transparent 70%);
-  animation: auroraShift 12s ease-in-out infinite alternate;
-}
-@keyframes auroraShift {
-  0%   { opacity:.8; transform:scale(1) rotate(0deg) }
-  50%  { opacity:1;  transform:scale(1.05) rotate(1deg) }
-  100% { opacity:.7; transform:scale(.97) rotate(-1deg) }
-}
-
-/* subtle grid overlay */
-body::after {
-  content:'';
-  position:fixed; inset:0; z-index:0; pointer-events:none;
-  background:
-    linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
-  background-size: 40px 40px;
-}
-
-/* ── LAYOUT ── */
-#app {
-  position:relative; z-index:1;
-  height:100vh;
-  display:flex; flex-direction:column;
-}
-
-/* ── TOP NAV ── */
-#topnav {
-  flex-shrink:0;
-  padding: 12px 20px;
-  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
-  background: rgba(8,0,24,.4);
-  border-bottom: 1px solid var(--glass-border);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  position:relative; z-index:100;
-}
-
-/* Brand */
-.brand {
-  display:flex; align-items:center; gap:10px;
-  margin-right:10px; flex-shrink:0;
-}
-.brand-orb {
-  width:40px; height:40px;
-  background: linear-gradient(135deg,#7c28ff,#00b4ff);
-  border-radius:50%;
-  display:flex; align-items:center; justify-content:center;
-  font-size:20px;
-  box-shadow: 0 0 24px rgba(124,40,255,.5), 0 0 48px rgba(0,180,255,.2);
-  animation: orbPulse 3s ease-in-out infinite;
-  flex-shrink:0;
-}
-@keyframes orbPulse {
-  0%,100% { box-shadow:0 0 24px rgba(124,40,255,.5),0 0 48px rgba(0,180,255,.2) }
-  50%      { box-shadow:0 0 32px rgba(124,40,255,.8),0 0 64px rgba(0,180,255,.35) }
-}
-.brand-name {
-  font-family:'Syne', sans-serif;
-  font-size:17px; font-weight:800; letter-spacing:-.3px;
-  background: linear-gradient(135deg,#fff 30%,#c0e0ff 100%);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-  line-height:1.1;
-}
-.brand-sub {
-  font-size:8px; color:var(--text-dim);
-  letter-spacing:2px; text-transform:uppercase; margin-top:2px;
-}
-
-/* Pill nav */
-.pill-nav {
-  display:flex; gap:6px; flex-wrap:wrap; flex:1;
-}
-.pill {
-  display:flex; align-items:center; gap:7px;
-  padding:7px 14px; border-radius:30px; cursor:pointer;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  backdrop-filter: blur(10px);
-  font-size:11px; color:var(--text-dim); font-weight:600;
-  transition: all .25s ease; white-space:nowrap;
-  font-family:'DM Sans', sans-serif;
-  user-select:none;
-}
-.pill:hover {
-  background: var(--glass-hover);
-  color: var(--text);
-  border-color: rgba(255,255,255,.25);
-  transform: translateY(-1px);
-}
-.pill.active {
-  background: linear-gradient(135deg,rgba(124,40,255,.4),rgba(0,180,255,.3));
-  border-color: rgba(124,40,255,.6);
-  color: #fff;
-  box-shadow: 0 0 20px rgba(124,40,255,.25), inset 0 1px 0 rgba(255,255,255,.15);
-  transform: translateY(-1px);
-}
-.pill-icon { font-size:14px; }
-
-/* Status chips (right side) */
-.nav-right {
-  display:flex; align-items:center; gap:8px; flex-shrink:0; margin-left:auto;
-}
-.status-live {
-  display:flex; align-items:center; gap:6px;
-  background: rgba(0,255,180,.1);
-  border: 1px solid rgba(0,255,180,.25);
-  padding: 5px 12px; border-radius:20px;
-  font-size:10px; font-weight:700; color:var(--green);
-  letter-spacing:.5px;
-}
-.live-dot {
-  width:6px; height:6px; border-radius:50%;
-  background:var(--green);
-  animation: livePulse 1.5s ease-in-out infinite;
-  box-shadow: 0 0 6px var(--green);
-}
-@keyframes livePulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.8)} }
-
-.refresh-badge {
-  background: rgba(255,255,255,.07);
-  border: 1px solid rgba(255,255,255,.12);
-  padding: 5px 12px; border-radius:20px;
-  font-size:10px; color:var(--text-dim);
-  font-family:'Space Mono', monospace;
-  letter-spacing:.3px;
-}
-#refresh-countdown { color:var(--accent2); font-weight:700 }
-
-/* ── CONTENT FRAME ── */
-#content-frame {
-  flex:1;
-  margin: 12px 16px 12px;
-  background: rgba(255,255,255,.04);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  border-radius: 20px;
-  overflow: hidden;
-  display:flex; flex-direction:column;
-  box-shadow:
-    0 8px 32px rgba(0,0,0,.4),
-    inset 0 1px 0 rgba(255,255,255,.1),
-    inset 0 -1px 0 rgba(0,0,0,.2);
-  position:relative;
-}
-
-/* Frame header bar */
-#frame-header {
-  flex-shrink:0;
-  background: rgba(255,255,255,.05);
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  padding: 10px 20px;
-  display:flex; align-items:center; justify-content:space-between;
-  backdrop-filter: blur(10px);
-}
-#frame-title {
-  font-family:'Syne', sans-serif;
-  font-size:15px; font-weight:700;
-  background: linear-gradient(90deg, #c0e0ff, #e0c0ff);
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent;
-  letter-spacing:.2px;
-}
-.frame-chips { display:flex; gap:8px; align-items:center }
-.frame-chip {
-  font-size:9px; padding:4px 10px; border-radius:20px;
-  font-weight:700; letter-spacing:.5px;
-  background: rgba(255,255,255,.07);
-  color: var(--text-dim);
-  border: 1px solid rgba(255,255,255,.1);
-}
-.open-btn {
-  display:flex; align-items:center; gap:5px;
-  padding:4px 12px; border-radius:20px; cursor:pointer;
-  background: rgba(124,40,255,.2);
-  border: 1px solid rgba(124,40,255,.4);
-  color: #c0a0ff; font-size:10px; font-weight:700;
-  transition:.2s; text-decoration:none; letter-spacing:.3px;
-}
-.open-btn:hover { background:rgba(124,40,255,.35); color:#fff }
-
-/* ── IFRAME ── */
-#site-frame {
-  flex:1; width:100%; border:none;
-  background: transparent;
-  display:block;
-}
-
-/* ── FALLBACK (shown when iframe blocked) ── */
-#fallback {
-  display:none;
-  flex:1; flex-direction:column;
-  align-items:center; justify-content:center;
-  gap:20px; padding:40px;
-  text-align:center;
-}
-#fallback .fb-icon { font-size:52px; opacity:.5 }
-#fallback .fb-title {
-  font-family:'Syne',sans-serif; font-size:20px; font-weight:700;
-  color:var(--text-dim);
-}
-#fallback .fb-desc { font-size:13px; color:var(--text-dim); max-width:400px; line-height:1.6 }
-#fallback .fb-btn {
-  display:inline-flex; align-items:center; gap:8px;
-  padding:12px 28px; border-radius:30px;
-  background: linear-gradient(135deg,rgba(124,40,255,.4),rgba(0,180,255,.3));
-  border: 1px solid rgba(124,40,255,.5);
-  color:#fff; font-size:13px; font-weight:700;
-  text-decoration:none; transition:.2s;
-  font-family:'DM Sans',sans-serif;
-}
-#fallback .fb-btn:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(124,40,255,.3) }
-
-/* ── LOADING OVERLAY ── */
-#loading {
-  display:none;
-  position:absolute; inset:0;
-  background: rgba(8,0,24,.6);
-  backdrop-filter:blur(4px);
-  align-items:center; justify-content:center;
-  flex-direction:column; gap:14px;
-  border-radius:20px; z-index:50;
-}
-.spinner {
-  width:36px; height:36px;
-  border:3px solid rgba(255,255,255,.1);
-  border-top-color:#7c28ff;
-  border-radius:50%;
-  animation:spin .8s linear infinite;
-}
-@keyframes spin { to{transform:rotate(360deg)} }
-#loading p {
-  font-size:11px; color:var(--text-dim);
-  letter-spacing:1px; text-transform:uppercase;
-  font-family:'Space Mono',monospace;
-}
-
-/* ── REFRESH PROGRESS BAR ── */
-#progress-bar {
-  position:absolute; bottom:0; left:0; right:0;
-  height:2px; background:transparent; z-index:10; border-radius:0 0 20px 20px; overflow:hidden;
-}
-#progress-fill {
-  height:100%;
-  background:linear-gradient(90deg,#7c28ff,#00b4ff,#00ffb4);
-  width:0%; transition:width linear;
-  box-shadow:0 0 8px rgba(124,40,255,.6);
-}
-
-/* ── MOBILE ── */
-@media(max-width:768px){
-  #topnav { padding:8px 12px; gap:8px }
-  .brand-name { font-size:14px }
-  .brand-sub { display:none }
-  .pill { padding:6px 10px; font-size:10px }
-  .pill-icon { font-size:12px }
-  .nav-right { display:none }
-  #content-frame { margin:8px 10px 10px; border-radius:14px }
-  #frame-header { padding:8px 14px }
-  #frame-title { font-size:12px }
-}
-@media(max-width:480px){
-  .pill-nav { gap:4px }
-  .pill { padding:5px 8px; font-size:9px; border-radius:20px }
-}
-</style>
-</head>
-<body>
-
-<div id="app">
-
-  <!-- ── TOP NAV ── -->
-  <nav id="topnav">
-
-    <div class="brand">
-      <div class="brand-orb">📊</div>
-      <div>
-        <div class="brand-name">KrishnaMarkets</div>
-        <div class="brand-sub">Intelligence Hub</div>
-      </div>
-    </div>
-
-    <div class="pill-nav" id="pill-nav">
-      <div class="pill active" data-url="https://krishnateja08.github.io/FII-DII_Pulse/" data-title="FII / DII Pulse" onclick="switchSite(this)">
-        <span class="pill-icon">📡</span> FII/DII Pulse
-      </div>
-      <div class="pill" data-url="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" data-title="Nifty 50 Stock Analyzer" onclick="switchSite(this)">
-        <span class="pill-icon">📈</span> Nifty 50
-      </div>
-      <div class="pill" data-url="https://krishnateja08.github.io/Nifty_Indices_scanner/" data-title="Nifty Indices Scanner" onclick="switchSite(this)">
-        <span class="pill-icon">🔍</span> Indices Scanner
-      </div>
-      <div class="pill" data-url="https://krishnateja08.github.io/USA-SP500-Stocks-Review/" data-title="USA S&P 500 Stocks Review" onclick="switchSite(this)">
-        <span class="pill-icon">🌐</span> S&amp;P 500
-      </div>
-      <div class="pill" data-url="https://krishnateja08.github.io/Nifty-1HR_Track/" data-title="Nifty 1HR Track" onclick="switchSite(this)">
-        <span class="pill-icon">⏱️</span> 1HR Track
-      </div>
-      <div class="pill" data-url="https://krishnateja08.github.io/Nifty_option_chain/" data-title="Nifty Option Chain" onclick="switchSite(this)">
-        <span class="pill-icon">⛓️</span> Option Chain
-      </div>
-      <div class="pill" data-url="https://krishnateja08.github.io/Global_Market_News/" data-title="Global Market News" onclick="switchSite(this)">
-        <span class="pill-icon">🗞️</span> Global News
-      </div>
-      <div class="pill" data-url="https://krishnateja08.github.io/optionstrategybuilder/" data-title="Option Strategy Builder" onclick="switchSite(this)">
-        <span class="pill-icon">🧮</span> Strategy Builder
-      </div>
-    </div>
-
-    <div class="nav-right">
-      <div class="status-live">
-        <div class="live-dot"></div>
-        LIVE
-      </div>
-      <div class="refresh-badge">
-        🔄 Auto-refresh in <span id="refresh-countdown">5</span>s
-      </div>
-    </div>
-
-  </nav>
-
-  <!-- ── CONTENT FRAME ── -->
-  <div id="content-frame">
-
-    <!-- Frame header -->
-    <div id="frame-header">
-      <div id="frame-title">FII / DII Pulse</div>
-      <div class="frame-chips">
-        <span class="frame-chip" id="frame-chip-time">--:--</span>
-        <a id="open-tab-btn" class="open-btn" href="https://krishnateja08.github.io/FII-DII_Pulse/" target="_blank">
-          ↗ Open in tab
-        </a>
-      </div>
-    </div>
-
-    <!-- Loading overlay -->
-    <div id="loading">
-      <div class="spinner"></div>
-      <p>Loading dashboard...</p>
-    </div>
-
-    <!-- The iframe — sites load here as-is -->
-    <iframe
-      id="site-frame"
-      src="https://krishnateja08.github.io/FII-DII_Pulse/"
-      allowfullscreen
-      loading="lazy"
-      title="Dashboard Content"
-    ></iframe>
-
-    <!-- Fallback (if iframe blocked) -->
-    <div id="fallback">
-      <div class="fb-icon">🔒</div>
-      <div class="fb-title">This page can't be embedded</div>
-      <div class="fb-desc">
-        This site has security restrictions that prevent it from loading inside a frame.<br>
-        Click below to open it directly in a new tab.
-      </div>
-      <a id="fallback-link" href="#" target="_blank" class="fb-btn">
-        ↗ Open Dashboard in New Tab
-      </a>
-    </div>
-
-    <!-- Auto-refresh progress bar at bottom -->
-    <div id="progress-bar">
-      <div id="progress-fill"></div>
-    </div>
-
-  </div><!-- /content-frame -->
-
-</div><!-- /app -->
-
-<script>
-  /* ═══════════════════════════════════════════
-     KRISHNA MARKETS HUB — Core Logic
-     • switchSite() — loads iframe on pill click
-     • Auto-refresh every 5 seconds
-     • Countdown timer display
-     • Fallback detection for blocked iframes
-     • Clock display in frame header
-  ═══════════════════════════════════════════ */
-
-  const REFRESH_SEC  = 5;   // auto-refresh interval in seconds
-  const iframe       = document.getElementById('site-frame');
-  const frameTitle   = document.getElementById('frame-title');
-  const frameChip    = document.getElementById('frame-chip-time');
-  const openTabBtn   = document.getElementById('open-tab-btn');
-  const fallbackEl   = document.getElementById('fallback');
-  const fallbackLink = document.getElementById('fallback-link');
-  const loadingEl    = document.getElementById('loading');
-  const countdown    = document.getElementById('refresh-countdown');
-  const progressFill = document.getElementById('progress-fill');
-
-  let currentUrl     = 'https://krishnateja08.github.io/FII-DII_Pulse/';
-  let countdownVal   = REFRESH_SEC;
-  let refreshTimer   = null;
-  let countdownTimer = null;
-  let progressTimer  = null;
-
-  /* ── Clock ── */
-  function updateClock() {
-    const now = new Date();
-    const ist = new Intl.DateTimeFormat('en-IN', {
-      timeZone:'Asia/Kolkata',
-      hour:'2-digit', minute:'2-digit', second:'2-digit',
-      hour12:false
-    }).format(now);
-    frameChip.textContent = '🕐 IST ' + ist;
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
-
-  /* ── Switch Site ── */
-  function switchSite(el) {
-    // Update active pill
-    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-    el.classList.add('active');
-
-    const url   = el.dataset.url;
-    const title = el.dataset.title;
-
-    currentUrl = url;
-
-    // Update header
-    frameTitle.textContent = title;
-    openTabBtn.href        = url;
-    fallbackLink.href      = url;
-
-    // Show loading, hide fallback
-    showLoading(true);
-    showFallback(false);
-
-    // Load iframe
-    iframe.style.display = 'block';
-    iframe.src = '';
-    setTimeout(() => { iframe.src = url; }, 80);
-
-    // Reset countdown + progress
-    resetCountdown();
-  }
-
-  /* ── Loading state ── */
-  function showLoading(show) {
-    loadingEl.style.display = show ? 'flex' : 'none';
-  }
-  function showFallback(show) {
-    fallbackEl.style.display = show ? 'flex' : 'none';
-    iframe.style.display      = show ? 'none' : 'block';
-  }
-
-  /* ── iframe load/error events ── */
-  iframe.addEventListener('load', () => {
-    showLoading(false);
-    // Try detecting blocked iframe
-    try {
-      // If we can access contentDocument it's not blocked
-      const doc = iframe.contentDocument || iframe.contentWindow.document;
-      if (!doc || doc.body === null || doc.body.innerHTML === '') {
-        showFallback(true);
-      }
-    } catch(e) {
-      // Cross-origin access denied = still loaded (normal for external sites)
-      // Don't show fallback — it's working
-      showLoading(false);
-    }
-  });
-
-  iframe.addEventListener('error', () => {
-    showLoading(false);
-    showFallback(true);
-  });
-
-  /* ── Auto-refresh every 5 seconds ── */
-  function startCountdown() {
-    countdownVal = REFRESH_SEC;
-    countdown.textContent = countdownVal;
-
-    // Progress bar reset
-    progressFill.style.transition = 'none';
-    progressFill.style.width = '0%';
-    void progressFill.offsetWidth; // force reflow
-    progressFill.style.transition = `width ${REFRESH_SEC}s linear`;
-    progressFill.style.width = '100%';
-
-    // Clear old timers
-    clearInterval(countdownTimer);
-    clearTimeout(refreshTimer);
-
-    // Countdown tick every second
-    countdownTimer = setInterval(() => {
-      countdownVal--;
-      if (countdownVal <= 0) countdownVal = REFRESH_SEC;
-      countdown.textContent = countdownVal;
-    }, 1000);
-
-    // Reload iframe every REFRESH_SEC seconds
-    refreshTimer = setInterval(() => {
-      silentRefresh();
-    }, REFRESH_SEC * 1000);
-  }
-
-  function resetCountdown() {
-    clearInterval(countdownTimer);
-    clearInterval(refreshTimer);
-    startCountdown();
-  }
-
-  function silentRefresh() {
-    // Reload WITHOUT flashing/showing loading spinner
-    // Just swap src to force reload
-    const current = iframe.src;
-    iframe.src = '';
-    setTimeout(() => {
-      iframe.src = current || currentUrl;
-    }, 50);
-
-    // Reset progress bar
-    progressFill.style.transition = 'none';
-    progressFill.style.width = '0%';
-    void progressFill.offsetWidth;
-    progressFill.style.transition = `width ${REFRESH_SEC}s linear`;
-    progressFill.style.width = '100%';
-  }
-
-  /* ── Start on load ── */
-  startCountdown();
-</script>
-
 </body>
 </html>
