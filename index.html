@@ -432,7 +432,33 @@ footer{
   .hright{gap:4px}
   .pill{padding:4px 8px;font-size:8px}
 }
-/* ── AUTO-REFRESH COUNTDOWN ── */
+/* ── FLOATING BACK BUTTON (always on top) ── */
+#floatback{
+  position:fixed;bottom:24px;right:24px;z-index:9999;
+  display:none;
+  align-items:center;gap:8px;
+  padding:10px 18px;
+  font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;
+  color:var(--bg);
+  background:var(--pink);
+  border:none;cursor:pointer;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  box-shadow:0 0 24px rgba(255,0,144,.6),0 0 48px rgba(255,0,144,.3);
+  animation:floatpulse 2s ease-in-out infinite;
+  transition:transform .15s;
+}
+#floatback:hover{transform:scale(1.06)}
+#floatback.visible{display:flex}
+@keyframes floatpulse{
+  0%,100%{box-shadow:0 0 24px rgba(255,0,144,.6),0 0 48px rgba(255,0,144,.3)}
+  50%    {box-shadow:0 0 36px rgba(255,0,144,.9),0 0 64px rgba(255,0,144,.5)}
+}
+/* keyboard hint */
+#floatback .kbhint{
+  font-size:7px;opacity:.7;letter-spacing:1px;
+  border:1px solid rgba(0,0,0,.3);padding:1px 5px;border-radius:2px;
+  background:rgba(0,0,0,.2);
+}
 /* ══════════════════════════════════════
    IFRAME VIEWER OVERLAY
 ══════════════════════════════════════ */
@@ -702,7 +728,10 @@ footer{
 
 </div><!-- /#app -->
 
-<!-- ══ IFRAME VIEWER ══ -->
+<!-- ══ FLOATING BACK BUTTON ══ -->
+<button id="floatback" onclick="closeViewer()">
+  ← HUB <span class="kbhint">ESC</span>
+</button>
 <div id="viewer">
   <div id="vbar">
     <div id="vtitle">— NODE VIEWER —</div>
@@ -771,6 +800,7 @@ function openViewer(url, name){
   vtitle.textContent = '▶ ' + name.toUpperCase();
   viewer.classList.add('open');
   document.body.style.overflow='hidden';
+  document.getElementById('floatback').classList.add('visible');
   loadFrame();
   startViewerTimer();
 }
@@ -805,6 +835,7 @@ function startViewerTimer(){
 function closeViewer(){
   viewer.classList.remove('open');
   document.body.style.overflow='';
+  document.getElementById('floatback').classList.remove('visible');
   clearInterval(viewerTimer);
   vframe.src='about:blank';
   currentUrl='';
@@ -813,6 +844,11 @@ function closeViewer(){
 function openExternal(){
   if(currentUrl) window.open(currentUrl,'_blank');
 }
+
+/* ESC key → back to hub */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape' && viewer.classList.contains('open')) closeViewer();
+});
 
 /* ── Card click → open in iframe ── */
 function go(e, name){
