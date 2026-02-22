@@ -4,372 +4,267 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>NIFTY Indian Markets HUB — Intelligence Hub</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 
-/* ── CYBER NEON PALETTE ── */
 :root{
-  --bg:   #02000a;
-  --panel:#06040f;
-  --p2:   #0b0818;
-  --cyan: #00f5ff;
-  --pink: #ff0090;
-  --yel:  #ffe000;
-  --grn:  #00ff88;
-  --pur:  #9d00ff;
-  --red:  #ff2255;
-  --bc:   rgba(0,245,255,.12);
-  --bp:   rgba(255,0,144,.12);
-  --b1:   rgba(0,245,255,.07);
-  --b2:   rgba(0,245,255,.14);
-  --tx:   rgba(220,240,255,.97);
-  --t2:   rgba(0,245,255,.75);
-  --t3:   rgba(0,245,255,.55);
+  --bg:#02000a;--panel:#06040f;--p2:#0b0818;
+  --cyan:#00f5ff;--pink:#ff0090;--yel:#ffe000;
+  --grn:#00ff88;--pur:#9d00ff;--red:#ff2255;
+  --bc:rgba(0,245,255,.12);--bp:rgba(255,0,144,.12);
+  --b1:rgba(0,245,255,.07);--b2:rgba(0,245,255,.14);
+  --tx:rgba(220,240,255,.97);--t2:rgba(0,245,255,.75);--t3:rgba(0,245,255,.45);
 }
 
-body{
-  background:var(--bg);
-  color:var(--tx);
-  font-family:'Rajdhani',sans-serif;
-  font-weight:500;
-  overflow-x:hidden;
-  min-height:100vh;
-}
+body{background:var(--bg);color:var(--tx);font-family:'Rajdhani',sans-serif;font-weight:500;overflow-x:hidden;min-height:100vh;}
 
-/* ── GRID BG ── */
-body::before{
-  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    linear-gradient(rgba(0,245,255,.028) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,245,255,.028) 1px,transparent 1px);
-  background-size:48px 48px;
-}
-
-/* ── CORNER GLOW ── */
-body::after{
-  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(ellipse 55% 45% at 5% 50%,  rgba(0,245,255,.055) 0%,transparent 65%),
-    radial-gradient(ellipse 45% 55% at 95% 50%,  rgba(255,0,144,.055) 0%,transparent 65%),
-    radial-gradient(ellipse 35% 25% at 50% 100%, rgba(157,0,255,.06) 0%,transparent 60%);
-}
-
-/* ── CRT SCANLINES ── */
-#scan{
-  position:fixed;inset:0;z-index:998;pointer-events:none;
-  background:repeating-linear-gradient(
-    0deg,transparent,transparent 2px,
-    rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px
-  );
-}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:linear-gradient(rgba(0,245,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,.028) 1px,transparent 1px);
+  background-size:48px 48px;}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 55% 45% at 5% 50%,rgba(0,245,255,.055) 0%,transparent 65%),
+    radial-gradient(ellipse 45% 55% at 95% 50%,rgba(255,0,144,.055) 0%,transparent 65%),
+    radial-gradient(ellipse 35% 25% at 50% 100%,rgba(157,0,255,.06) 0%,transparent 60%);}
+#scan{position:fixed;inset:0;z-index:998;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.06) 2px,rgba(0,0,0,.06) 4px);}
 
 #app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
 
-/* ══════════════════════════════════════
-   TOPBAR
-══════════════════════════════════════ */
-.tb{
-  background:rgba(0,0,0,.85);
-  border-bottom:1px solid var(--cyan);
-  padding:4px 18px;
+/* ══ TOPBAR ══ */
+.tb{background:rgba(0,0,0,.85);border-bottom:1px solid var(--cyan);padding:4px 18px;
   display:flex;justify-content:space-between;align-items:center;
   font-family:'Orbitron',monospace;font-size:9px;letter-spacing:2px;
-  position:relative;z-index:10;
-  box-shadow:0 0 20px rgba(0,245,255,.1);
-}
+  position:relative;z-index:10;box-shadow:0 0 20px rgba(0,245,255,.1);}
 .tb-l{color:var(--cyan);font-weight:600}
 .tb-r{display:flex;gap:16px;color:var(--t3)}
-.tb-r .v{color:var(--t2)}
-.tb-r .live{color:var(--grn)}
+.tb-r .v{color:var(--t2)}.tb-r .live{color:var(--grn)}
 
-/* pulsing dot */
-.dot{
-  display:inline-block;width:6px;height:6px;border-radius:50%;
-  background:var(--grn);box-shadow:0 0 8px var(--grn);
-  animation:blink 1.4s ease-in-out infinite;
-  margin-right:5px;vertical-align:middle;
-}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--grn);
+  box-shadow:0 0 8px var(--grn);animation:blink 1.4s ease-in-out infinite;
+  margin-right:5px;vertical-align:middle;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.08}}
 
-/* ══════════════════════════════════════
-   HEADER
-══════════════════════════════════════ */
-header{
-  background:rgba(6,4,15,.95);
-  border-bottom:1px solid var(--bc);
-  padding:13px 18px;
-  display:flex;align-items:center;justify-content:space-between;
-  gap:12px;flex-wrap:wrap;
-  position:sticky;top:0;z-index:90;
-  backdrop-filter:blur(12px);
-  box-shadow:0 1px 0 rgba(0,245,255,.2),0 4px 20px rgba(0,0,0,.6);
-}
-header::after{
-  content:'';
-  position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--cyan),var(--pink),var(--cyan),transparent);
-  opacity:.6;
-}
+/* ══ HEADER ══ */
+header{background:rgba(6,4,15,.95);border-bottom:1px solid var(--bc);padding:13px 18px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  position:sticky;top:0;z-index:90;backdrop-filter:blur(12px);
+  box-shadow:0 1px 0 rgba(0,245,255,.2),0 4px 20px rgba(0,0,0,.6);}
+header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--cyan),var(--pink),var(--cyan),transparent);opacity:.6;}
 
 .brand{display:flex;align-items:center;gap:14px}
-
-/* Hexagonal logo */
-.logo{
-  width:50px;height:50px;flex-shrink:0;
+.logo{width:50px;height:50px;flex-shrink:0;
   clip-path:polygon(50% 0%,95% 25%,95% 75%,50% 100%,5% 75%,5% 25%);
   background:linear-gradient(135deg,rgba(0,245,255,.18),rgba(255,0,144,.12));
-  border:1px solid var(--cyan);
-  display:flex;align-items:center;justify-content:center;font-size:22px;
+  border:1px solid var(--cyan);display:flex;align-items:center;justify-content:center;font-size:22px;
   box-shadow:0 0 22px rgba(0,245,255,.35),inset 0 0 14px rgba(0,245,255,.06);
-  animation:hexglow 3s ease-in-out infinite;
-}
+  animation:hexglow 3s ease-in-out infinite;}
 @keyframes hexglow{
   0%,100%{box-shadow:0 0 22px rgba(0,245,255,.35),inset 0 0 14px rgba(0,245,255,.06)}
-  50%    {box-shadow:0 0 40px rgba(0,245,255,.6), inset 0 0 20px rgba(0,245,255,.12)}
-}
-
-.bname{
-  font-family:'Orbitron',sans-serif;
-  font-size:16px;font-weight:700;letter-spacing:2px;
-  color:var(--cyan);
-  text-shadow:0 0 20px rgba(0,245,255,.5),0 0 40px rgba(0,245,255,.2);
-}
+  50%{box-shadow:0 0 40px rgba(0,245,255,.6),inset 0 0 20px rgba(0,245,255,.12)}}
+.bname{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;letter-spacing:2px;
+  color:var(--cyan);text-shadow:0 0 20px rgba(0,245,255,.5),0 0 40px rgba(0,245,255,.2);}
 .bname span{color:var(--pink);text-shadow:0 0 20px rgba(255,0,144,.5)}
 .bsub{font-size:9px;color:var(--t3);letter-spacing:3px;margin-top:4px;font-family:'Orbitron',sans-serif}
-
 .hright{display:flex;gap:8px;flex-wrap:wrap}
-.pill{
-  padding:5px 12px;font-size:9px;letter-spacing:2px;
-  font-family:'Orbitron',sans-serif;text-transform:uppercase;
-  border:1px solid var(--bc);color:var(--t2);
-  background:rgba(0,245,255,.03);
-  clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
-}
+.pill{padding:5px 12px;font-size:9px;letter-spacing:2px;font-family:'Orbitron',sans-serif;
+  text-transform:uppercase;border:1px solid var(--bc);color:var(--t2);background:rgba(0,245,255,.03);
+  clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);}
 .pill.g{border-color:rgba(0,255,136,.3);color:var(--grn);background:rgba(0,255,136,.04)}
 .pill.p{border-color:rgba(255,0,144,.3);color:var(--pink);background:rgba(255,0,144,.04)}
 
-/* ══════════════════════════════════════
-   LIVE TICKER
-══════════════════════════════════════ */
-.tkr{
-  background:rgba(0,0,0,.7);
-  border-bottom:1px solid var(--b1);
-  padding:5px 0;overflow:hidden;white-space:nowrap;position:relative;
+/* ══════════════════════════════════════════
+   SAMPLE E — SPLIT PANEL MARKET BAR
+   India | Global — silent bg refresh
+══════════════════════════════════════════ */
+.mbar{
+  display:grid;
+  grid-template-columns:38px 1fr 38px 1fr;
+  background:rgba(0,0,0,.82);
+  border-bottom:1px solid rgba(0,245,255,.12);
+  position:relative;z-index:5;
+  overflow:hidden;
 }
-.tkr::before,.tkr::after{
-  content:'';position:absolute;top:0;bottom:0;width:70px;z-index:2;pointer-events:none;
+/* rainbow bottom line */
+.mbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,var(--cyan),var(--pink),var(--yel),var(--pur),var(--cyan));opacity:.35;}
+
+/* Section labels (vertical text) */
+.mbar-label{
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  gap:4px;padding:6px 4px;flex-shrink:0;
 }
+.mbar-label.india{
+  background:linear-gradient(180deg,rgba(0,245,255,.06),rgba(0,245,255,.02));
+  border-right:1px solid rgba(0,245,255,.12);
+}
+.mbar-label.global{
+  background:linear-gradient(180deg,rgba(255,224,0,.05),rgba(255,224,0,.01));
+  border-right:1px solid rgba(255,224,0,.12);
+  border-left:1px solid rgba(0,245,255,.08);
+}
+.mbar-label-flag{font-size:12px;line-height:1;}
+.mbar-label-txt{
+  writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);
+  font-family:'Orbitron',monospace;font-size:6px;letter-spacing:2px;
+}
+.mbar-label.india .mbar-label-txt{color:var(--cyan);}
+.mbar-label.global .mbar-label-txt{color:var(--yel);}
+
+/* Items container */
+.mbar-items{display:flex;overflow-x:auto;scrollbar-width:none;align-items:stretch;}
+.mbar-items::-webkit-scrollbar{display:none;}
+
+/* Individual item */
+.mbar-item{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:7px 16px 6px;
+  border-right:1px solid rgba(0,245,255,.06);
+  flex-shrink:0;min-width:110px;position:relative;
+  transition:background .2s;
+}
+.mbar-item:hover{background:rgba(0,245,255,.03);}
+.mbar-item:last-child{border-right:none;}
+
+/* Coloured top micro-line per item */
+.mbar-item::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:var(--ic,rgba(0,245,255,.3));opacity:.4;}
+
+.mbar-name{
+  font-family:'Orbitron',monospace;font-size:7px;letter-spacing:1.5px;
+  color:var(--t3);margin-bottom:3px;white-space:nowrap;
+}
+.mbar-val{
+  font-family:'Share Tech Mono',monospace;font-size:15px;font-weight:700;
+  color:var(--ic,var(--tx));
+  text-shadow:0 0 8px var(--is,rgba(0,245,255,.3));
+  line-height:1;white-space:nowrap;
+  /* smooth number transition - no layout shift */
+  transition:color .3s;
+}
+.mbar-chg{
+  font-family:'Share Tech Mono',monospace;font-size:10px;
+  margin-top:3px;white-space:nowrap;display:flex;align-items:center;gap:4px;
+}
+.mbar-chg.up{color:var(--grn);}
+.mbar-chg.dn{color:var(--red);}
+.mbar-chg.vix{color:var(--yel);}
+
+/* VIX gets yellow colour */
+.mbar-item.is-vix .mbar-val{color:var(--yel);text-shadow:0 0 8px rgba(255,224,0,.35);}
+
+/* Flash animation on silent update — briefly pulse the value */
+@keyframes val-flash{0%{opacity:.4}50%{opacity:1}100%{opacity:1}}
+.val-updated{animation:val-flash .5s ease;}
+
+/* Separator between India/Global */
+.mbar-divider{width:1px;background:linear-gradient(180deg,transparent,rgba(0,245,255,.15),transparent);flex-shrink:0;}
+
+/* Last updated indicator (tiny, non-disruptive) */
+.mbar-updated{
+  position:absolute;bottom:2px;right:6px;
+  font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1px;color:rgba(0,245,255,.2);
+}
+
+/* ══ TICKER ══ */
+.tkr{background:rgba(0,0,0,.7);border-bottom:1px solid var(--b1);
+  padding:5px 0;overflow:hidden;white-space:nowrap;position:relative;}
+.tkr::before,.tkr::after{content:'';position:absolute;top:0;bottom:0;width:70px;z-index:2;pointer-events:none;}
 .tkr::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
-.tkr::after {right:0;background:linear-gradient(-90deg,var(--bg),transparent)}
+.tkr::after{right:0;background:linear-gradient(-90deg,var(--bg),transparent)}
 .tkr-t{display:inline-flex;animation:tscroll 32s linear infinite}
 @keyframes tscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.ti{
-  display:inline-flex;align-items:center;gap:9px;
-  padding:0 20px;font-size:11px;font-family:'Orbitron',monospace;
-  border-right:1px solid rgba(0,245,255,.08);
-}
+.ti{display:inline-flex;align-items:center;gap:9px;padding:0 20px;font-size:11px;
+  font-family:'Orbitron',monospace;border-right:1px solid rgba(0,245,255,.08);}
 .ti .s{color:var(--cyan);font-size:9px;letter-spacing:1.5px;font-weight:600}
 .up{color:var(--grn)}.dn{color:var(--red)}
 
-/* ══════════════════════════════════════
-   STATS BAR
-══════════════════════════════════════ */
-.stats{
-  display:grid;grid-template-columns:repeat(4,1fr);
-  background:rgba(0,245,255,.06);gap:1px;
-  border-bottom:1px solid var(--bc);
-}
-.sb{
-  background:var(--panel);padding:11px 16px;position:relative;overflow:hidden;
-}
-.sb::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:var(--sc,var(--cyan));
-  box-shadow:0 0 8px var(--sc,var(--cyan));
-}
-.sb::after{
-  content:var(--sg,'◈');
-  position:absolute;bottom:-6px;right:8px;
-  font-size:40px;color:rgba(0,245,255,.04);pointer-events:none;line-height:1;
-  font-family:'Orbitron',sans-serif;
-}
-.sb .l{
-  font-family:'Orbitron',sans-serif;font-size:8px;color:var(--t3);
-  letter-spacing:2.5px;text-transform:uppercase;margin-bottom:5px;
-}
-.sb .v{
-  font-family:'Orbitron',sans-serif;
-  font-size:16px;font-weight:700;color:var(--sc,var(--cyan));
-  text-shadow:0 0 12px currentColor;
-}
+/* ══ STATS BAR ══ */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);background:rgba(0,245,255,.06);gap:1px;border-bottom:1px solid var(--bc);}
+.sb{background:var(--panel);padding:11px 16px;position:relative;overflow:hidden;}
+.sb::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--sc,var(--cyan));box-shadow:0 0 8px var(--sc,var(--cyan));}
+.sb::after{content:var(--sg,'◈');position:absolute;bottom:-6px;right:8px;font-size:40px;color:rgba(0,245,255,.04);pointer-events:none;line-height:1;font-family:'Orbitron',sans-serif;}
+.sb .l{font-family:'Orbitron',sans-serif;font-size:8px;color:var(--t3);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:5px;}
+.sb .v{font-family:'Orbitron',sans-serif;font-size:16px;font-weight:700;color:var(--sc,var(--cyan));text-shadow:0 0 12px currentColor;}
 .sb .s{font-size:10px;color:var(--t2);margin-top:3px}
 
-/* ══════════════════════════════════════
-   SECTION HEADER
-══════════════════════════════════════ */
-.sec{
-  padding:11px 18px 9px;
-  display:flex;align-items:center;gap:10px;
-  border-bottom:1px solid var(--b1);
-}
+/* ══ SECTION ══ */
+.sec{padding:11px 18px 9px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--b1);}
 .sec-bar{width:3px;height:13px;background:var(--cyan);box-shadow:0 0 8px var(--cyan);flex-shrink:0}
-.sec-txt{
-  font-family:'Orbitron',sans-serif;font-size:9px;
-  color:var(--cyan);letter-spacing:3px;text-transform:uppercase;font-weight:600;
-  text-shadow:0 0 10px rgba(0,245,255,.4);
-}
-.sec-bdg{
-  margin-left:auto;font-family:'Orbitron',sans-serif;font-size:8px;
-  color:var(--pink);border:1px solid rgba(255,0,144,.3);
-  padding:2px 10px;letter-spacing:2px;
-  background:rgba(255,0,144,.05);
-}
+.sec-txt{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;font-weight:600;text-shadow:0 0 10px rgba(0,245,255,.4);}
+.sec-bdg{margin-left:auto;font-family:'Orbitron',sans-serif;font-size:8px;color:var(--pink);border:1px solid rgba(255,0,144,.3);padding:2px 10px;letter-spacing:2px;background:rgba(255,0,144,.05);}
 
-/* ══════════════════════════════════════
-   SAMPLE C — SECTOR PODS GROUPS
-══════════════════════════════════════ */
-.groups{
-  display:flex;flex-direction:column;gap:0;
-  margin:14px 18px 18px;
-}
-
-.sc-group{
-  position:relative;
-  border:1px solid var(--ga, rgba(0,245,255,.15));
-  margin-bottom:14px;
-}
+/* ══ GROUPS (Sample C pods) ══ */
+.groups{display:flex;flex-direction:column;gap:0;margin:14px 18px 18px;}
+.sc-group{position:relative;border:1px solid var(--ga,rgba(0,245,255,.15));margin-bottom:14px;}
 .sc-group:last-child{margin-bottom:0;}
-.sc-group::before{
-  content:'';position:absolute;inset:-1px;
+.sc-group::before{content:'';position:absolute;inset:-1px;
   background:linear-gradient(135deg,var(--ga,rgba(0,245,255,.15)),transparent 40%,transparent 60%,var(--gb,rgba(255,0,144,.08)));
-  pointer-events:none;z-index:0;opacity:.5;
-}
+  pointer-events:none;z-index:0;opacity:.5;}
 .sc-inner{position:relative;z-index:1;background:rgba(6,4,15,.96);}
-
-.sc-head{
-  padding:10px 16px;border-bottom:1px solid rgba(0,245,255,.08);
-  display:flex;align-items:center;gap:12px;
-  background:linear-gradient(90deg,rgba(6,4,15,.99),rgba(6,4,15,.85));
-}
-.sc-head-hex{
-  width:36px;height:36px;flex-shrink:0;
+.sc-head{padding:10px 16px;border-bottom:1px solid rgba(0,245,255,.08);display:flex;align-items:center;gap:12px;
+  background:linear-gradient(90deg,rgba(6,4,15,.99),rgba(6,4,15,.85));}
+.sc-head-hex{width:36px;height:36px;flex-shrink:0;
   clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
   background:linear-gradient(135deg,rgba(0,245,255,.12),rgba(255,0,144,.06));
-  border:1px solid var(--gc,var(--cyan));
-  display:flex;align-items:center;justify-content:center;font-size:16px;
-  box-shadow:0 0 14px rgba(0,245,255,.2);
-  animation:hexglow2 3s ease-in-out infinite;
-}
-@keyframes hexglow2{
-  0%,100%{box-shadow:0 0 10px rgba(0,245,255,.2)}
-  50%{box-shadow:0 0 22px rgba(0,245,255,.45)}
-}
+  border:1px solid var(--gc,var(--cyan));display:flex;align-items:center;justify-content:center;font-size:16px;
+  box-shadow:0 0 14px rgba(0,245,255,.2);animation:hexglow2 3s ease-in-out infinite;}
+@keyframes hexglow2{0%,100%{box-shadow:0 0 10px rgba(0,245,255,.2)}50%{box-shadow:0 0 22px rgba(0,245,255,.45)}}
 .sc-head-info{flex:1;}
 .sc-head-tag{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:2.5px;color:var(--t3);margin-bottom:2px;}
-.sc-head-name{font-family:'Orbitron',monospace;font-size:12px;letter-spacing:2px;color:var(--gc,var(--cyan));
-  text-shadow:0 0 12px rgba(0,245,255,.4);}
+.sc-head-name{font-family:'Orbitron',monospace;font-size:12px;letter-spacing:2px;color:var(--gc,var(--cyan));text-shadow:0 0 12px rgba(0,245,255,.4);}
 .sc-head-right{text-align:right;flex-shrink:0;}
-.sc-head-status{font-family:'Orbitron',monospace;font-size:8px;color:var(--grn);
-  display:flex;align-items:center;gap:5px;justify-content:flex-end;}
+.sc-head-status{font-family:'Orbitron',monospace;font-size:8px;color:var(--grn);display:flex;align-items:center;gap:5px;justify-content:flex-end;}
 .sc-head-nodes{font-size:9px;color:var(--t3);margin-top:3px;font-family:'Orbitron',monospace;letter-spacing:1px;}
-
 .sc-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
-
-.sc-card{
-  padding:16px;border-right:1px solid rgba(0,245,255,.07);
-  cursor:pointer;position:relative;overflow:hidden;
-  transition:background .2s;text-decoration:none;color:inherit;display:block;
-}
+.sc-card{padding:16px;border-right:1px solid rgba(0,245,255,.07);cursor:pointer;position:relative;overflow:hidden;transition:background .2s;text-decoration:none;color:inherit;display:block;}
 .sc-card:last-child{border-right:none;}
 .sc-card:hover{background:rgba(0,245,255,.03);}
-
-/* scan-line sweep on hover (matches original) */
-.sc-card::before{
-  content:'';position:absolute;inset:0;z-index:0;
+.sc-card::before{content:'';position:absolute;inset:0;z-index:0;
   background:linear-gradient(180deg,transparent 0%,rgba(0,245,255,.025) 50%,transparent 100%);
-  background-size:100% 40px;opacity:0;transition:opacity .25s;
-  animation:scanmove 2s linear infinite;
-}
+  background-size:100% 40px;opacity:0;transition:opacity .25s;animation:scanmove 2s linear infinite;}
 @keyframes scanmove{0%{background-position:0 -40px}100%{background-position:0 200px}}
 .sc-card:hover::before{opacity:1;}
-
 .sc-card-inner{position:relative;z-index:2;}
-
-/* corner bracket (matches original style) */
-.sc-card .brk{
-  position:absolute;bottom:10px;right:10px;width:12px;height:12px;z-index:3;
-  border-bottom:1px solid var(--t3);border-right:1px solid var(--t3);transition:.2s;
-}
+.sc-card .brk{position:absolute;bottom:10px;right:10px;width:12px;height:12px;z-index:3;border-bottom:1px solid var(--t3);border-right:1px solid var(--t3);transition:.2s;}
 .sc-card:hover .brk{border-color:var(--cc,var(--cyan));box-shadow:2px 2px 6px rgba(0,245,255,.2);width:16px;height:16px;bottom:8px;right:8px;}
-
-/* top glow indicator per card */
 .sc-card-topbar{height:1px;margin:-16px -16px 14px;background:linear-gradient(90deg,var(--cc,var(--cyan)),transparent);opacity:.5;transition:opacity .2s;}
 .sc-card:hover .sc-card-topbar{opacity:1;}
-
 .sc-card-glow{position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;
   background:radial-gradient(var(--cc,rgba(0,245,255,.08)),transparent 70%);pointer-events:none;z-index:1;}
-
 .sc-card-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
-.sc-card-ico-wrap{width:38px;height:38px;flex-shrink:0;position:relative;
-  display:flex;align-items:center;justify-content:center;}
+.sc-card-ico-wrap{width:38px;height:38px;flex-shrink:0;position:relative;display:flex;align-items:center;justify-content:center;}
 .sc-card-ico{font-size:20px;}
-.sc-card-ring{position:absolute;inset:0;border:1px solid var(--cc,rgba(0,245,255,.3));border-radius:50%;
-  animation:spin-slow 8s linear infinite;}
+.sc-card-ring{position:absolute;inset:0;border:1px solid var(--cc,rgba(0,245,255,.3));border-radius:50%;animation:spin-slow 8s linear infinite;}
 @keyframes spin-slow{to{transform:rotate(360deg)}}
-.sc-card-ring::before{content:'';position:absolute;top:-2px;left:50%;transform:translateX(-50%);
-  width:4px;height:4px;border-radius:50%;background:var(--cc,var(--cyan));
-  box-shadow:0 0 8px var(--cc,var(--cyan));}
+.sc-card-ring::before{content:'';position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--cc,var(--cyan));box-shadow:0 0 8px var(--cc,var(--cyan));}
 .sc-card-label{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:2px;color:var(--t3);}
-
-.sc-card-name{
-  font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:1px;
-  color:var(--cc,var(--cyan));margin-bottom:6px;line-height:1.3;
-  text-shadow:0 0 10px rgba(0,245,255,.25);
-}
+.sc-card-name{font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:1px;color:var(--cc,var(--cyan));margin-bottom:6px;line-height:1.3;text-shadow:0 0 10px rgba(0,245,255,.25);}
 .sc-card-desc{font-size:12px;color:rgba(180,210,240,.85);line-height:1.5;margin-bottom:12px;}
-
-.sc-card-footer{
-  display:flex;align-items:center;justify-content:space-between;
-  border-top:1px solid rgba(0,245,255,.08);padding-top:9px;
-}
-.sc-card-tag{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:1.5px;
-  padding:2px 7px;border:1px solid rgba(0,245,255,.1);color:var(--t3);}
-.sc-card-btn{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:2px;
-  color:var(--cc,var(--cyan));display:flex;align-items:center;gap:6px;
-  text-shadow:0 0 8px currentColor;transition:gap .18s;}
+.sc-card-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid rgba(0,245,255,.08);padding-top:9px;}
+.sc-card-tag{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:1.5px;padding:2px 7px;border:1px solid rgba(0,245,255,.1);color:var(--t3);}
+.sc-card-btn{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:2px;color:var(--cc,var(--cyan));display:flex;align-items:center;gap:6px;text-shadow:0 0 8px currentColor;transition:gap .18s;}
 .sc-card-btn-line{width:18px;height:1px;background:var(--cc,var(--cyan));transition:width .18s;}
 .sc-card:hover .sc-card-btn{gap:10px;}
 .sc-card:hover .sc-card-btn-line{width:28px;}
-
-/* ripple effect */
 @keyframes rpl{0%{transform:scale(0);opacity:.35}100%{transform:scale(4);opacity:0}}
-.rpl{
-  position:absolute;width:60px;height:60px;border-radius:50%;
-  background:rgba(0,245,255,.15);pointer-events:none;
-  animation:rpl .55s ease-out forwards;transform-origin:center;z-index:5;
-}
+.rpl{position:absolute;width:60px;height:60px;border-radius:50%;background:rgba(0,245,255,.15);pointer-events:none;animation:rpl .55s ease-out forwards;transform-origin:center;z-index:5;}
 
-/* ══════════════════════════════════════
-   FOOTER
-══════════════════════════════════════ */
-footer{
-  background:rgba(0,0,0,.85);
-  border-top:1px solid var(--bc);
-  padding:9px 18px;
-  display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;
-  font-family:'Orbitron',sans-serif;
-  box-shadow:0 0 20px rgba(0,245,255,.06);
-}
+/* ══ FOOTER ══ */
+footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:9px 18px;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;font-family:'Orbitron',sans-serif;
+  box-shadow:0 0 20px rgba(0,245,255,.06);}
 .fl{font-size:8px;color:var(--t3);letter-spacing:2px;text-transform:uppercase}
 .fl span{color:var(--cyan);text-shadow:0 0 8px rgba(0,245,255,.4)}
 .fr{font-size:8px;color:rgba(0,245,255,.45);letter-spacing:1px}
 
-/* ══════════════════════════════════════
-   RESPONSIVE
-══════════════════════════════════════ */
-@media(max-width:900px){
+/* ══ RESPONSIVE ══ */
+@media(max-width:960px){
   .stats{grid-template-columns:repeat(2,1fr)}
+  .mbar{grid-template-columns:30px 1fr 30px 1fr;}
+  .mbar-item{min-width:90px;padding:6px 10px;}
+  .mbar-val{font-size:13px;}
 }
 @media(max-width:700px){
   .sc-cards{grid-template-columns:1fr;}
@@ -377,9 +272,11 @@ footer{
   .sc-card:last-child{border-bottom:none;}
   .stats{grid-template-columns:repeat(2,1fr)}
   .groups{margin:8px 10px 14px;}
+  .mbar{grid-template-columns:24px 1fr 24px 1fr;}
+  .mbar-label-txt{display:none;}
+  .mbar-item{min-width:80px;padding:5px 8px;}
 }
 @media(max-width:560px){
-  .tb-l .ver{display:none}
   header{padding:10px 12px}
   .bsub,.pill.p{display:none}
   .bname{font-size:13px}.logo{width:40px;height:40px;font-size:18px}
@@ -388,47 +285,31 @@ footer{
   .sb .l{font-size:7px}.sb .v{font-size:13px}
   .sc-head-name{font-size:10px;}
   .sc-cards{grid-template-columns:1fr;}
-}
-@media(max-width:400px){
-  .stats{grid-template-columns:repeat(2,1fr)}
-  .groups{margin:4px 6px 10px}
-  .hright{gap:4px}
-  .pill{padding:4px 8px;font-size:8px}
+  .mbar{grid-template-columns:1fr;}
+  .mbar-label{display:none;}
+  .mbar-items{flex-wrap:wrap;}
 }
 
 /* ── FLOATING BACK BUTTON ── */
-#floatback{
-  position:fixed;bottom:24px;right:24px;z-index:9999;
-  display:none;align-items:center;gap:8px;padding:10px 18px;
+#floatback{position:fixed;bottom:24px;right:24px;z-index:9999;display:none;align-items:center;gap:8px;padding:10px 18px;
   font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;
   color:var(--bg);background:var(--pink);border:none;cursor:pointer;
   clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
   box-shadow:0 0 24px rgba(255,0,144,.6),0 0 48px rgba(255,0,144,.3);
-  animation:floatpulse 2s ease-in-out infinite;transition:transform .15s;
-}
+  animation:floatpulse 2s ease-in-out infinite;transition:transform .15s;}
 #floatback:hover{transform:scale(1.06)}
 #floatback.visible{display:flex}
 @keyframes floatpulse{
   0%,100%{box-shadow:0 0 24px rgba(255,0,144,.6),0 0 48px rgba(255,0,144,.3)}
-  50%    {box-shadow:0 0 36px rgba(255,0,144,.9),0 0 64px rgba(255,0,144,.5)}
-}
-#floatback .kbhint{
-  font-size:7px;opacity:.7;letter-spacing:1px;
-  border:1px solid rgba(0,0,0,.3);padding:1px 5px;border-radius:2px;background:rgba(0,0,0,.2);
-}
+  50%{box-shadow:0 0 36px rgba(255,0,144,.9),0 0 64px rgba(255,0,144,.5)}}
+#floatback .kbhint{font-size:7px;opacity:.7;letter-spacing:1px;border:1px solid rgba(0,0,0,.3);padding:1px 5px;border-radius:2px;background:rgba(0,0,0,.2);}
 
-/* ══════════════════════════════════════
-   IFRAME VIEWER OVERLAY
-══════════════════════════════════════ */
+/* ══ IFRAME VIEWER ══ */
 #viewer{position:fixed;inset:0;z-index:500;display:none;flex-direction:column;background:var(--bg);}
 #viewer.open{display:flex}
-
-#vbar{
-  background:rgba(0,0,0,.92);border-bottom:1px solid var(--cyan);
-  padding:6px 14px;display:flex;align-items:center;gap:12px;
-  font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;
-  flex-shrink:0;box-shadow:0 0 20px rgba(0,245,255,.15);position:relative;z-index:501;
-}
+#vbar{background:rgba(0,0,0,.92);border-bottom:1px solid var(--cyan);padding:6px 14px;
+  display:flex;align-items:center;gap:12px;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;
+  flex-shrink:0;box-shadow:0 0 20px rgba(0,245,255,.15);position:relative;z-index:501;}
 #vtitle{color:var(--cyan);font-weight:700;font-size:11px;text-shadow:0 0 12px rgba(0,245,255,.5);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .vring{display:flex;align-items:center;gap:6px;color:var(--yel)}
 .vring svg{transform:rotate(-90deg);width:16px;height:16px;flex-shrink:0}
@@ -440,7 +321,6 @@ footer{
 #vclose{padding:5px 14px;font-size:8px;letter-spacing:2px;font-family:'Orbitron',sans-serif;text-transform:uppercase;border:1px solid rgba(255,0,144,.4);color:var(--pink);background:rgba(255,0,144,.05);cursor:pointer;transition:background .15s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);}
 #vclose:hover{background:rgba(255,0,144,.15)}
 #vframe{flex:1;border:none;width:100%;background:#000;}
-
 #vload{position:absolute;inset:48px 0 0 0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;pointer-events:none;transition:opacity .4s;}
 #vload.hidden{opacity:0}
 .lspinner{width:40px;height:40px;border-radius:50%;border:2px solid rgba(0,245,255,.1);border-top-color:var(--cyan);animation:spin 1s linear infinite;box-shadow:0 0 16px rgba(0,245,255,.3);}
@@ -477,6 +357,87 @@ footer{
   </div>
 </header>
 
+<!-- ══════════════════════════════════════
+     SAMPLE E — LIVE MARKET BAR
+     India (Cyan) | Global (Yellow)
+     Values update silently in background
+══════════════════════════════════════ -->
+<div class="mbar" id="mbar">
+
+  <!-- INDIA LABEL -->
+  <div class="mbar-label india">
+    <div class="mbar-label-flag">🇮🇳</div>
+    <div class="mbar-label-txt">INDIA</div>
+  </div>
+
+  <!-- INDIA ITEMS -->
+  <div class="mbar-items" id="mbar-india">
+    <div class="mbar-item" id="mi-n50" style="--ic:var(--cyan);--is:rgba(0,245,255,.3);">
+      <div class="mbar-name">NIFTY 50</div>
+      <div class="mbar-val" id="mv-n50">···</div>
+      <div class="mbar-chg" id="mc-n50">···</div>
+    </div>
+    <div class="mbar-item" id="mi-bn" style="--ic:var(--pink);--is:rgba(255,0,144,.3);">
+      <div class="mbar-name">BANK NIFTY</div>
+      <div class="mbar-val" id="mv-bn">···</div>
+      <div class="mbar-chg" id="mc-bn">···</div>
+    </div>
+    <div class="mbar-item is-vix" id="mi-vix" style="--ic:var(--yel);--is:rgba(255,224,0,.3);">
+      <div class="mbar-name">INDIA VIX</div>
+      <div class="mbar-val" id="mv-vix">···</div>
+      <div class="mbar-chg vix" id="mc-vix">···</div>
+    </div>
+    <div class="mbar-item" id="mi-fn" style="--ic:var(--grn);--is:rgba(0,255,136,.3);">
+      <div class="mbar-name">FINNIFTY</div>
+      <div class="mbar-val" id="mv-fn">···</div>
+      <div class="mbar-chg" id="mc-fn">···</div>
+    </div>
+    <div class="mbar-item" id="mi-sx" style="--ic:var(--t2);--is:rgba(0,245,255,.2);">
+      <div class="mbar-name">SENSEX</div>
+      <div class="mbar-val" id="mv-sx">···</div>
+      <div class="mbar-chg" id="mc-sx">···</div>
+    </div>
+  </div>
+
+  <!-- GLOBAL LABEL -->
+  <div class="mbar-label global">
+    <div class="mbar-label-flag">🌐</div>
+    <div class="mbar-label-txt">GLOBAL</div>
+  </div>
+
+  <!-- GLOBAL ITEMS -->
+  <div class="mbar-items" id="mbar-global">
+    <div class="mbar-item" id="mi-sp" style="--ic:var(--pink);--is:rgba(255,0,144,.3);">
+      <div class="mbar-name">S&amp;P 500</div>
+      <div class="mbar-val" id="mv-sp">···</div>
+      <div class="mbar-chg" id="mc-sp">···</div>
+    </div>
+    <div class="mbar-item" id="mi-ndq" style="--ic:var(--pur);--is:rgba(157,0,255,.35);">
+      <div class="mbar-name">NASDAQ</div>
+      <div class="mbar-val" id="mv-ndq">···</div>
+      <div class="mbar-chg" id="mc-ndq">···</div>
+    </div>
+    <div class="mbar-item" id="mi-dji" style="--ic:var(--cyan);--is:rgba(0,245,255,.2);">
+      <div class="mbar-name">DOW JONES</div>
+      <div class="mbar-val" id="mv-dji">···</div>
+      <div class="mbar-chg" id="mc-dji">···</div>
+    </div>
+    <div class="mbar-item" id="mi-inr" style="--ic:var(--yel);--is:rgba(255,224,0,.25);">
+      <div class="mbar-name">USD/INR</div>
+      <div class="mbar-val" id="mv-inr">···</div>
+      <div class="mbar-chg" id="mc-inr">···</div>
+    </div>
+    <div class="mbar-item" id="mi-crude" style="--ic:rgba(255,160,0,.9);--is:rgba(255,160,0,.25);">
+      <div class="mbar-name">CRUDE OIL</div>
+      <div class="mbar-val" id="mv-crude">···</div>
+      <div class="mbar-chg" id="mc-crude">···</div>
+    </div>
+  </div>
+
+  <!-- last updated timestamp (silent, tiny) -->
+  <div class="mbar-updated" id="mbar-ts"></div>
+</div>
+
 <!-- ══ TICKER ══ -->
 <div class="tkr"><div class="tkr-t" id="tkr"></div></div>
 
@@ -511,10 +472,10 @@ footer{
   <div class="sec-bdg">8/8 ONLINE</div>
 </div>
 
-<!-- ══ GROUPED PODS (Sample C) ══ -->
+<!-- ══ GROUPED PODS ══ -->
 <div class="groups">
 
-  <!-- ════ GROUP 1: NIFTY INTELLIGENCE ════ -->
+  <!-- GROUP 1: NIFTY INTELLIGENCE -->
   <div class="sc-group" style="--ga:rgba(0,245,255,.22);--gb:rgba(0,245,255,.04);--gc:var(--cyan);">
     <div class="sc-inner">
       <div class="sc-head">
@@ -529,78 +490,50 @@ footer{
         </div>
       </div>
       <div class="sc-cards">
-
-        <!-- Nifty 50 Analyzer -->
         <a class="sc-card" href="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" onclick="go(event,'Nifty 50 Analyzer')" style="--cc:var(--cyan);">
           <div class="brk"></div>
           <div class="sc-card-inner">
-            <div class="sc-card-topbar"></div>
-            <div class="sc-card-glow"></div>
+            <div class="sc-card-topbar"></div><div class="sc-card-glow"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap">
-                <div class="sc-card-ico">📈</div>
-                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);"></div>
-              </div>
+              <div class="sc-card-ico-wrap"><div class="sc-card-ico">📈</div><div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);"></div></div>
               <div class="sc-card-label">ANALYSIS</div>
             </div>
             <div class="sc-card-name">Nifty 50 Analyzer</div>
             <div class="sc-card-desc">Deep technical analysis of all Nifty 50 stocks — RSI, MACD, EMA, support &amp; resistance levels.</div>
-            <div class="sc-card-footer">
-              <span class="sc-card-tag">NSE · NIFTY 50</span>
-              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
-            </div>
+            <div class="sc-card-footer"><span class="sc-card-tag">NSE · NIFTY 50</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
           </div>
         </a>
-
-        <!-- Nifty Indices Scanner -->
         <a class="sc-card" href="https://krishnateja08.github.io/Nifty_Indices_scanner/" onclick="go(event,'Nifty Indices Scanner')" style="--cc:var(--cyan);">
           <div class="brk"></div>
           <div class="sc-card-inner">
-            <div class="sc-card-topbar"></div>
-            <div class="sc-card-glow"></div>
+            <div class="sc-card-topbar"></div><div class="sc-card-glow"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap">
-                <div class="sc-card-ico">🔍</div>
-                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-2.5s;"></div>
-              </div>
+              <div class="sc-card-ico-wrap"><div class="sc-card-ico">🔍</div><div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-2.5s;"></div></div>
               <div class="sc-card-label">SCANNER</div>
             </div>
             <div class="sc-card-name">Nifty Indices Scanner</div>
             <div class="sc-card-desc">Real-time scanner across all Nifty indices — momentum, breakouts and sector rotation signals.</div>
-            <div class="sc-card-footer">
-              <span class="sc-card-tag">NSE · INDICES</span>
-              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
-            </div>
+            <div class="sc-card-footer"><span class="sc-card-tag">NSE · INDICES</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
           </div>
         </a>
-
-        <!-- FII / DII Pulse -->
         <a class="sc-card" href="https://krishnateja08.github.io/FII-DII_Pulse/" onclick="go(event,'FII/DII Pulse')" style="--cc:var(--cyan);">
           <div class="brk"></div>
           <div class="sc-card-inner">
-            <div class="sc-card-topbar"></div>
-            <div class="sc-card-glow"></div>
+            <div class="sc-card-topbar"></div><div class="sc-card-glow"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap">
-                <div class="sc-card-ico">🏛️</div>
-                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-5s;"></div>
-              </div>
+              <div class="sc-card-ico-wrap"><div class="sc-card-ico">🏛️</div><div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-5s;"></div></div>
               <div class="sc-card-label">INSTITUTIONAL</div>
             </div>
             <div class="sc-card-name">FII / DII Pulse</div>
             <div class="sc-card-desc">Sector-wise institutional activity — FII &amp; DII bulk/block deals with technical signals &amp; RSI.</div>
-            <div class="sc-card-footer">
-              <span class="sc-card-tag">NSE · BULK DEALS</span>
-              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
-            </div>
+            <div class="sc-card-footer"><span class="sc-card-tag">NSE · BULK DEALS</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
           </div>
         </a>
-
       </div>
     </div>
   </div>
 
-  <!-- ════ GROUP 2: OPTIONS COMMAND ════ -->
+  <!-- GROUP 2: OPTIONS COMMAND -->
   <div class="sc-group" style="--ga:rgba(255,0,144,.22);--gb:rgba(255,0,144,.04);--gc:var(--pink);">
     <div class="sc-inner">
       <div class="sc-head" style="background:linear-gradient(90deg,rgba(6,4,15,.99),rgba(6,4,15,.85));">
@@ -615,78 +548,62 @@ footer{
         </div>
       </div>
       <div class="sc-cards">
-
-        <!-- Nifty Option Chain -->
         <a class="sc-card" href="https://krishnateja08.github.io/Nifty_option_chain/" onclick="go(event,'Nifty Option Chain')" style="--cc:var(--pink);">
           <div class="brk"></div>
           <div class="sc-card-inner">
             <div class="sc-card-topbar" style="background:linear-gradient(90deg,var(--pink),transparent);"></div>
             <div class="sc-card-glow" style="background:radial-gradient(rgba(255,0,144,.1),transparent 70%);"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap">
-                <div class="sc-card-ico">⛓️</div>
-                <div class="sc-card-ring" style="border-color:rgba(255,0,144,.4);"></div>
-              </div>
+              <div class="sc-card-ico-wrap"><div class="sc-card-ico">⛓️</div><div class="sc-card-ring" style="border-color:rgba(255,0,144,.4);"></div></div>
               <div class="sc-card-label">OPTIONS</div>
             </div>
             <div class="sc-card-name" style="color:var(--pink);text-shadow:0 0 10px rgba(255,0,144,.3);">Nifty Option Chain</div>
             <div class="sc-card-desc">Live option chain analysis — OI buildup, PCR ratio, max pain and key strike price levels.</div>
             <div class="sc-card-footer" style="border-top-color:rgba(255,0,144,.1);">
               <span class="sc-card-tag" style="border-color:rgba(255,0,144,.15);">NSE · OPTIONS</span>
-              <div class="sc-card-btn" style="color:var(--pink);text-shadow:0 0 8px rgba(255,0,144,.5);"><div class="sc-card-btn-line" style="background:var(--pink);"></div>LAUNCH</div>
+              <div class="sc-card-btn" style="color:var(--pink);"><div class="sc-card-btn-line" style="background:var(--pink);"></div>LAUNCH</div>
             </div>
           </div>
         </a>
-
-        <!-- Nifty 1HR Track -->
         <a class="sc-card" href="https://krishnateja08.github.io/Nifty-1HR_Track/" onclick="go(event,'Nifty 1HR Track')" style="--cc:var(--pink);">
           <div class="brk"></div>
           <div class="sc-card-inner">
             <div class="sc-card-topbar" style="background:linear-gradient(90deg,var(--pink),transparent);"></div>
             <div class="sc-card-glow" style="background:radial-gradient(rgba(255,0,144,.08),transparent 70%);"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap">
-                <div class="sc-card-ico">⏱️</div>
-                <div class="sc-card-ring" style="border-color:rgba(255,0,144,.4);animation-delay:-3s;"></div>
-              </div>
+              <div class="sc-card-ico-wrap"><div class="sc-card-ico">⏱️</div><div class="sc-card-ring" style="border-color:rgba(255,0,144,.4);animation-delay:-3s;"></div></div>
               <div class="sc-card-label">INTRADAY</div>
             </div>
             <div class="sc-card-name" style="color:var(--pink);text-shadow:0 0 10px rgba(255,0,144,.3);">Nifty 1HR Track</div>
             <div class="sc-card-desc">Hourly Nifty movement tracking — intraday trend analysis and short-term momentum signals.</div>
             <div class="sc-card-footer" style="border-top-color:rgba(255,0,144,.1);">
               <span class="sc-card-tag" style="border-color:rgba(255,0,144,.15);">NSE · INTRADAY</span>
-              <div class="sc-card-btn" style="color:var(--pink);text-shadow:0 0 8px rgba(255,0,144,.5);"><div class="sc-card-btn-line" style="background:var(--pink);"></div>LAUNCH</div>
+              <div class="sc-card-btn" style="color:var(--pink);"><div class="sc-card-btn-line" style="background:var(--pink);"></div>LAUNCH</div>
             </div>
           </div>
         </a>
-
-        <!-- Option Strategy Builder -->
         <a class="sc-card" href="https://krishnateja08.github.io/optionstrategybuilder/" onclick="go(event,'Strategy Builder')" style="--cc:var(--pink);">
           <div class="brk"></div>
           <div class="sc-card-inner">
             <div class="sc-card-topbar" style="background:linear-gradient(90deg,var(--pink),transparent);"></div>
             <div class="sc-card-glow" style="background:radial-gradient(rgba(255,0,144,.08),transparent 70%);"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap">
-                <div class="sc-card-ico">🧮</div>
-                <div class="sc-card-ring" style="border-color:rgba(255,0,144,.4);animation-delay:-6s;"></div>
-              </div>
+              <div class="sc-card-ico-wrap"><div class="sc-card-ico">🧮</div><div class="sc-card-ring" style="border-color:rgba(255,0,144,.4);animation-delay:-6s;"></div></div>
               <div class="sc-card-label">STRATEGY</div>
             </div>
             <div class="sc-card-name" style="color:var(--pink);text-shadow:0 0 10px rgba(255,0,144,.3);">Option Strategy Builder</div>
             <div class="sc-card-desc">Build and visualise options strategies — P&amp;L charts, Greeks, breakeven for any strike &amp; expiry.</div>
             <div class="sc-card-footer" style="border-top-color:rgba(255,0,144,.1);">
               <span class="sc-card-tag" style="border-color:rgba(255,0,144,.15);">NSE · P&amp;L · GREEKS</span>
-              <div class="sc-card-btn" style="color:var(--pink);text-shadow:0 0 8px rgba(255,0,144,.5);"><div class="sc-card-btn-line" style="background:var(--pink);"></div>LAUNCH</div>
+              <div class="sc-card-btn" style="color:var(--pink);"><div class="sc-card-btn-line" style="background:var(--pink);"></div>LAUNCH</div>
             </div>
           </div>
         </a>
-
       </div>
     </div>
   </div>
 
-  <!-- ════ GROUP 3: GLOBAL INTELLIGENCE ════ -->
+  <!-- GROUP 3: GLOBAL INTELLIGENCE -->
   <div class="sc-group" style="--ga:rgba(255,224,0,.2);--gb:rgba(255,224,0,.04);--gc:var(--yel);">
     <div class="sc-inner">
       <div class="sc-head" style="background:linear-gradient(90deg,rgba(6,4,15,.99),rgba(6,4,15,.85));">
@@ -701,57 +618,44 @@ footer{
         </div>
       </div>
       <div class="sc-cards">
-
-        <!-- USA S&P 500 Review -->
         <a class="sc-card" href="https://krishnateja08.github.io/USA-SP500-Stocks-Review/" onclick="go(event,'S&P 500 Review')" style="--cc:var(--yel);">
           <div class="brk"></div>
           <div class="sc-card-inner">
             <div class="sc-card-topbar" style="background:linear-gradient(90deg,var(--yel),transparent);"></div>
             <div class="sc-card-glow" style="background:radial-gradient(rgba(255,224,0,.08),transparent 70%);"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap">
-                <div class="sc-card-ico">🗽</div>
-                <div class="sc-card-ring" style="border-color:rgba(255,224,0,.4);"></div>
-              </div>
+              <div class="sc-card-ico-wrap"><div class="sc-card-ico">🗽</div><div class="sc-card-ring" style="border-color:rgba(255,224,0,.4);"></div></div>
               <div class="sc-card-label">GLOBAL</div>
             </div>
             <div class="sc-card-name" style="color:var(--yel);text-shadow:0 0 10px rgba(255,224,0,.3);">USA S&amp;P 500 Review</div>
             <div class="sc-card-desc">Comprehensive S&amp;P 500 stock review — US market analysis, sector performance and signals.</div>
             <div class="sc-card-footer" style="border-top-color:rgba(255,224,0,.1);">
               <span class="sc-card-tag" style="border-color:rgba(255,224,0,.2);">NYSE · S&amp;P 500</span>
-              <div class="sc-card-btn" style="color:var(--yel);text-shadow:0 0 8px rgba(255,224,0,.4);"><div class="sc-card-btn-line" style="background:var(--yel);"></div>LAUNCH</div>
+              <div class="sc-card-btn" style="color:var(--yel);"><div class="sc-card-btn-line" style="background:var(--yel);"></div>LAUNCH</div>
             </div>
           </div>
         </a>
-
-        <!-- Global Market News -->
         <a class="sc-card" href="https://krishnateja08.github.io/Global_Market_News/" onclick="go(event,'Global Market News')" style="--cc:var(--yel);">
           <div class="brk"></div>
           <div class="sc-card-inner">
             <div class="sc-card-topbar" style="background:linear-gradient(90deg,var(--yel),transparent);"></div>
             <div class="sc-card-glow" style="background:radial-gradient(rgba(255,224,0,.07),transparent 70%);"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap">
-                <div class="sc-card-ico">🌍</div>
-                <div class="sc-card-ring" style="border-color:rgba(255,224,0,.4);animation-delay:-4s;"></div>
-              </div>
+              <div class="sc-card-ico-wrap"><div class="sc-card-ico">🌍</div><div class="sc-card-ring" style="border-color:rgba(255,224,0,.4);animation-delay:-4s;"></div></div>
               <div class="sc-card-label">INTELLIGENCE</div>
             </div>
             <div class="sc-card-name" style="color:var(--yel);text-shadow:0 0 10px rgba(255,224,0,.3);">Global Market News</div>
             <div class="sc-card-desc">Curated global market news — macro events, earnings, central bank decisions and market moves.</div>
             <div class="sc-card-footer" style="border-top-color:rgba(255,224,0,.1);">
               <span class="sc-card-tag" style="border-color:rgba(255,224,0,.2);">GLOBAL · NEWS</span>
-              <div class="sc-card-btn" style="color:var(--yel);text-shadow:0 0 8px rgba(255,224,0,.4);"><div class="sc-card-btn-line" style="background:var(--yel);"></div>LAUNCH</div>
+              <div class="sc-card-btn" style="color:var(--yel);"><div class="sc-card-btn-line" style="background:var(--yel);"></div>LAUNCH</div>
             </div>
           </div>
         </a>
-
-        <!-- Placeholder slot -->
         <div class="sc-card" style="cursor:default;opacity:.18;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;min-height:160px;">
           <div style="font-family:'Orbitron',monospace;font-size:28px;color:var(--yel);">+</div>
           <div style="font-family:'Orbitron',monospace;font-size:7px;letter-spacing:3px;color:var(--yel);">EXPAND NODE</div>
         </div>
-
       </div>
     </div>
   </div>
@@ -763,22 +667,15 @@ footer{
   <div class="fl"><span>NIFTY INDIAN MARKETS HUB</span> // CYBER_NEON v2.0 // 8_NODES_ACTIVE</div>
   <div class="fr">SELECT_NODE → OPEN // BACK → RETURN_TO_HUB</div>
 </footer>
-
 </div><!-- /#app -->
 
-<!-- ══ FLOATING BACK BUTTON ══ -->
-<button id="floatback" onclick="closeViewer()">
-  ← HUB <span class="kbhint">ESC</span>
-</button>
+<button id="floatback" onclick="closeViewer()">← HUB <span class="kbhint">ESC</span></button>
 
 <div id="viewer">
   <div id="vbar">
     <div id="vtitle">— NODE VIEWER —</div>
     <div class="vring">
-      <svg viewBox="0 0 16 16">
-        <circle cx="8" cy="8" r="7"/>
-        <circle class="varc" id="varc" cx="8" cy="8" r="7"/>
-      </svg>
+      <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7"/><circle class="varc" id="varc" cx="8" cy="8" r="7"/></svg>
       REFRESH <span id="vrcd">30s</span>
     </div>
     <button id="vopen" onclick="openExternal()">↗ OPEN TAB</button>
@@ -789,326 +686,257 @@ footer{
 </div>
 
 <script>
-/* ── IST Clock ── */
+/* ══ IST Clock ══ */
 function tick(){
-  const t=new Intl.DateTimeFormat('en-IN',{
-    timeZone:'Asia/Kolkata',
-    hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false
-  }).format(new Date());
+  const t=new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());
   document.getElementById('ct').textContent=t;
   document.getElementById('ch').textContent=t;
 }
 tick();setInterval(tick,1000);
 
-/* ══════════════════════════════════════
-   LIVE TICKER — Multi-Source Engine
-   Sources: NSE India → Groww → Yahoo
-══════════════════════════════════════ */
+/* ══════════════════════════════════════════════════
+   MARKET BAR — Silent Background Refresh Engine
+   Updates only the text content of existing DOM nodes
+   → zero layout shift, zero flicker, no page reload
+══════════════════════════════════════════════════ */
 
-const TICKER_STOCKS = [
-  { s:'RELIANCE',  sym:'RELIANCE',  prefix:'₹' },
-  { s:'TCS',       sym:'TCS',       prefix:'₹' },
-  { s:'HDFCBANK',  sym:'HDFCBANK',  prefix:'₹' },
-  { s:'INFY',      sym:'INFY',      prefix:'₹' },
-  { s:'ICICIBANK', sym:'ICICIBANK', prefix:'₹' },
-  { s:'SBIN',      sym:'SBIN',      prefix:'₹' },
-  { s:'WIPRO',     sym:'WIPRO',     prefix:'₹' },
-  { s:'AXISBANK',  sym:'AXISBANK',  prefix:'₹' },
-  { s:'ITC',       sym:'ITC',       prefix:'₹' },
-  { s:'LT',        sym:'LT',        prefix:'₹' },
+/* Map each field to its DOM ids */
+const MB_MAP = [
+  /* India */
+  { id:'n50',  valId:'mv-n50',  chgId:'mc-n50',  yf:'^NSEI',        nseKey:'NIFTY 50',       prefix:'',   isVix:false },
+  { id:'bn',   valId:'mv-bn',   chgId:'mc-bn',   yf:'^NSEBANK',     nseKey:'NIFTY BANK',     prefix:'',   isVix:false },
+  { id:'vix',  valId:'mv-vix',  chgId:'mc-vix',  yf:'^INDIAVIX',    nseKey:'INDIA VIX',      prefix:'',   isVix:true  },
+  { id:'fn',   valId:'mv-fn',   chgId:'mc-fn',   yf:'NIFTY_FIN_SERVICE.NS', nseKey:'NIFTY FIN SERVICE', prefix:'', isVix:false },
+  { id:'sx',   valId:'mv-sx',   chgId:'mc-sx',   yf:'^BSESN',       nseKey:'SENSEX',         prefix:'',   isVix:false },
+  /* Global */
+  { id:'sp',   valId:'mv-sp',   chgId:'mc-sp',   yf:'^GSPC',        nseKey:null,             prefix:'',   isVix:false },
+  { id:'ndq',  valId:'mv-ndq',  chgId:'mc-ndq',  yf:'^IXIC',        nseKey:null,             prefix:'',   isVix:false },
+  { id:'dji',  valId:'mv-dji',  chgId:'mc-dji',  yf:'^DJI',         nseKey:null,             prefix:'',   isVix:false },
+  { id:'inr',  valId:'mv-inr',  chgId:'mc-inr',  yf:'INR=X',        nseKey:null,             prefix:'',   isVix:false },
+  { id:'crude',valId:'mv-crude',chgId:'mc-crude', yf:'CL=F',         nseKey:null,             prefix:'$',  isVix:false },
 ];
 
-const TICKER_INDICES = [
-  { s:'NIFTY 50',   key:'NIFTY 50'   },
-  { s:'SENSEX',     key:'SENSEX'     },
-  { s:'BANK NIFTY', key:'NIFTY BANK' },
-  { s:'FINNIFTY',   key:'NIFTY FIN SERVICE' },
-];
-
-function fmt(n, d=2) {
+function fmtV(n,d=2){
   if(n==null||isNaN(n)) return '—';
   return n>=1000 ? n.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}) : n.toFixed(d);
 }
 
-function renderTicker(items) {
-  const tkr = document.getElementById('tkr');
-  tkr.innerHTML = [...items,...items].map(t=>
-    `<span class="ti"><span class="s">${t.s}</span><span>${t.v}</span><span class="${t.u?'up':'dn'}">${t.c}</span></span>`
-  ).join('');
-}
+/* Silently update a single field — only touches textContent, no DOM rebuild */
+function silentUpdate(item, price, chgPct) {
+  const valEl = document.getElementById(item.valId);
+  const chgEl = document.getElementById(item.chgId);
+  if(!valEl||!chgEl) return;
 
-/* ── Source 1: NSE India official API via corsproxy ── */
-async function fromNSE() {
-  const items = [];
+  const up = chgPct >= 0;
+  const newVal = item.prefix + fmtV(price, item.isVix ? 2 : (price>=1000?2:2));
+  const newChg = (up?'▲ +':'▼ ') + Math.abs(chgPct).toFixed(2) + '%';
 
-  /* Indices from NSE allIndices */
-  const idxUrl = 'https://www.nseindia.com/api/allIndices';
-  const idxProxy = `https://corsproxy.io/?${encodeURIComponent(idxUrl)}`;
-  const ir = await fetch(idxProxy, {
-    headers:{'Accept':'application/json'},
-    signal: AbortSignal.timeout(7000), cache:'no-store'
-  });
-  const idxData = await ir.json();
-  const indices = idxData.data || [];
+  /* Only update DOM if value actually changed — avoids unnecessary repaints */
+  if(valEl.textContent !== newVal) {
+    valEl.textContent = newVal;
+    valEl.classList.remove('val-updated');
+    void valEl.offsetWidth; /* force reflow to restart animation */
+    valEl.classList.add('val-updated');
+  }
 
-  for(const ti of TICKER_INDICES) {
-    const found = indices.find(i => i.index === ti.key || i.indexSymbol === ti.key);
-    if(found) {
-      const up = parseFloat(found.percentChange) >= 0;
-      items.push({
-        s: ti.s,
-        v: fmt(found.last, 2),
-        c: (up?'+':'') + parseFloat(found.percentChange).toFixed(2) + '%',
-        u: up?1:0
-      });
+  if(chgEl.textContent !== newChg) {
+    chgEl.textContent = newChg;
+    /* Update colour class */
+    if(item.isVix) {
+      chgEl.className = 'mbar-chg vix';
+    } else {
+      chgEl.className = up ? 'mbar-chg up' : 'mbar-chg dn';
     }
   }
-
-  /* Stocks from NSE quote API */
-  for(const st of TICKER_STOCKS) {
-    try {
-      const sUrl = `https://www.nseindia.com/api/quote-equity?symbol=${encodeURIComponent(st.sym)}`;
-      const sProxy = `https://corsproxy.io/?${encodeURIComponent(sUrl)}`;
-      const sr = await fetch(sProxy, {
-        headers:{'Accept':'application/json'},
-        signal: AbortSignal.timeout(5000), cache:'no-store'
-      });
-      const sd = await sr.json();
-      const price = sd?.priceInfo?.lastPrice;
-      const chg   = sd?.priceInfo?.pChange;
-      if(price!=null) {
-        const up = chg >= 0;
-        items.push({
-          s: st.s,
-          v: st.prefix + fmt(price, 2),
-          c: (up?'+':'') + parseFloat(chg).toFixed(2) + '%',
-          u: up?1:0
-        });
-      }
-    } catch(e) { /* skip individual stock errors */ }
-  }
-
-  return items;
 }
 
-/* ── Source 2: Groww public API (no CORS issues) ── */
-async function fromGroww() {
-  const items = [];
-
-  /* Groww indices */
-  const growwIndices = [
-    { s:'NIFTY 50',   url:'https://groww.in/v1/api/stocks_fo/v1/indices/NIFTY%2050' },
-    { s:'SENSEX',     url:'https://groww.in/v1/api/stocks_fo/v1/indices/BSE%20SENSEX' },
-    { s:'BANK NIFTY', url:'https://groww.in/v1/api/stocks_fo/v1/indices/NIFTY%20BANK' },
-    { s:'FINNIFTY',   url:'https://groww.in/v1/api/stocks_fo/v1/indices/NIFTY%20FIN%20SERVICE' },
-  ];
-
-  for(const gi of growwIndices) {
-    try {
-      const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(gi.url)}`,{
-        signal:AbortSignal.timeout(5000),cache:'no-store'
-      });
-      const d = await r.json();
-      const price = d?.currentValue ?? d?.ltp ?? d?.lastPrice;
-      const chg   = d?.dayChangePerc ?? d?.percentChange ?? d?.pChange;
-      if(price!=null){
-        const up = parseFloat(chg)>=0;
-        items.push({s:gi.s, v:fmt(price,2), c:(up?'+':'')+parseFloat(chg).toFixed(2)+'%', u:up?1:0});
-      }
-    } catch(e){}
+function setTs() {
+  const ts = document.getElementById('mbar-ts');
+  if(ts) {
+    const now = new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
+    ts.textContent = 'UPD ' + now;
   }
-
-  /* Groww stocks */
-  const growwStocks = [
-    { s:'RELIANCE',  url:'https://groww.in/v1/api/stocks_fo/v1/company/search_results/reliance-industries-ltd',   prefix:'₹' },
-    { s:'TCS',       url:'https://groww.in/v1/api/stocks_fo/v1/company/search_results/tata-consultancy-services', prefix:'₹' },
-    { s:'HDFCBANK',  url:'https://groww.in/v1/api/stocks_fo/v1/company/search_results/hdfc-bank-ltd',             prefix:'₹' },
-    { s:'INFY',      url:'https://groww.in/v1/api/stocks_fo/v1/company/search_results/infosys-ltd',               prefix:'₹' },
-    { s:'SBIN',      url:'https://groww.in/v1/api/stocks_fo/v1/company/search_results/state-bank-of-india',       prefix:'₹' },
-  ];
-
-  for(const gs of growwStocks) {
-    try {
-      const r = await fetch(`https://corsproxy.io/?${encodeURIComponent(gs.url)}`,{
-        signal:AbortSignal.timeout(5000),cache:'no-store'
-      });
-      const d = await r.json();
-      const price = d?.ltp ?? d?.lastPrice ?? d?.currentPrice;
-      const chg   = d?.dayChangePerc ?? d?.percentChange;
-      if(price!=null){
-        const up = parseFloat(chg||0)>=0;
-        items.push({s:gs.s, v:gs.prefix+fmt(price,2), c:(up?'+':'')+parseFloat(chg||0).toFixed(2)+'%', u:up?1:0});
-      }
-    } catch(e){}
-  }
-
-  return items;
 }
 
-/* ── Source 3: Yahoo Finance via multiple proxies ── */
-async function fromYahoo() {
-  const YF_SYMS = [
-    {s:'NIFTY 50',yf:'^NSEI',p:''},
-    {s:'SENSEX',yf:'^BSESN',p:''},
-    {s:'BANK NIFTY',yf:'^NSEBANK',p:''},
-    {s:'RELIANCE',yf:'RELIANCE.NS',p:'₹'},
-    {s:'TCS',yf:'TCS.NS',p:'₹'},
-    {s:'HDFCBANK',yf:'HDFCBANK.NS',p:'₹'},
-    {s:'INFY',yf:'INFY.NS',p:'₹'},
-    {s:'ICICIBANK',yf:'ICICIBANK.NS',p:'₹'},
-    {s:'SBIN',yf:'SBIN.NS',p:'₹'},
-    {s:'ITC',yf:'ITC.NS',p:'₹'},
-    {s:'S&P 500',yf:'^GSPC',p:''},
-    {s:'USD/INR',yf:'INR=X',p:''},
-    {s:'GOLD',yf:'GC=F',p:'$'},
-    {s:'CRUDE',yf:'CL=F',p:'$'},
-  ];
-  const syms = YF_SYMS.map(x=>x.yf).join(',');
-  const base = `https://query1.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
+/* ── Source A: NSE India allIndices (best for Indian indices) ── */
+async function fetchNSEIndices() {
+  const url = 'https://www.nseindia.com/api/allIndices';
   const proxies = [
-    `https://corsproxy.io/?${encodeURIComponent(base)}`,
-    `https://api.allorigins.win/get?url=${encodeURIComponent(base)}`,
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
   ];
-
-  for(const px of proxies){
-    try{
+  for(const px of proxies) {
+    try {
       const r = await fetch(px,{signal:AbortSignal.timeout(7000),cache:'no-store'});
-      let raw = await r.json();
-      if(raw.contents) raw = JSON.parse(raw.contents);
-      const quotes = raw?.quoteResponse?.result || [];
-      if(!quotes.length) continue;
-      return YF_SYMS.map(sym=>{
-        const q = quotes.find(x=>x.symbol===sym.yf);
-        if(!q?.regularMarketPrice) return {s:sym.s,v:'—',c:'—',u:1};
-        const up = q.regularMarketChangePercent>=0;
-        return {s:sym.s, v:sym.p+fmt(q.regularMarketPrice,2), c:(up?'+':'')+q.regularMarketChangePercent.toFixed(2)+'%', u:up?1:0};
-      }).filter(i=>i.v!=='—');
-    }catch(e){}
+      let j = await r.json();
+      if(j.contents) j = JSON.parse(j.contents);
+      const data = j.data || [];
+      if(data.length < 2) continue;
+      return data;
+    } catch(e){}
   }
   return [];
 }
 
-/* ── Main orchestrator ── */
-async function fetchLiveTicker() {
-  /* Try NSE first */
-  try {
-    const items = await fromNSE();
-    if(items.length >= 4){ renderTicker(items); console.log('Ticker: NSE'); return; }
-  } catch(e){ console.warn('NSE failed',e.message); }
-
-  /* Try Groww */
-  try {
-    const items = await fromGroww();
-    if(items.length >= 4){ renderTicker(items); console.log('Ticker: Groww'); return; }
-  } catch(e){ console.warn('Groww failed',e.message); }
-
-  /* Try Yahoo */
-  try {
-    const items = await fromYahoo();
-    if(items.length >= 4){ renderTicker(items); console.log('Ticker: Yahoo'); return; }
-  } catch(e){ console.warn('Yahoo failed',e.message); }
-
-  console.warn('All sources failed — will retry in 60s');
+/* ── Source B: Yahoo Finance (India VIX + Global indices) ── */
+async function fetchYahoo() {
+  const syms = MB_MAP.map(x=>x.yf).join(',');
+  const url = `https://query1.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
+  const url2 = url.replace('query1','query2');
+  const proxies = [
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://corsproxy.io/?${encodeURIComponent(url2)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(url2)}`,
+  ];
+  for(const px of proxies) {
+    try {
+      const r = await fetch(px,{signal:AbortSignal.timeout(8000),cache:'no-store'});
+      let j = await r.json();
+      if(j.contents) j = JSON.parse(j.contents);
+      const results = j?.quoteResponse?.result || [];
+      if(results.length > 0) return results;
+    } catch(e){}
+  }
+  return [];
 }
 
-fetchLiveTicker();
-setInterval(fetchLiveTicker, 60000);
+/* ── Main silent refresh function ── */
+async function refreshMarketBar() {
+  let updated = 0;
 
-/* ── Last Opened ── */
-const l=sessionStorage.getItem('lo');
-if(l) document.getElementById('lc').textContent=l;
+  /* Fetch both in parallel for speed */
+  const [nseData, yfData] = await Promise.allSettled([fetchNSEIndices(), fetchYahoo()]);
+  const nseArr = nseData.status==='fulfilled' ? nseData.value : [];
+  const yfArr  = yfData.status==='fulfilled'  ? yfData.value  : [];
 
-/* ══════════════════════════════════════
-   IFRAME VIEWER + AUTO-REFRESH
-══════════════════════════════════════ */
-const IFRAME_REFRESH=30;
-let currentUrl='';
-let viewerTimer=null;
-let viewerRem=IFRAME_REFRESH;
+  for(const item of MB_MAP) {
+    let price=null, chgPct=null;
 
-const viewer  = document.getElementById('viewer');
-const vframe  = document.getElementById('vframe');
-const vtitle  = document.getElementById('vtitle');
-const vload   = document.getElementById('vload');
-const vrcd    = document.getElementById('vrcd');
-const varc    = document.getElementById('varc');
-const VARC_C  = 44;
-
-function openViewer(url, name){
-  currentUrl = url;
-  vtitle.textContent = '▶ ' + name.toUpperCase();
-  viewer.classList.add('open');
-  document.body.style.overflow='hidden';
-  document.getElementById('floatback').classList.add('visible');
-  loadFrame();
-  startViewerTimer();
-}
-
-function loadFrame(){
-  vload.classList.remove('hidden');
-  vframe.src = currentUrl + (currentUrl.includes('?')?'&':'?') + '_t=' + Date.now();
-  vframe.onload = ()=>{ vload.classList.add('hidden'); };
-}
-
-function startViewerTimer(){
-  clearInterval(viewerTimer);
-  viewerRem = IFRAME_REFRESH;
-  vrcd.textContent = viewerRem + 's';
-  varc.style.strokeDashoffset = 0;
-  viewerTimer = setInterval(()=>{
-    viewerRem--;
-    vrcd.textContent = viewerRem + 's';
-    varc.style.strokeDashoffset = VARC_C * (1 - (viewerRem / IFRAME_REFRESH));
-    if(viewerRem <= 0){
-      viewerRem = IFRAME_REFRESH;
-      varc.style.strokeDashoffset = 0;
-      loadFrame();
+    /* Try NSE first for Indian indices */
+    if(item.nseKey && nseArr.length) {
+      const found = nseArr.find(d =>
+        d.index===item.nseKey || d.indexSymbol===item.nseKey ||
+        (d.index||'').toLowerCase()===item.nseKey.toLowerCase()
+      );
+      if(found && found.last!=null) {
+        price  = parseFloat(found.last);
+        chgPct = parseFloat(found.percentChange);
+      }
     }
-  }, 1000);
+
+    /* Fall back to Yahoo for anything not found in NSE */
+    if((price==null) && yfArr.length) {
+      const q = yfArr.find(x=>x.symbol===item.yf);
+      if(q?.regularMarketPrice!=null) {
+        price  = q.regularMarketPrice;
+        chgPct = q.regularMarketChangePercent || 0;
+      }
+    }
+
+    if(price!=null && chgPct!=null) {
+      silentUpdate(item, price, chgPct);
+      updated++;
+    }
+  }
+
+  if(updated > 0) setTs();
 }
 
-function closeViewer(){
-  viewer.classList.remove('open');
-  document.body.style.overflow='';
-  document.getElementById('floatback').classList.remove('visible');
-  clearInterval(viewerTimer);
-  vframe.src='about:blank';
-  currentUrl='';
+/* Kick off immediately, then every 30 seconds silently */
+refreshMarketBar();
+setInterval(refreshMarketBar, 30000);
+
+/* ══════════════════════════════════════════════
+   TICKER — Multi-Source Engine
+   NSE → Groww → Yahoo
+══════════════════════════════════════════════ */
+const TICKER_STOCKS=[
+  {s:'RELIANCE',sym:'RELIANCE',prefix:'₹'},{s:'TCS',sym:'TCS',prefix:'₹'},
+  {s:'HDFCBANK',sym:'HDFCBANK',prefix:'₹'},{s:'INFY',sym:'INFY',prefix:'₹'},
+  {s:'ICICIBANK',sym:'ICICIBANK',prefix:'₹'},{s:'SBIN',sym:'SBIN',prefix:'₹'},
+  {s:'WIPRO',sym:'WIPRO',prefix:'₹'},{s:'AXISBANK',sym:'AXISBANK',prefix:'₹'},
+  {s:'ITC',sym:'ITC',prefix:'₹'},{s:'LT',sym:'LT',prefix:'₹'},
+];
+const TICKER_INDICES=[
+  {s:'NIFTY 50',key:'NIFTY 50'},{s:'SENSEX',key:'SENSEX'},
+  {s:'BANK NIFTY',key:'NIFTY BANK'},{s:'FINNIFTY',key:'NIFTY FIN SERVICE'},
+];
+function fmt(n,d=2){if(n==null||isNaN(n))return'—';return n>=1000?n.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}):n.toFixed(d);}
+function renderTicker(items){
+  const tkr=document.getElementById('tkr');
+  tkr.innerHTML=[...items,...items].map(t=>`<span class="ti"><span class="s">${t.s}</span><span>${t.v}</span><span class="${t.u?'up':'dn'}">${t.c}</span></span>`).join('');
 }
-
-function openExternal(){
-  if(currentUrl) window.open(currentUrl,'_blank');
+async function fromNSE(){
+  const items=[];
+  const idxUrl='https://www.nseindia.com/api/allIndices';
+  const ir=await fetch(`https://corsproxy.io/?${encodeURIComponent(idxUrl)}`,{headers:{'Accept':'application/json'},signal:AbortSignal.timeout(7000),cache:'no-store'});
+  const idxData=await ir.json();
+  const indices=idxData.data||[];
+  for(const ti of TICKER_INDICES){
+    const found=indices.find(i=>i.index===ti.key||i.indexSymbol===ti.key);
+    if(found){const up=parseFloat(found.percentChange)>=0;items.push({s:ti.s,v:fmt(found.last,2),c:(up?'+':'')+parseFloat(found.percentChange).toFixed(2)+'%',u:up?1:0});}
+  }
+  for(const st of TICKER_STOCKS){
+    try{
+      const sUrl=`https://www.nseindia.com/api/quote-equity?symbol=${encodeURIComponent(st.sym)}`;
+      const sr=await fetch(`https://corsproxy.io/?${encodeURIComponent(sUrl)}`,{headers:{'Accept':'application/json'},signal:AbortSignal.timeout(5000),cache:'no-store'});
+      const sd=await sr.json();
+      const price=sd?.priceInfo?.lastPrice,chg=sd?.priceInfo?.pChange;
+      if(price!=null){const up=chg>=0;items.push({s:st.s,v:st.prefix+fmt(price,2),c:(up?'+':'')+parseFloat(chg).toFixed(2)+'%',u:up?1:0});}
+    }catch(e){}
+  }
+  return items;
 }
-
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape' && viewer.classList.contains('open')) closeViewer();
-});
-
-/* ── Card click → open in iframe ── */
-function go(e, name){
-  e.preventDefault();
-  const card = e.currentTarget;
-  const url  = card.href;
-  sessionStorage.setItem('lo', name);
-  document.getElementById('lc').textContent = name;
-
-  const r = document.createElement('div');
-  r.className='rpl';
-  const b = card.getBoundingClientRect();
-  r.style.left=(e.clientX-b.left-30)+'px';
-  r.style.top =(e.clientY-b.top -30)+'px';
-  card.appendChild(r);
-  setTimeout(()=>r.remove(), 600);
-  setTimeout(()=> openViewer(url, name), 200);
+async function fromYahooTicker(){
+  const YF_SYMS=[
+    {s:'NIFTY 50',yf:'^NSEI',p:''},{s:'SENSEX',yf:'^BSESN',p:''},{s:'BANK NIFTY',yf:'^NSEBANK',p:''},
+    {s:'RELIANCE',yf:'RELIANCE.NS',p:'₹'},{s:'TCS',yf:'TCS.NS',p:'₹'},{s:'HDFCBANK',yf:'HDFCBANK.NS',p:'₹'},
+    {s:'INFY',yf:'INFY.NS',p:'₹'},{s:'ICICIBANK',yf:'ICICIBANK.NS',p:'₹'},{s:'SBIN',yf:'SBIN.NS',p:'₹'},
+    {s:'ITC',yf:'ITC.NS',p:'₹'},{s:'S&P 500',yf:'^GSPC',p:''},{s:'NASDAQ',yf:'^IXIC',p:''},
+    {s:'USD/INR',yf:'INR=X',p:''},{s:'CRUDE',yf:'CL=F',p:'$'},
+  ];
+  const syms=YF_SYMS.map(x=>x.yf).join(',');
+  const base=`https://query1.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
+  const proxies=[`https://corsproxy.io/?${encodeURIComponent(base)}`,`https://api.allorigins.win/get?url=${encodeURIComponent(base)}`];
+  for(const px of proxies){
+    try{
+      const r=await fetch(px,{signal:AbortSignal.timeout(7000),cache:'no-store'});
+      let raw=await r.json();
+      if(raw.contents)raw=JSON.parse(raw.contents);
+      const quotes=raw?.quoteResponse?.result||[];
+      if(!quotes.length)continue;
+      return YF_SYMS.map(sym=>{const q=quotes.find(x=>x.symbol===sym.yf);if(!q?.regularMarketPrice)return null;const up=q.regularMarketChangePercent>=0;return{s:sym.s,v:sym.p+fmt(q.regularMarketPrice,2),c:(up?'+':'')+q.regularMarketChangePercent.toFixed(2)+'%',u:up?1:0};}).filter(Boolean);
+    }catch(e){}
+  }
+  return[];
 }
+async function fetchLiveTicker(){
+  try{const items=await fromNSE();if(items.length>=4){renderTicker(items);return;}}catch(e){}
+  try{const items=await fromYahooTicker();if(items.length>=4){renderTicker(items);return;}}catch(e){}
+}
+fetchLiveTicker();
+setInterval(fetchLiveTicker,60000);
 
-/* ── Staggered entrance ── */
-document.querySelectorAll('.sc-card[href]').forEach((c,i)=>{
-  c.style.opacity='0';
-  c.style.transform='translateY(14px)';
-  c.style.transition=`opacity .4s ease ${i*.07}s,transform .4s ease ${i*.07}s`;
-  setTimeout(()=>{c.style.opacity='1';c.style.transform='none';},80+i*60);
-});
+/* ══ Session ══ */
+const l=sessionStorage.getItem('lo');
+if(l)document.getElementById('lc').textContent=l;
+
+/* ══ Iframe Viewer ══ */
+const IFRAME_REFRESH=30;let currentUrl='',viewerTimer=null,viewerRem=IFRAME_REFRESH;
+const viewer=document.getElementById('viewer'),vframe=document.getElementById('vframe'),
+  vtitle=document.getElementById('vtitle'),vload=document.getElementById('vload'),
+  vrcd=document.getElementById('vrcd'),varc=document.getElementById('varc'),VARC_C=44;
+function openViewer(url,name){currentUrl=url;vtitle.textContent='▶ '+name.toUpperCase();viewer.classList.add('open');document.body.style.overflow='hidden';document.getElementById('floatback').classList.add('visible');loadFrame();startViewerTimer();}
+function loadFrame(){vload.classList.remove('hidden');vframe.src=currentUrl+(currentUrl.includes('?')?'&':'?')+'_t='+Date.now();vframe.onload=()=>{vload.classList.add('hidden');};}
+function startViewerTimer(){clearInterval(viewerTimer);viewerRem=IFRAME_REFRESH;vrcd.textContent=viewerRem+'s';varc.style.strokeDashoffset=0;viewerTimer=setInterval(()=>{viewerRem--;vrcd.textContent=viewerRem+'s';varc.style.strokeDashoffset=VARC_C*(1-(viewerRem/IFRAME_REFRESH));if(viewerRem<=0){viewerRem=IFRAME_REFRESH;varc.style.strokeDashoffset=0;loadFrame();}},1000);}
+function closeViewer(){viewer.classList.remove('open');document.body.style.overflow='';document.getElementById('floatback').classList.remove('visible');clearInterval(viewerTimer);vframe.src='about:blank';currentUrl='';}
+function openExternal(){if(currentUrl)window.open(currentUrl,'_blank');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&viewer.classList.contains('open'))closeViewer();});
+function go(e,name){e.preventDefault();const card=e.currentTarget,url=card.href;sessionStorage.setItem('lo',name);document.getElementById('lc').textContent=name;const r=document.createElement('div');r.className='rpl';const b=card.getBoundingClientRect();r.style.left=(e.clientX-b.left-30)+'px';r.style.top=(e.clientY-b.top-30)+'px';card.appendChild(r);setTimeout(()=>r.remove(),600);setTimeout(()=>openViewer(url,name),200);}
+
+/* ══ Staggered entrance ══ */
+document.querySelectorAll('.sc-card[href]').forEach((c,i)=>{c.style.opacity='0';c.style.transform='translateY(14px)';c.style.transition=`opacity .4s ease ${i*.07}s,transform .4s ease ${i*.07}s`;setTimeout(()=>{c.style.opacity='1';c.style.transform='none';},80+i*60);});
 </script>
 </body>
 </html>
