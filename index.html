@@ -231,21 +231,28 @@ header::after{
 }
 
 /* ══════════════════════════════════════
-   GRID — CSS columns (true masonry)
-   Each card is ONLY as tall as its own content
+   GRID — two independent flex columns
 ══════════════════════════════════════ */
 .grid{
-  column-count:2;
-  column-gap:0;
+  display:flex;
+  flex-direction:row;
   border:1px solid var(--bc);
   margin:14px 18px 18px;
 }
+.col{
+  flex:1 1 50%;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+}
+.col:first-child{
+  border-right:1px solid rgba(0,245,255,.15);
+}
 
 /* ══════════════════════════════════════
-   CARD — must not break across columns
+   CARD — only as tall as its own content
 ══════════════════════════════════════ */
 .card{
-  break-inside:avoid;
   background:var(--panel);
   padding:16px 20px 14px;
   cursor:pointer;text-decoration:none;
@@ -253,11 +260,8 @@ header::after{
   position:relative;overflow:hidden;
   transition:background .15s;
   border-bottom:1px solid rgba(0,245,255,.1);
-  box-sizing:border-box;
-  width:100%;
 }
-/* right border on left-column cards (odd ones) */
-.card:nth-child(odd){border-right:1px solid rgba(0,245,255,.1)}
+.col .card:last-child{border-bottom:none}
 
 /* scan-line sweep on hover */
 .card::before{
@@ -310,10 +314,14 @@ header::after{
 }
 
 /* per-card neon accent colors */
-.card:nth-child(1){--ca:#00f5ff} .card:nth-child(2){--ca:#00ff88}
-.card:nth-child(3){--ca:#ffe000} .card:nth-child(4){--ca:#00f5ff}
-.card:nth-child(5){--ca:#9d00ff} .card:nth-child(6){--ca:#ff0090}
-.card:nth-child(7){--ca:#00ff88} .card:nth-child(8){--ca:#ffe000}
+.col:first-child .card:nth-child(1){--ca:#00f5ff}
+.col:first-child .card:nth-child(2){--ca:#ffe000}
+.col:first-child .card:nth-child(3){--ca:#9d00ff}
+.col:first-child .card:nth-child(4){--ca:#00ff88}
+.col:last-child  .card:nth-child(1){--ca:#00ff88}
+.col:last-child  .card:nth-child(2){--ca:#00f5ff}
+.col:last-child  .card:nth-child(3){--ca:#ff0090}
+.col:last-child  .card:nth-child(4){--ca:#ffe000}
 
 /* ── card content ── */
 .card-inner{position:relative;z-index:2}
@@ -399,8 +407,9 @@ footer{
   .stats{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:700px){
-  .grid{column-count:1;margin:10px}
-  .card:nth-child(odd){border-right:none}
+  .grid{flex-direction:column}
+  .col:first-child{border-right:none;border-bottom:1px solid rgba(0,245,255,.15)}
+  .col .card:last-child{border-bottom:1px solid rgba(0,245,255,.1)}
   .stats{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:560px){
@@ -429,18 +438,17 @@ footer{
   font-family:'Orbitron',monospace;font-size:9px;letter-spacing:1.5px;
   color:var(--yel);
 }
-.rfsh-ring{
-  width:14px;height:14px;flex-shrink:0;position:relative;
-}
-.rfsh-ring svg{transform:rotate(-90deg);width:14px;height:14px;}
-.rfsh-ring circle{fill:none;stroke:rgba(255,224,0,.2);stroke-width:2;}
+.rfsh-ring{width:14px;height:14px;flex-shrink:0}
+.rfsh-ring svg{transform:rotate(-90deg);width:14px;height:14px}
+.rfsh-ring circle{fill:none;stroke:rgba(255,224,0,.2);stroke-width:2}
 .rfsh-ring .arc{
   stroke:var(--yel);stroke-width:2;
   stroke-dasharray:38;stroke-dashoffset:0;
   transition:stroke-dashoffset 1s linear;
   filter:drop-shadow(0 0 3px var(--yel));
 }
-
+</style>
+</head>
 <body>
 <div id="scan"></div>
 <div id="app">
@@ -510,112 +518,122 @@ footer{
   <div class="sec-bdg">8/8 ONLINE</div>
 </div>
 
-<!-- ══ 2-COLUMN GRID ══ -->
+<!-- ══ 2-COLUMN LAYOUT ══ -->
 <div class="grid">
 
-  <a class="card" href="https://krishnateja08.github.io/FII-DII_Pulse/" onclick="go(event,'FII/DII Pulse')">
-    <div class="acc"></div><div class="brk"></div>
-    <div class="card-inner">
-      <div class="cnum"><b>01</b>INSTITUTIONAL</div>
-      <div class="ctop">
-        <div class="cico">📡</div>
-        <div><div class="ctitle">FII / DII Pulse</div><div class="ccat">NSE · Bulk &amp; Block Deals</div></div>
-      </div>
-      <div class="cdesc">Sector-wise institutional activity — FII &amp; DII bulk/block deals with technical signals &amp; RSI.</div>
-      <div class="cfoot"><span class="ctag">NSE · BULK DEALS</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
-    </div>
-  </a>
+  <!-- LEFT COLUMN: cards 01 03 05 07 -->
+  <div class="col">
 
-  <a class="card" href="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" onclick="go(event,'Nifty 50 Analyzer')">
-    <div class="acc"></div><div class="brk"></div>
-    <div class="card-inner">
-      <div class="cnum"><b>02</b>ANALYSIS</div>
-      <div class="ctop">
-        <div class="cico">📈</div>
-        <div><div class="ctitle">Nifty 50 Analyzer</div><div class="ccat">NSE · Nifty 50 · Technicals</div></div>
+    <a class="card" href="https://krishnateja08.github.io/FII-DII_Pulse/" onclick="go(event,'FII/DII Pulse')">
+      <div class="acc"></div><div class="brk"></div>
+      <div class="card-inner">
+        <div class="cnum"><b>01</b>INSTITUTIONAL</div>
+        <div class="ctop">
+          <div class="cico">📡</div>
+          <div><div class="ctitle">FII / DII Pulse</div><div class="ccat">NSE · Bulk &amp; Block Deals</div></div>
+        </div>
+        <div class="cdesc">Sector-wise institutional activity — FII &amp; DII bulk/block deals with technical signals &amp; RSI.</div>
+        <div class="cfoot"><span class="ctag">NSE · BULK DEALS</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
       </div>
-      <div class="cdesc">Deep technical analysis of all Nifty 50 stocks — RSI, MACD, EMA, support &amp; resistance levels.</div>
-      <div class="cfoot"><span class="ctag">NSE · NIFTY 50</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
-    </div>
-  </a>
+    </a>
 
-  <a class="card" href="https://krishnateja08.github.io/Nifty_Indices_scanner/" onclick="go(event,'Nifty Indices Scanner')">
-    <div class="acc"></div><div class="brk"></div>
-    <div class="card-inner">
-      <div class="cnum"><b>03</b>SCANNER</div>
-      <div class="ctop">
-        <div class="cico">🔍</div>
-        <div><div class="ctitle">Nifty Indices Scanner</div><div class="ccat">NSE · All Indices · Momentum</div></div>
+    <a class="card" href="https://krishnateja08.github.io/Nifty_Indices_scanner/" onclick="go(event,'Nifty Indices Scanner')">
+      <div class="acc"></div><div class="brk"></div>
+      <div class="card-inner">
+        <div class="cnum"><b>03</b>SCANNER</div>
+        <div class="ctop">
+          <div class="cico">🔍</div>
+          <div><div class="ctitle">Nifty Indices Scanner</div><div class="ccat">NSE · All Indices · Momentum</div></div>
+        </div>
+        <div class="cdesc">Real-time scanner across all Nifty indices — momentum, breakouts and sector rotation signals.</div>
+        <div class="cfoot"><span class="ctag">NSE · INDICES</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
       </div>
-      <div class="cdesc">Real-time scanner across all Nifty indices — momentum, breakouts and sector rotation signals.</div>
-      <div class="cfoot"><span class="ctag">NSE · INDICES</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
-    </div>
-  </a>
+    </a>
 
-  <a class="card" href="https://krishnateja08.github.io/USA-SP500-Stocks-Review/" onclick="go(event,'S&P 500 Review')">
-    <div class="acc"></div><div class="brk"></div>
-    <div class="card-inner">
-      <div class="cnum"><b>04</b>GLOBAL</div>
-      <div class="ctop">
-        <div class="cico">🌐</div>
-        <div><div class="ctitle">USA S&amp;P 500 Review</div><div class="ccat">NYSE · S&amp;P 500 · 500 Stocks</div></div>
+    <a class="card" href="https://krishnateja08.github.io/Nifty-1HR_Track/" onclick="go(event,'Nifty 1HR Track')">
+      <div class="acc"></div><div class="brk"></div>
+      <div class="card-inner">
+        <div class="cnum"><b>05</b>INTRADAY</div>
+        <div class="ctop">
+          <div class="cico">⏱️</div>
+          <div><div class="ctitle">Nifty 1HR Track</div><div class="ccat">NSE · Intraday · Hourly</div></div>
+        </div>
+        <div class="cdesc">Hourly Nifty movement tracking — intraday trend analysis and short-term momentum signals.</div>
+        <div class="cfoot"><span class="ctag">NSE · INTRADAY</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
       </div>
-      <div class="cdesc">Comprehensive S&amp;P 500 stock review — US market analysis, sector performance and signals.</div>
-      <div class="cfoot"><span class="ctag">NYSE · S&amp;P 500</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
-    </div>
-  </a>
+    </a>
 
-  <a class="card" href="https://krishnateja08.github.io/Nifty-1HR_Track/" onclick="go(event,'Nifty 1HR Track')">
-    <div class="acc"></div><div class="brk"></div>
-    <div class="card-inner">
-      <div class="cnum"><b>05</b>INTRADAY</div>
-      <div class="ctop">
-        <div class="cico">⏱️</div>
-        <div><div class="ctitle">Nifty 1HR Track</div><div class="ccat">NSE · Intraday · Hourly</div></div>
+    <a class="card" href="https://krishnateja08.github.io/Global_Market_News/" onclick="go(event,'Global Market News')">
+      <div class="acc"></div><div class="brk"></div>
+      <div class="card-inner">
+        <div class="cnum"><b>07</b>INTELLIGENCE</div>
+        <div class="ctop">
+          <div class="cico">🗞️</div>
+          <div><div class="ctitle">Global Market News</div><div class="ccat">Global · Macro · Earnings</div></div>
+        </div>
+        <div class="cdesc">Curated global market news — macro events, earnings, central bank decisions and market moves.</div>
+        <div class="cfoot"><span class="ctag">GLOBAL · NEWS</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
       </div>
-      <div class="cdesc">Hourly Nifty movement tracking — intraday trend analysis and short-term momentum signals.</div>
-      <div class="cfoot"><span class="ctag">NSE · INTRADAY</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
-    </div>
-  </a>
+    </a>
 
-  <a class="card" href="https://krishnateja08.github.io/Nifty_option_chain/" onclick="go(event,'Nifty Option Chain')">
-    <div class="acc"></div><div class="brk"></div>
-    <div class="card-inner">
-      <div class="cnum"><b>06</b>OPTIONS</div>
-      <div class="ctop">
-        <div class="cico">⛓️</div>
-        <div><div class="ctitle">Nifty Option Chain</div><div class="ccat">NSE · Options · OI · PCR</div></div>
-      </div>
-      <div class="cdesc">Live option chain analysis — OI buildup, PCR ratio, max pain and key strike price levels.</div>
-      <div class="cfoot"><span class="ctag">NSE · OPTIONS</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
-    </div>
-  </a>
+  </div><!-- /col left -->
 
-  <a class="card" href="https://krishnateja08.github.io/Global_Market_News/" onclick="go(event,'Global Market News')">
-    <div class="acc"></div><div class="brk"></div>
-    <div class="card-inner">
-      <div class="cnum"><b>07</b>INTELLIGENCE</div>
-      <div class="ctop">
-        <div class="cico">🗞️</div>
-        <div><div class="ctitle">Global Market News</div><div class="ccat">Global · Macro · Earnings</div></div>
-      </div>
-      <div class="cdesc">Curated global market news — macro events, earnings, central bank decisions and market moves.</div>
-      <div class="cfoot"><span class="ctag">GLOBAL · NEWS</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
-    </div>
-  </a>
+  <!-- RIGHT COLUMN: cards 02 04 06 08 -->
+  <div class="col">
 
-  <a class="card" href="https://krishnateja08.github.io/optionstrategybuilder/" onclick="go(event,'Strategy Builder')">
-    <div class="acc"></div><div class="brk"></div>
-    <div class="card-inner">
-      <div class="cnum"><b>08</b>STRATEGY</div>
-      <div class="ctop">
-        <div class="cico">🧮</div>
-        <div><div class="ctitle">Option Strategy Builder</div><div class="ccat">NSE · P&amp;L · Greeks · Charts</div></div>
+    <a class="card" href="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" onclick="go(event,'Nifty 50 Analyzer')">
+      <div class="acc"></div><div class="brk"></div>
+      <div class="card-inner">
+        <div class="cnum"><b>02</b>ANALYSIS</div>
+        <div class="ctop">
+          <div class="cico">📈</div>
+          <div><div class="ctitle">Nifty 50 Analyzer</div><div class="ccat">NSE · Nifty 50 · Technicals</div></div>
+        </div>
+        <div class="cdesc">Deep technical analysis of all Nifty 50 stocks — RSI, MACD, EMA, support &amp; resistance levels.</div>
+        <div class="cfoot"><span class="ctag">NSE · NIFTY 50</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
       </div>
-      <div class="cdesc">Build and visualise options strategies — P&amp;L charts, Greeks, breakeven for any strike &amp; expiry.</div>
-      <div class="cfoot"><span class="ctag">NSE · STRATEGIES</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
-    </div>
-  </a>
+    </a>
+
+    <a class="card" href="https://krishnateja08.github.io/USA-SP500-Stocks-Review/" onclick="go(event,'S&P 500 Review')">
+      <div class="acc"></div><div class="brk"></div>
+      <div class="card-inner">
+        <div class="cnum"><b>04</b>GLOBAL</div>
+        <div class="ctop">
+          <div class="cico">🌐</div>
+          <div><div class="ctitle">USA S&amp;P 500 Review</div><div class="ccat">NYSE · S&amp;P 500 · 500 Stocks</div></div>
+        </div>
+        <div class="cdesc">Comprehensive S&amp;P 500 stock review — US market analysis, sector performance and signals.</div>
+        <div class="cfoot"><span class="ctag">NYSE · S&amp;P 500</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="https://krishnateja08.github.io/Nifty_option_chain/" onclick="go(event,'Nifty Option Chain')">
+      <div class="acc"></div><div class="brk"></div>
+      <div class="card-inner">
+        <div class="cnum"><b>06</b>OPTIONS</div>
+        <div class="ctop">
+          <div class="cico">⛓️</div>
+          <div><div class="ctitle">Nifty Option Chain</div><div class="ccat">NSE · Options · OI · PCR</div></div>
+        </div>
+        <div class="cdesc">Live option chain analysis — OI buildup, PCR ratio, max pain and key strike price levels.</div>
+        <div class="cfoot"><span class="ctag">NSE · OPTIONS</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
+      </div>
+    </a>
+
+    <a class="card" href="https://krishnateja08.github.io/optionstrategybuilder/" onclick="go(event,'Strategy Builder')">
+      <div class="acc"></div><div class="brk"></div>
+      <div class="card-inner">
+        <div class="cnum"><b>08</b>STRATEGY</div>
+        <div class="ctop">
+          <div class="cico">🧮</div>
+          <div><div class="ctitle">Option Strategy Builder</div><div class="ccat">NSE · P&amp;L · Greeks · Charts</div></div>
+        </div>
+        <div class="cdesc">Build and visualise options strategies — P&amp;L charts, Greeks, breakeven for any strike &amp; expiry.</div>
+        <div class="cfoot"><span class="ctag">NSE · STRATEGIES</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
+      </div>
+    </a>
+
+  </div><!-- /col right -->
 
 </div>
 
@@ -637,52 +655,42 @@ function tick(){
   document.getElementById('ct').textContent=t;
   document.getElementById('ch').textContent=t;
 }
-tick();
-setInterval(tick,1000);
+tick();setInterval(tick,1000);
 
-/* ── Auto Refresh every 5 seconds with countdown ── */
+/* ── Auto Refresh every 5 seconds with ring countdown ── */
 const REFRESH_SEC=5;
 const arc=document.getElementById('arc');
 const rcd=document.getElementById('rcd');
-const circumference=38; // 2 * π * r(6) ≈ 37.7
-
-let remaining=REFRESH_SEC;
-
-function updateCountdown(){
-  remaining--;
-  rcd.textContent=remaining+'s';
-  // animate ring: full at 5s, empty at 0s
-  const offset=circumference*(1-(remaining/REFRESH_SEC));
-  arc.style.strokeDashoffset=offset;
-  if(remaining<=0){
-    window.location.reload();
-  }
-}
-
-// initialise ring
+const circ=38;
+let rem=REFRESH_SEC;
 arc.style.strokeDashoffset=0;
-rcd.textContent=REFRESH_SEC+'s';
-setInterval(updateCountdown,1000);
+rcd.textContent=rem+'s';
+setInterval(()=>{
+  rem--;
+  rcd.textContent=rem+'s';
+  arc.style.strokeDashoffset=circ*(1-(rem/REFRESH_SEC));
+  if(rem<=0) window.location.reload();
+},1000);
 
 /* ── Live Ticker ── */
 const T=[
-  {s:'NIFTY 50', v:'23,450',c:'+0.42%',u:1},{s:'SENSEX',   v:'77,210',c:'+0.38%',u:1},
-  {s:'BANK NIFTY',v:'51,230',c:'-0.21%',u:0},{s:'RELIANCE', v:'₹2,845',c:'+1.20%',u:1},
-  {s:'TCS',       v:'₹4,102',c:'-0.50%',u:0},{s:'HDFCBANK', v:'₹1,724',c:'+0.80%',u:1},
-  {s:'INFY',      v:'₹1,890',c:'+1.10%',u:1},{s:'S&P 500',  v:'6,052', c:'+0.29%',u:1},
-  {s:'GOLD',      v:'₹73,400',c:'+0.60%',u:1},{s:'USD/INR', v:'83.92', c:'-0.02%',u:0},
-  {s:'CRUDE',     v:'$82.40',c:'+0.45%',u:1}
+  {s:'NIFTY 50',v:'23,450',c:'+0.42%',u:1},{s:'SENSEX',v:'77,210',c:'+0.38%',u:1},
+  {s:'BANK NIFTY',v:'51,230',c:'-0.21%',u:0},{s:'RELIANCE',v:'₹2,845',c:'+1.20%',u:1},
+  {s:'TCS',v:'₹4,102',c:'-0.50%',u:0},{s:'HDFCBANK',v:'₹1,724',c:'+0.80%',u:1},
+  {s:'INFY',v:'₹1,890',c:'+1.10%',u:1},{s:'S&P 500',v:'6,052',c:'+0.29%',u:1},
+  {s:'GOLD',v:'₹73,400',c:'+0.60%',u:1},{s:'USD/INR',v:'83.92',c:'-0.02%',u:0},
+  {s:'CRUDE',v:'$82.40',c:'+0.45%',u:1}
 ];
 document.getElementById('tkr').innerHTML=
   [...T,...T].map(t=>
     `<span class="ti"><span class="s">${t.s}</span><span>${t.v}</span><span class="${t.u?'up':'dn'}">${t.c}</span></span>`
   ).join('');
 
-/* ── Last Opened (session memory) ── */
+/* ── Last Opened ── */
 const l=sessionStorage.getItem('lo');
 if(l) document.getElementById('lc').textContent=l;
 
-/* ── Navigate with neon ripple ── */
+/* ── Navigate with ripple ── */
 function go(e,n){
   e.preventDefault();
   const card=e.currentTarget;
@@ -691,13 +699,13 @@ function go(e,n){
   r.className='rpl';
   const b=card.getBoundingClientRect();
   r.style.left=(e.clientX-b.left-30)+'px';
-  r.style.top =(e.clientY-b.top -30)+'px';
+  r.style.top=(e.clientY-b.top-30)+'px';
   card.appendChild(r);
   setTimeout(()=>r.remove(),600);
   setTimeout(()=>{window.location.href=card.href;},220);
 }
 
-/* ── Staggered entrance animation ── */
+/* ── Staggered entrance ── */
 document.querySelectorAll('.card').forEach((c,i)=>{
   c.style.opacity='0';
   c.style.transform='translateY(14px)';
