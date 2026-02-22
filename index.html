@@ -883,16 +883,17 @@ function fetchYahoo(){
   var yfUrl2 = yfUrl.replace('query1','query2');
 
   var proxies = [
-    'https://api.allorigins.win/get?url=' + encodeURIComponent(yfUrl),
-    'https://api.allorigins.win/get?url=' + encodeURIComponent(yfUrl2),
-    'https://corsproxy.io/?' + encodeURIComponent(yfUrl),
-    'https://corsproxy.io/?' + encodeURIComponent(yfUrl2),
     'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(yfUrl),
-    'https://proxy.cors.sh/' + yfUrl,
+    'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(yfUrl2),
+    'https://corsproxy.io/?' + encodeURIComponent(yfUrl),
+    'https://api.allorigins.win/get?url=' + encodeURIComponent(yfUrl),
   ];
 
   function parseYF(j){
-    if(j && j.contents){try{j=JSON.parse(j.contents);}catch(e){return null;}}
+    /* allorigins wraps in {contents:'...'}, codetabs returns direct JSON */
+    if(j && typeof j.contents === 'string'){try{j=JSON.parse(j.contents);}catch(e){return null;}}
+    /* handle string body (some proxies return {body:'...'}) */
+    if(j && typeof j.body === 'string'){try{j=JSON.parse(j.body);}catch(e){return null;}}
     var res = j && j.quoteResponse && j.quoteResponse.result;
     return (res && res.length > 0) ? res : null;
   }
