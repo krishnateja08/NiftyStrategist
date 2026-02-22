@@ -23,9 +23,9 @@
   --bp:   rgba(255,0,144,.12);   /* pink border */
   --b1:   rgba(0,245,255,.07);
   --b2:   rgba(0,245,255,.14);
-  --tx:   rgba(200,230,255,.88);
-  --t2:   rgba(0,245,255,.4);
-  --t3:   rgba(0,245,255,.22);
+  --tx:   rgba(220,240,255,.97);
+  --t2:   rgba(0,245,255,.75);
+  --t3:   rgba(0,245,255,.55);
 }
 
 body{
@@ -207,7 +207,7 @@ header::after{
   font-size:16px;font-weight:700;color:var(--sc,var(--cyan));
   text-shadow:0 0 12px currentColor;
 }
-.sb .s{font-size:10px;color:var(--t3);margin-top:3px}
+.sb .s{font-size:10px;color:var(--t2);margin-top:3px}
 
 /* ══════════════════════════════════════
    SECTION HEADER
@@ -240,6 +240,7 @@ header::after{
   background:rgba(0,245,255,.06);
   border:1px solid var(--bc);
   margin:14px 18px 18px;
+  align-items:start;
 }
 
 /* ══════════════════════════════════════
@@ -247,9 +248,9 @@ header::after{
 ══════════════════════════════════════ */
 .card{
   background:var(--panel);
-  padding:20px 22px 18px;
+  padding:16px 20px 14px;
   cursor:pointer;text-decoration:none;
-  display:block;              /* block = content-fitted height */
+  display:block;
   position:relative;overflow:hidden;
   transition:background .15s;
 }
@@ -316,15 +317,15 @@ header::after{
 .cnum{
   font-family:'Orbitron',sans-serif;
   font-size:8px;color:var(--t3);letter-spacing:3px;
-  text-transform:uppercase;margin-bottom:12px;
+  text-transform:uppercase;margin-bottom:8px;
 }
 .cnum b{color:var(--ca,var(--cyan));font-weight:700;margin-right:6px;text-shadow:0 0 8px currentColor}
 
-.ctop{display:flex;align-items:center;gap:12px;margin-bottom:11px}
+.ctop{display:flex;align-items:center;gap:12px;margin-bottom:8px}
 .cico{
-  width:46px;height:46px;flex-shrink:0;
+  width:42px;height:42px;flex-shrink:0;
   border:1px solid var(--bc);background:rgba(0,0,0,.6);
-  display:flex;align-items:center;justify-content:center;font-size:21px;
+  display:flex;align-items:center;justify-content:center;font-size:20px;
   transition:border-color .15s,box-shadow .15s;
 }
 .card:hover .cico{
@@ -341,14 +342,14 @@ header::after{
 .ccat{font-size:9px;color:var(--t3);letter-spacing:2px;text-transform:uppercase}
 
 .cdesc{
-  font-size:12px;color:rgba(180,210,240,.45);
-  line-height:1.65;font-family:'Rajdhani',sans-serif;
-  margin-bottom:14px;
+  font-size:12px;color:rgba(180,210,240,.85);
+  line-height:1.55;font-family:'Rajdhani',sans-serif;
+  margin-bottom:10px;
 }
 
 .cfoot{
   display:flex;align-items:center;justify-content:space-between;
-  padding-top:10px;border-top:1px solid rgba(0,245,255,.08);
+  padding-top:8px;border-top:1px solid rgba(0,245,255,.08);
 }
 .ctag{
   font-family:'Orbitron',sans-serif;font-size:8px;
@@ -385,24 +386,37 @@ footer{
 }
 .fl{font-size:8px;color:var(--t3);letter-spacing:2px;text-transform:uppercase}
 .fl span{color:var(--cyan);text-shadow:0 0 8px rgba(0,245,255,.4)}
-.fr{font-size:8px;color:rgba(0,245,255,.15);letter-spacing:1px}
+.fr{font-size:8px;color:rgba(0,245,255,.45);letter-spacing:1px}
 
 /* ══════════════════════════════════════
    RESPONSIVE
 ══════════════════════════════════════ */
-@media(max-width:800px){
+@media(max-width:900px){
   .stats{grid-template-columns:repeat(2,1fr)}
-  .grid{grid-template-columns:1fr;margin:10px}
+}
+@media(max-width:700px){
+  .grid{grid-template-columns:1fr;margin:10px;align-items:stretch}
+  .stats{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:560px){
   .tb-l .ver{display:none}
   header{padding:10px 12px}
   .bsub,.pill.p{display:none}
   .bname{font-size:15px}.logo{width:40px;height:40px;font-size:19px}
-  .grid{margin:8px}.card{padding:14px 14px 12px}
-  .ctitle{font-size:12px}.cico{width:36px;height:36px;font-size:18px}
-  .cdesc{font-size:11px}
+  .grid{margin:6px 8px}.card{padding:14px 14px 12px}
+  .ctitle{font-size:13px}.cico{width:36px;height:36px;font-size:17px}
+  .cdesc{font-size:12px}
   .tkr{display:none}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .sb .l{font-size:7px}.sb .v{font-size:13px}
+}
+@media(max-width:400px){
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .grid{margin:4px 6px}
+  .card{padding:12px}
+  .ctitle{font-size:12px}
+  .hright{gap:4px}
+  .pill{padding:4px 8px;font-size:8px}
 }
 </style>
 </head>
