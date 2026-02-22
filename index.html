@@ -694,153 +694,227 @@ function tick(){
 }
 tick();setInterval(tick,1000);
 
-/* ═══════════════════════════════════════════════════════════════
-   LIVE DATA ENGINE — JSONP via stooq.com
-   ▸ Uses <script> tag injection = bypasses CORS 100%
-   ▸ Works from ANY browser, local file, GitHub Pages, anywhere
-   ▸ Market bar: silent update every 30s (no reload, no flicker)
-   ▸ Ticker: silent update every 60s
-═══════════════════════════════════════════════════════════════ */
+/* ══════════════════════════════════════════════════
+   MARKET BAR — Silent Background Refresh Engine
+   Updates only the text content of existing DOM nodes
+   → zero layout shift, zero flicker, no page reload
+══════════════════════════════════════════════════ */
 
-/* stooq JSONP — injects a <script> tag, stooq calls window[cb](data) */
-function stooqJSON(sym){
-  return new Promise((resolve,reject)=>{
-    const cb='_sq_'+sym.replace(/[^a-zA-Z0-9]/g,'_')+'_'+Date.now();
-    const t=setTimeout(()=>{
-      delete window[cb];
-      const s=document.getElementById(cb);
-      if(s)s.remove();
-      reject(new Error('timeout'));
-    },9000);
-    window[cb]=function(data){
-      clearTimeout(t);
-      delete window[cb];
-      const s=document.getElementById(cb);
-      if(s)s.remove();
-      // stooq returns: {name,symbol,close,open,high,low,volume,previousClose,...}
-      const d=(Array.isArray(data)?data[0]:data)||{};
-      const close=parseFloat(d.close||d.Close||0);
-      const prevClose=parseFloat(d.previousClose||d.prev_close||d.open||0);
-      if(!close||close<=0){reject(new Error('no data'));return;}
-      const chgPct=prevClose>0?((close-prevClose)/prevClose)*100:0;
-      resolve({price:close,chgPct});
-    };
-    const s=document.createElement('script');
-    s.id=cb;
-    s.src=`https://stooq.com/q/l/?s=${encodeURIComponent(sym)}&f=sd2t2ohlcv&h&e=json&callback=${cb}`;
-    s.onerror=()=>{clearTimeout(t);delete window[cb];s.remove();reject(new Error('script error'));};
-    document.head.appendChild(s);
-  });
-}
-
-/* ── Market bar symbol map ── */
-const MB_MAP=[
-  {valId:'mv-n50', chgId:'mc-n50', sym:'^nft',   prefix:'',  isVix:false},
-  {valId:'mv-bn',  chgId:'mc-bn',  sym:'^bkt',   prefix:'',  isVix:false},
-  {valId:'mv-vix', chgId:'mc-vix', sym:'^ind',   prefix:'',  isVix:true },
-  {valId:'mv-fn',  chgId:'mc-fn',  sym:'^nff',   prefix:'',  isVix:false},
-  {valId:'mv-sx',  chgId:'mc-sx',  sym:'^bsesn', prefix:'',  isVix:false},
-  {valId:'mv-sp',  chgId:'mc-sp',  sym:'^spx',   prefix:'',  isVix:false},
-  {valId:'mv-ndq', chgId:'mc-ndq', sym:'^ndq',   prefix:'',  isVix:false},
-  {valId:'mv-dji', chgId:'mc-dji', sym:'^dji',   prefix:'',  isVix:false},
-  {valId:'mv-inr', chgId:'mc-inr', sym:'usdINR', prefix:'',  isVix:false},
-  {valId:'mv-crude',chgId:'mc-crude',sym:'cl.f', prefix:'$', isVix:false},
-];
-
-/* ── Ticker symbol map ── */
-const TICKER_SYMS=[
-  {s:'NIFTY 50',  q:'^nft',    p:''},
-  {s:'SENSEX',    q:'^bsesn',  p:''},
-  {s:'BANK NIFTY',q:'^bkt',    p:''},
-  {s:'RELIANCE',  q:'reli.ns', p:'₹'},
-  {s:'TCS',       q:'tcs.ns',  p:'₹'},
-  {s:'HDFCBANK',  q:'hdbk.ns', p:'₹'},
-  {s:'INFY',      q:'infy.ns', p:'₹'},
-  {s:'ICICIBANK', q:'icbk.ns', p:'₹'},
-  {s:'SBIN',      q:'sbin.ns', p:'₹'},
-  {s:'ITC',       q:'itc.ns',  p:'₹'},
-  {s:'WIPRO',     q:'wipr.ns', p:'₹'},
-  {s:'S&P 500',   q:'^spx',    p:''},
-  {s:'NASDAQ',    q:'^ndq',    p:''},
-  {s:'USD/INR',   q:'usdINR',  p:''},
-  {s:'CRUDE',     q:'cl.f',    p:'$'},
+/* Map each field to its DOM ids */
+const MB_MAP = [
+  /* India */
+  { id:'n50',  valId:'mv-n50',  chgId:'mc-n50',  yf:'^NSEI',        nseKey:'NIFTY 50',       prefix:'',   isVix:false },
+  { id:'bn',   valId:'mv-bn',   chgId:'mc-bn',   yf:'^NSEBANK',     nseKey:'NIFTY BANK',     prefix:'',   isVix:false },
+  { id:'vix',  valId:'mv-vix',  chgId:'mc-vix',  yf:'^INDIAVIX',    nseKey:'INDIA VIX',      prefix:'',   isVix:true  },
+  { id:'fn',   valId:'mv-fn',   chgId:'mc-fn',   yf:'NIFTY_FIN_SERVICE.NS', nseKey:'NIFTY FIN SERVICE', prefix:'', isVix:false },
+  { id:'sx',   valId:'mv-sx',   chgId:'mc-sx',   yf:'^BSESN',       nseKey:'SENSEX',         prefix:'',   isVix:false },
+  /* Global */
+  { id:'sp',   valId:'mv-sp',   chgId:'mc-sp',   yf:'^GSPC',        nseKey:null,             prefix:'',   isVix:false },
+  { id:'ndq',  valId:'mv-ndq',  chgId:'mc-ndq',  yf:'^IXIC',        nseKey:null,             prefix:'',   isVix:false },
+  { id:'dji',  valId:'mv-dji',  chgId:'mc-dji',  yf:'^DJI',         nseKey:null,             prefix:'',   isVix:false },
+  { id:'inr',  valId:'mv-inr',  chgId:'mc-inr',  yf:'INR=X',        nseKey:null,             prefix:'',   isVix:false },
+  { id:'crude',valId:'mv-crude',chgId:'mc-crude', yf:'CL=F',         nseKey:null,             prefix:'$',  isVix:false },
 ];
 
 function fmtV(n,d=2){
-  if(n==null||isNaN(n))return'—';
-  return n>=1000?n.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}):n.toFixed(d);
+  if(n==null||isNaN(n)) return '—';
+  return n>=1000 ? n.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}) : n.toFixed(d);
 }
-function fmt(n,d=2){return fmtV(n,d);}
 
-/* Silent DOM update — only changes text content, zero layout shift */
-function silentUpdate(item,price,chgPct){
-  const valEl=document.getElementById(item.valId);
-  const chgEl=document.getElementById(item.chgId);
-  if(!valEl||!chgEl)return;
-  const up=chgPct>=0;
-  const newVal=item.prefix+fmtV(price,2);
-  const newChg=(up?'▲ +':'▼ ')+Math.abs(chgPct).toFixed(2)+'%';
-  if(valEl.textContent!==newVal){
-    valEl.textContent=newVal;
+/* Silently update a single field — only touches textContent, no DOM rebuild */
+function silentUpdate(item, price, chgPct) {
+  const valEl = document.getElementById(item.valId);
+  const chgEl = document.getElementById(item.chgId);
+  if(!valEl||!chgEl) return;
+
+  const up = chgPct >= 0;
+  const newVal = item.prefix + fmtV(price, item.isVix ? 2 : (price>=1000?2:2));
+  const newChg = (up?'▲ +':'▼ ') + Math.abs(chgPct).toFixed(2) + '%';
+
+  /* Only update DOM if value actually changed — avoids unnecessary repaints */
+  if(valEl.textContent !== newVal) {
+    valEl.textContent = newVal;
     valEl.classList.remove('val-updated');
-    void valEl.offsetWidth;
+    void valEl.offsetWidth; /* force reflow to restart animation */
     valEl.classList.add('val-updated');
   }
-  if(chgEl.textContent!==newChg){
-    chgEl.textContent=newChg;
-    chgEl.className=item.isVix?'mbar-chg vix':(up?'mbar-chg up':'mbar-chg dn');
+
+  if(chgEl.textContent !== newChg) {
+    chgEl.textContent = newChg;
+    /* Update colour class */
+    if(item.isVix) {
+      chgEl.className = 'mbar-chg vix';
+    } else {
+      chgEl.className = up ? 'mbar-chg up' : 'mbar-chg dn';
+    }
   }
 }
 
-function setTs(){
-  const ts=document.getElementById('mbar-ts');
-  if(!ts)return;
-  const now=new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
-  ts.textContent='UPD '+now;
+function setTs() {
+  const ts = document.getElementById('mbar-ts');
+  if(ts) {
+    const now = new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
+    ts.textContent = 'UPD ' + now;
+  }
 }
 
-/* Fetch all market bar items — staggered to avoid rate limiting */
-async function refreshMarketBar(){
-  let updated=0;
-  for(let i=0;i<MB_MAP.length;i++){
-    const item=MB_MAP[i];
-    try{
-      const d=await stooqJSON(item.sym);
-      silentUpdate(item,d.price,d.chgPct);
+/* ── Source A: NSE India allIndices (best for Indian indices) ── */
+async function fetchNSEIndices() {
+  const url = 'https://www.nseindia.com/api/allIndices';
+  const proxies = [
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+  ];
+  for(const px of proxies) {
+    try {
+      const r = await fetch(px,{signal:AbortSignal.timeout(7000),cache:'no-store'});
+      let j = await r.json();
+      if(j.contents) j = JSON.parse(j.contents);
+      const data = j.data || [];
+      if(data.length < 2) continue;
+      return data;
+    } catch(e){}
+  }
+  return [];
+}
+
+/* ── Source B: Yahoo Finance (India VIX + Global indices) ── */
+async function fetchYahoo() {
+  const syms = MB_MAP.map(x=>x.yf).join(',');
+  const url = `https://query1.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
+  const url2 = url.replace('query1','query2');
+  const proxies = [
+    `https://corsproxy.io/?${encodeURIComponent(url)}`,
+    `https://corsproxy.io/?${encodeURIComponent(url2)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(url2)}`,
+  ];
+  for(const px of proxies) {
+    try {
+      const r = await fetch(px,{signal:AbortSignal.timeout(8000),cache:'no-store'});
+      let j = await r.json();
+      if(j.contents) j = JSON.parse(j.contents);
+      const results = j?.quoteResponse?.result || [];
+      if(results.length > 0) return results;
+    } catch(e){}
+  }
+  return [];
+}
+
+/* ── Main silent refresh function ── */
+async function refreshMarketBar() {
+  let updated = 0;
+
+  /* Fetch both in parallel for speed */
+  const [nseData, yfData] = await Promise.allSettled([fetchNSEIndices(), fetchYahoo()]);
+  const nseArr = nseData.status==='fulfilled' ? nseData.value : [];
+  const yfArr  = yfData.status==='fulfilled'  ? yfData.value  : [];
+
+  for(const item of MB_MAP) {
+    let price=null, chgPct=null;
+
+    /* Try NSE first for Indian indices */
+    if(item.nseKey && nseArr.length) {
+      const found = nseArr.find(d =>
+        d.index===item.nseKey || d.indexSymbol===item.nseKey ||
+        (d.index||'').toLowerCase()===item.nseKey.toLowerCase()
+      );
+      if(found && found.last!=null) {
+        price  = parseFloat(found.last);
+        chgPct = parseFloat(found.percentChange);
+      }
+    }
+
+    /* Fall back to Yahoo for anything not found in NSE */
+    if((price==null) && yfArr.length) {
+      const q = yfArr.find(x=>x.symbol===item.yf);
+      if(q?.regularMarketPrice!=null) {
+        price  = q.regularMarketPrice;
+        chgPct = q.regularMarketChangePercent || 0;
+      }
+    }
+
+    if(price!=null && chgPct!=null) {
+      silentUpdate(item, price, chgPct);
       updated++;
-    }catch(e){}
-    // small stagger between requests
-    if(i<MB_MAP.length-1)await new Promise(r=>setTimeout(r,300));
+    }
   }
-  if(updated>0)setTs();
+
+  if(updated > 0) setTs();
 }
 
-/* Ticker render */
+/* Kick off immediately, then every 30 seconds silently */
+refreshMarketBar();
+setInterval(refreshMarketBar, 30000);
+
+/* ══════════════════════════════════════════════
+   TICKER — Multi-Source Engine
+   NSE → Groww → Yahoo
+══════════════════════════════════════════════ */
+const TICKER_STOCKS=[
+  {s:'RELIANCE',sym:'RELIANCE',prefix:'₹'},{s:'TCS',sym:'TCS',prefix:'₹'},
+  {s:'HDFCBANK',sym:'HDFCBANK',prefix:'₹'},{s:'INFY',sym:'INFY',prefix:'₹'},
+  {s:'ICICIBANK',sym:'ICICIBANK',prefix:'₹'},{s:'SBIN',sym:'SBIN',prefix:'₹'},
+  {s:'WIPRO',sym:'WIPRO',prefix:'₹'},{s:'AXISBANK',sym:'AXISBANK',prefix:'₹'},
+  {s:'ITC',sym:'ITC',prefix:'₹'},{s:'LT',sym:'LT',prefix:'₹'},
+];
+const TICKER_INDICES=[
+  {s:'NIFTY 50',key:'NIFTY 50'},{s:'SENSEX',key:'SENSEX'},
+  {s:'BANK NIFTY',key:'NIFTY BANK'},{s:'FINNIFTY',key:'NIFTY FIN SERVICE'},
+];
+function fmt(n,d=2){if(n==null||isNaN(n))return'—';return n>=1000?n.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}):n.toFixed(d);}
 function renderTicker(items){
   const tkr=document.getElementById('tkr');
-  if(!items.length)return;
   tkr.innerHTML=[...items,...items].map(t=>`<span class="ti"><span class="s">${t.s}</span><span>${t.v}</span><span class="${t.u?'up':'dn'}">${t.c}</span></span>`).join('');
 }
-
-/* Fetch all ticker symbols */
-async function fetchLiveTicker(){
+async function fromNSE(){
   const items=[];
-  for(let i=0;i<TICKER_SYMS.length;i++){
-    const sym=TICKER_SYMS[i];
-    try{
-      const d=await stooqJSON(sym.q);
-      const up=d.chgPct>=0;
-      items.push({s:sym.s,v:sym.p+fmt(d.price,2),c:(up?'+':'')+d.chgPct.toFixed(2)+'%',u:up?1:0});
-    }catch(e){}
-    if(i<TICKER_SYMS.length-1)await new Promise(r=>setTimeout(r,250));
+  const idxUrl='https://www.nseindia.com/api/allIndices';
+  const ir=await fetch(`https://corsproxy.io/?${encodeURIComponent(idxUrl)}`,{headers:{'Accept':'application/json'},signal:AbortSignal.timeout(7000),cache:'no-store'});
+  const idxData=await ir.json();
+  const indices=idxData.data||[];
+  for(const ti of TICKER_INDICES){
+    const found=indices.find(i=>i.index===ti.key||i.indexSymbol===ti.key);
+    if(found){const up=parseFloat(found.percentChange)>=0;items.push({s:ti.s,v:fmt(found.last,2),c:(up?'+':'')+parseFloat(found.percentChange).toFixed(2)+'%',u:up?1:0});}
   }
-  if(items.length>0)renderTicker(items);
+  for(const st of TICKER_STOCKS){
+    try{
+      const sUrl=`https://www.nseindia.com/api/quote-equity?symbol=${encodeURIComponent(st.sym)}`;
+      const sr=await fetch(`https://corsproxy.io/?${encodeURIComponent(sUrl)}`,{headers:{'Accept':'application/json'},signal:AbortSignal.timeout(5000),cache:'no-store'});
+      const sd=await sr.json();
+      const price=sd?.priceInfo?.lastPrice,chg=sd?.priceInfo?.pChange;
+      if(price!=null){const up=chg>=0;items.push({s:st.s,v:st.prefix+fmt(price,2),c:(up?'+':'')+parseFloat(chg).toFixed(2)+'%',u:up?1:0});}
+    }catch(e){}
+  }
+  return items;
 }
-
-/* ── Boot ── */
-refreshMarketBar();
-setInterval(refreshMarketBar,30000);
-
+async function fromYahooTicker(){
+  const YF_SYMS=[
+    {s:'NIFTY 50',yf:'^NSEI',p:''},{s:'SENSEX',yf:'^BSESN',p:''},{s:'BANK NIFTY',yf:'^NSEBANK',p:''},
+    {s:'RELIANCE',yf:'RELIANCE.NS',p:'₹'},{s:'TCS',yf:'TCS.NS',p:'₹'},{s:'HDFCBANK',yf:'HDFCBANK.NS',p:'₹'},
+    {s:'INFY',yf:'INFY.NS',p:'₹'},{s:'ICICIBANK',yf:'ICICIBANK.NS',p:'₹'},{s:'SBIN',yf:'SBIN.NS',p:'₹'},
+    {s:'ITC',yf:'ITC.NS',p:'₹'},{s:'S&P 500',yf:'^GSPC',p:''},{s:'NASDAQ',yf:'^IXIC',p:''},
+    {s:'USD/INR',yf:'INR=X',p:''},{s:'CRUDE',yf:'CL=F',p:'$'},
+  ];
+  const syms=YF_SYMS.map(x=>x.yf).join(',');
+  const base=`https://query1.finance.yahoo.com/v8/finance/quote?symbols=${encodeURIComponent(syms)}&fields=regularMarketPrice,regularMarketChangePercent`;
+  const proxies=[`https://corsproxy.io/?${encodeURIComponent(base)}`,`https://api.allorigins.win/get?url=${encodeURIComponent(base)}`];
+  for(const px of proxies){
+    try{
+      const r=await fetch(px,{signal:AbortSignal.timeout(7000),cache:'no-store'});
+      let raw=await r.json();
+      if(raw.contents)raw=JSON.parse(raw.contents);
+      const quotes=raw?.quoteResponse?.result||[];
+      if(!quotes.length)continue;
+      return YF_SYMS.map(sym=>{const q=quotes.find(x=>x.symbol===sym.yf);if(!q?.regularMarketPrice)return null;const up=q.regularMarketChangePercent>=0;return{s:sym.s,v:sym.p+fmt(q.regularMarketPrice,2),c:(up?'+':'')+q.regularMarketChangePercent.toFixed(2)+'%',u:up?1:0};}).filter(Boolean);
+    }catch(e){}
+  }
+  return[];
+}
+async function fetchLiveTicker(){
+  try{const items=await fromNSE();if(items.length>=4){renderTicker(items);return;}}catch(e){}
+  try{const items=await fromYahooTicker();if(items.length>=4){renderTicker(items);return;}}catch(e){}
+}
 fetchLiveTicker();
 setInterval(fetchLiveTicker,60000);
 
