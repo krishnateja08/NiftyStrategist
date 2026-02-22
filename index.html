@@ -704,36 +704,27 @@ function tick(){
   document.getElementById('ct').textContent=t;
   document.getElementById('ch').textContent=t;
 }
-tick();setInterval(tick,1000);
+tick(); setInterval(tick,1000);
 
-/*
-  DATA STRATEGY — No CORS proxy needed:
-  
-  1. Yahoo Finance v8 API — called via multiple hostnames
-     query1 and query2 — browser sometimes allows one when other is blocked
-     Covers: all Indian indices + all global + gold + silver
-     
-  2. Stooq.com — free, CORS-open, no key needed
-     URL pattern: https://stooq.com/q/l/?s=SYMBOL&f=sd2t2ohlcvn&e=json
-     Covers: ^spx (S&P500), ^djia, ^ndq, xauusd (Gold), xagusd (Silver), 
-             usdiny (USD/INR), clusd (Crude), ^nse (Nifty50)
-     
-  Both tried simultaneously — first to return wins.
-*/
+/* ════════════════════════════════════════════════════
+   STEP 1: Get free API key from https://finnhub.io/register
+   STEP 2: Paste your key below replacing YOUR_FINNHUB_KEY
+   ════════════════════════════════════════════════════ */
+var FINNHUB_KEY = 'd6dmrfhr01qm89pk6ta0d6dmrfhr01qm89pk6tag'; // <-- LINE 16: PASTE YOUR KEY HERE
 
 var MB_MAP = [
-  {id:'n50',   valId:'mv-n50',   chgId:'mc-n50',   srcId:'ms-n50',   yf:'^NSEI',               stooq:'^nse',   nseKey:'NIFTY 50',          prefix:'',  isVix:false},
-  {id:'bn',    valId:'mv-bn',    chgId:'mc-bn',    srcId:'ms-bn',    yf:'^NSEBANK',            stooq:null,     nseKey:'NIFTY BANK',        prefix:'',  isVix:false},
-  {id:'vix',   valId:'mv-vix',   chgId:'mc-vix',   srcId:'ms-vix',   yf:'^INDIAVIX',           stooq:null,     nseKey:'INDIA VIX',         prefix:'',  isVix:true},
-  {id:'fn',    valId:'mv-fn',    chgId:'mc-fn',    srcId:'ms-fn',    yf:'NIFTY_FIN_SERVICE.NS',stooq:null,     nseKey:'NIFTY FIN SERVICE', prefix:'',  isVix:false},
-  {id:'sx',    valId:'mv-sx',    chgId:'mc-sx',    srcId:'ms-sx',    yf:'^BSESN',              stooq:'^bsesn', nseKey:'SENSEX',            prefix:'',  isVix:false},
-  {id:'sp',    valId:'mv-sp',    chgId:'mc-sp',    srcId:'ms-sp',    yf:'^GSPC',               stooq:'^spx',   nseKey:null,                prefix:'',  isVix:false},
-  {id:'ndq',   valId:'mv-ndq',   chgId:'mc-ndq',   srcId:'ms-ndq',   yf:'^IXIC',               stooq:'^ndq',   nseKey:null,                prefix:'',  isVix:false},
-  {id:'dji',   valId:'mv-dji',   chgId:'mc-dji',   srcId:'ms-dji',   yf:'^DJI',                stooq:'^djia',  nseKey:null,                prefix:'',  isVix:false},
-  {id:'inr',   valId:'mv-inr',   chgId:'mc-inr',   srcId:'ms-inr',   yf:'INR=X',               stooq:'usdiny', nseKey:null,                prefix:'',  isVix:false},
-  {id:'crude', valId:'mv-crude', chgId:'mc-crude', srcId:'ms-crude', yf:'CL=F',                stooq:'clusd',  nseKey:null,                prefix:'$', isVix:false},
-  {id:'gold',  valId:'mv-gold',  chgId:'mc-gold',  srcId:'ms-gold',  yf:'GC=F',                stooq:'xauusd', nseKey:null,                prefix:'$', isVix:false},
-  {id:'silver',valId:'mv-silver',chgId:'mc-silver',srcId:'ms-silver',yf:'SI=F',                stooq:'xagusd', nseKey:null,                prefix:'$', isVix:false},
+  {id:'n50',   valId:'mv-n50',   chgId:'mc-n50',   srcId:'ms-n50',   yfSym:'^NSEI',               fhSym:null,              nseKey:'NIFTY 50',          prefix:'',  isVix:false},
+  {id:'bn',    valId:'mv-bn',    chgId:'mc-bn',    srcId:'ms-bn',    yfSym:'^NSEBANK',            fhSym:null,              nseKey:'NIFTY BANK',        prefix:'',  isVix:false},
+  {id:'vix',   valId:'mv-vix',   chgId:'mc-vix',   srcId:'ms-vix',   yfSym:'^INDIAVIX',           fhSym:null,              nseKey:'INDIA VIX',         prefix:'',  isVix:true},
+  {id:'fn',    valId:'mv-fn',    chgId:'mc-fn',    srcId:'ms-fn',    yfSym:'NIFTY_FIN_SERVICE.NS',fhSym:null,              nseKey:'NIFTY FIN SERVICE', prefix:'',  isVix:false},
+  {id:'sx',    valId:'mv-sx',    chgId:'mc-sx',    srcId:'ms-sx',    yfSym:'^BSESN',              fhSym:null,              nseKey:'SENSEX',            prefix:'',  isVix:false},
+  {id:'sp',    valId:'mv-sp',    chgId:'mc-sp',    srcId:'ms-sp',    yfSym:'^GSPC',               fhSym:'OANDA:SPX500_USD',nseKey:null, prefix:'',  isVix:false},
+  {id:'ndq',   valId:'mv-ndq',   chgId:'mc-ndq',   srcId:'ms-ndq',   yfSym:'^IXIC',               fhSym:'OANDA:NAS100_USD',nseKey:null, prefix:'',  isVix:false},
+  {id:'dji',   valId:'mv-dji',   chgId:'mc-dji',   srcId:'ms-dji',   yfSym:'^DJI',                fhSym:'OANDA:US30_USD',  nseKey:null, prefix:'',  isVix:false},
+  {id:'inr',   valId:'mv-inr',   chgId:'mc-inr',   srcId:'ms-inr',   yfSym:'INR=X',               fhSym:'OANDA:USD_INR',   nseKey:null, prefix:'',  isVix:false},
+  {id:'crude', valId:'mv-crude', chgId:'mc-crude', srcId:'ms-crude', yfSym:'CL=F',                fhSym:'OANDA:USOIL_USD', nseKey:null, prefix:'$', isVix:false},
+  {id:'gold',  valId:'mv-gold',  chgId:'mc-gold',  srcId:'ms-gold',  yfSym:'GC=F',                fhSym:'OANDA:XAU_USD',   nseKey:null, prefix:'$', isVix:false},
+  {id:'silver',valId:'mv-silver',chgId:'mc-silver',srcId:'ms-silver',yfSym:'SI=F',                fhSym:'OANDA:XAG_USD',   nseKey:null, prefix:'$', isVix:false},
 ];
 
 function fmtV(n,d){
@@ -760,7 +751,7 @@ function silentUpdate(item,price,chgPct,source){
     chgEl.textContent=newChg;
     chgEl.className=item.isVix?'mbar-chg vix':(up?'mbar-chg up':'mbar-chg dn');
   }
-  if(srcEl&&source) srcEl.textContent=source;
+  if(srcEl) srcEl.textContent=source||'';
 }
 
 function setTs(){
@@ -770,180 +761,123 @@ function setTs(){
   ts.textContent='UPD '+now;
 }
 
-/* ══ SOURCE 1: Yahoo Finance — try both query1 and query2 directly ══
-   No proxy. Browser may allow direct fetch on one of the endpoints.
-   Yahoo Finance does NOT send CORS headers — this may fail in browser.
-   But worth trying first as it's the most complete source.          */
-function fetchYahoo(){
-  var syms=MB_MAP.map(function(x){return x.yf;}).join(',');
-  var fields='regularMarketPrice,regularMarketChangePercent';
-  var urls=[
-    'https://query1.finance.yahoo.com/v8/finance/quote?symbols='+encodeURIComponent(syms)+'&fields='+fields,
-    'https://query2.finance.yahoo.com/v8/finance/quote?symbols='+encodeURIComponent(syms)+'&fields='+fields,
-    'https://corsproxy.io/?'+encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/quote?symbols='+encodeURIComponent(syms)+'&fields='+fields),
-    'https://api.allorigins.win/get?url='+encodeURIComponent('https://query2.finance.yahoo.com/v8/finance/quote?symbols='+encodeURIComponent(syms)+'&fields='+fields),
-  ];
-  return new Promise(function(resolve){
-    var done=false, count=0;
-    urls.forEach(function(url){
-      fetch(url,{signal:AbortSignal.timeout(8000),cache:'no-store'})
-        .then(function(r){return r.ok?r.json():Promise.reject('bad');})
-        .then(function(j){
-          // handle allorigins wrapper
-          if(j&&j.contents){try{j=JSON.parse(j.contents);}catch(e){return;}}
-          var results=(j&&j.quoteResponse&&j.quoteResponse.result)||[];
-          if(results.length>0&&!done){
-            done=true;
-            console.log('[YF] success! quotes:',results.length);
-            resolve(results);
-          }
-        })
-        .catch(function(){})
-        .finally(function(){count++;if(count===urls.length&&!done){console.warn('[YF] all failed');resolve([]);}});
-    });
-  });
-}
-
-/* ══ SOURCE 2: Stooq.com — free, CORS-friendly, no API key ══
-   Individual calls per symbol — fire all simultaneously        */
-function fetchStooq(){
-  var items=MB_MAP.filter(function(x){return x.stooq;});
-  var promises=items.map(function(item){
-    var url='https://stooq.com/q/l/?s='+item.stooq+'&f=sd2t2ohlcvn&e=json';
-    return fetch(url,{signal:AbortSignal.timeout(8000),cache:'no-store'})
-      .then(function(r){return r.ok?r.json():Promise.reject('bad');})
-      .then(function(j){
-        var sym=j&&j.symbols&&j.symbols[0];
-        if(!sym||!sym.Close||sym.Close==='N/D') return null;
-        var price=parseFloat(sym.Close);
-        var open=parseFloat(sym.Open);
-        var chgPct=open>0?((price-open)/open)*100:0;
-        return {id:item.id, price:price, chgPct:chgPct};
-      })
-      .catch(function(){return null;});
-  });
-  return Promise.all(promises).then(function(results){
-    var map={};
-    results.forEach(function(r){if(r) map[r.id]={price:r.price,chgPct:r.chgPct};});
-    console.log('[STQ] got:',Object.keys(map).length,'symbols');
-    return map;
-  });
-}
-
-/* ══ NSE India via allIndices (try with and without proxy) ══ */
+/* ══ SOURCE 1: NSE India ══ */
 function fetchNSE(){
   var url='https://www.nseindia.com/api/allIndices';
-  var proxies=[
+  var list=[
     'https://corsproxy.io/?'+encodeURIComponent(url),
     'https://api.allorigins.win/get?url='+encodeURIComponent(url),
   ];
   return new Promise(function(resolve){
-    var done=false, count=0;
-    proxies.forEach(function(px){
+    var done=false,n=0;
+    list.forEach(function(px){
       fetch(px,{signal:AbortSignal.timeout(7000),cache:'no-store'})
-        .then(function(r){return r.ok?r.json():Promise.reject('bad');})
-        .then(function(raw){
-          var j=raw;
-          if(raw&&raw.contents){try{j=JSON.parse(raw.contents);}catch(e){return;}}
-          var data=(j&&j.data)||[];
-          if(data.length>=2&&!done){done=true;console.log('[NSE] ok:',data.length);resolve(data);}
-        })
-        .catch(function(){})
-        .finally(function(){count++;if(count===proxies.length&&!done){console.warn('[NSE] all failed');resolve([]);}});
+        .then(function(r){return r.ok?r.json():Promise.reject();})
+        .then(function(j){
+          if(j&&j.contents){try{j=JSON.parse(j.contents);}catch(e){return;}}
+          var d=(j&&j.data)||[];
+          if(d.length>=2&&!done){done=true;console.log('[NSE]',d.length,'ok');resolve(d);}
+        }).catch(function(){}).finally(function(){n++;if(n===list.length&&!done)resolve([]);});
+    });
+  });
+}
+
+/* ══ SOURCE 2: Finnhub — proper CORS, free key from finnhub.io ══ */
+function fetchFinnhub(){
+  if(!FINNHUB_KEY||FINNHUB_KEY==='YOUR_FINNHUB_KEY'){
+    console.warn('[FH] No key! Get free key at finnhub.io/register then paste in line 16');
+    return Promise.resolve({});
+  }
+  var items=MB_MAP.filter(function(x){return x.fhSym;});
+  var calls=items.map(function(item){
+    var url='https://finnhub.io/api/v1/quote?symbol='+encodeURIComponent(item.fhSym)+'&token='+FINNHUB_KEY;
+    return fetch(url,{signal:AbortSignal.timeout(8000),cache:'no-store'})
+      .then(function(r){return r.ok?r.json():null;})
+      .then(function(j){
+        if(j&&j.c&&j.c>0) return {id:item.id,price:j.c,chgPct:j.dp||0};
+        return null;
+      }).catch(function(){return null;});
+  });
+  return Promise.all(calls).then(function(res){
+    var map={};
+    res.forEach(function(r){if(r)map[r.id]={price:r.price,chgPct:r.chgPct};});
+    console.log('[FH] got',Object.keys(map).length,'quotes');
+    return map;
+  });
+}
+
+/* ══ SOURCE 3: Yahoo Finance — race proxies simultaneously ══ */
+function fetchYahoo(){
+  var syms=MB_MAP.map(function(x){return x.yfSym;}).join(',');
+  var fields='regularMarketPrice,regularMarketChangePercent';
+  var q1='https://query1.finance.yahoo.com/v8/finance/quote?symbols='+encodeURIComponent(syms)+'&fields='+fields;
+  var q2=q1.replace('query1','query2');
+  var list=[
+    'https://corsproxy.io/?'+encodeURIComponent(q1),
+    'https://corsproxy.io/?'+encodeURIComponent(q2),
+    'https://api.allorigins.win/get?url='+encodeURIComponent(q1),
+    'https://api.allorigins.win/get?url='+encodeURIComponent(q2),
+  ];
+  return new Promise(function(resolve){
+    var done=false,n=0;
+    list.forEach(function(px){
+      fetch(px,{signal:AbortSignal.timeout(9000),cache:'no-store'})
+        .then(function(r){return r.ok?r.json():Promise.reject();})
+        .then(function(j){
+          if(j&&j.contents){try{j=JSON.parse(j.contents);}catch(e){return;}}
+          var res=(j&&j.quoteResponse&&j.quoteResponse.result)||[];
+          if(res.length>0&&!done){done=true;console.log('[YF]',res.length,'ok');resolve(res);}
+        }).catch(function(){}).finally(function(){n++;if(n===list.length&&!done)resolve([]);});
     });
   });
 }
 
 /* ══ MAIN REFRESH ══ */
 function refreshMarketBar(){
-  console.log('[MBar] refreshing...');
-
-  // Fire NSE, Yahoo, Stooq all at once in parallel
-  Promise.all([fetchNSE(), fetchYahoo(), fetchStooq()])
-    .then(function(results){
-      var nseArr=results[0];
-      var yfArr=results[1];
-      var stooqMap=results[2];
-      var updated=0;
-
-      MB_MAP.forEach(function(item){
-        var price=null, chgPct=null, src=null;
-
-        // Priority 1: NSE for Indian indices
-        if(item.nseKey&&nseArr.length){
-          var found=nseArr.find(function(d){
-            return d.index===item.nseKey||d.indexSymbol===item.nseKey||(d.index||'').toLowerCase()===item.nseKey.toLowerCase();
-          });
-          if(found&&found.last!=null){
-            price=parseFloat(found.last);
-            chgPct=parseFloat(found.percentChange);
-            src='NSE';
-          }
-        }
-
-        // Priority 2: Stooq (CORS-friendly, no proxy)
-        if(price===null&&stooqMap[item.id]){
-          price=stooqMap[item.id].price;
-          chgPct=stooqMap[item.id].chgPct;
-          src='STQ';
-        }
-
-        // Priority 3: Yahoo Finance
-        if(price===null&&yfArr.length){
-          var q=yfArr.find(function(x){return x.symbol===item.yf;});
-          if(q&&q.regularMarketPrice!=null){
-            price=q.regularMarketPrice;
-            chgPct=q.regularMarketChangePercent||0;
-            src='YF';
-          }
-        }
-
-        if(price!==null&&chgPct!==null){
-          silentUpdate(item,price,chgPct,src);
-          updated++;
-        }
-      });
-
-      if(updated>0) setTs();
-      console.log('[MBar] updated:',updated,'/',MB_MAP.length);
+  console.log('[MBar] fetching all sources...');
+  Promise.all([fetchNSE(), fetchFinnhub(), fetchYahoo()]).then(function(res){
+    var nseArr=res[0], fhMap=res[1], yfArr=res[2];
+    var updated=0;
+    MB_MAP.forEach(function(item){
+      var price=null,chgPct=null,src=null;
+      if(item.nseKey&&nseArr.length){
+        var f=nseArr.find(function(d){
+          return d.index===item.nseKey||d.indexSymbol===item.nseKey||(d.index||'').toLowerCase()===item.nseKey.toLowerCase();
+        });
+        if(f&&f.last!=null){price=parseFloat(f.last);chgPct=parseFloat(f.percentChange);src='NSE';}
+      }
+      if(price===null&&fhMap[item.id]){price=fhMap[item.id].price;chgPct=fhMap[item.id].chgPct;src='FH';}
+      if(price===null&&yfArr.length){
+        var q=yfArr.find(function(x){return x.symbol===item.yfSym;});
+        if(q&&q.regularMarketPrice!=null){price=q.regularMarketPrice;chgPct=q.regularMarketChangePercent||0;src='YF';}
+      }
+      if(price!==null){silentUpdate(item,price,chgPct,src);updated++;}
     });
+    if(updated>0) setTs();
+    console.log('[MBar] updated',updated,'/',MB_MAP.length);
+    buildTicker();
+  });
 }
 
-refreshMarketBar();
-setInterval(refreshMarketBar,60000);
-
-/* ══ TICKER ══ */
-function renderTicker(items){
-  var tkr=document.getElementById('tkr');
-  var all=items.concat(items);
-  tkr.innerHTML=all.map(function(t){
-    return '<span class="ti"><span class="s">'+t.s+'</span><span>'+t.v+'</span><span class="'+(t.u?'up':'dn')+'">'+t.c+'</span></span>';
-  }).join('');
-}
-function fmt(n){if(n==null||isNaN(n))return'—';return n>=1000?n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}):n.toFixed(2);}
-
-function buildTickerFromMBMap(){
-  var labels={
-    'n50':'NIFTY 50','bn':'BANK NIFTY','vix':'INDIA VIX','fn':'FINNIFTY',
-    'sx':'SENSEX','sp':'S&P 500','ndq':'NASDAQ','dji':'DOW JONES',
-    'inr':'USD/INR','crude':'CRUDE OIL','gold':'GOLD','silver':'SILVER'
-  };
+/* ══ TICKER from live market bar data ══ */
+var TICKER_LABELS={n50:'NIFTY 50',bn:'BANK NIFTY',vix:'INDIA VIX',fn:'FINNIFTY',sx:'SENSEX',sp:'S&P 500',ndq:'NASDAQ',dji:'DOW JONES',inr:'USD/INR',crude:'CRUDE OIL',gold:'GOLD',silver:'SILVER'};
+function buildTicker(){
   var items=[];
   MB_MAP.forEach(function(item){
     var valEl=document.getElementById(item.valId);
     var chgEl=document.getElementById(item.chgId);
-    if(!valEl||valEl.textContent==='···') return;
-    var v=valEl.textContent;
-    var c=chgEl.textContent.replace('▲ ','').replace('▼ ','');
+    if(!valEl||valEl.textContent==='···'||valEl.textContent==='—') return;
     var up=chgEl.classList.contains('up')||chgEl.classList.contains('vix');
-    items.push({s:labels[item.id]||item.id, v:v, c:(up?'+':'-')+c, u:up?1:0});
+    items.push({s:TICKER_LABELS[item.id],v:valEl.textContent,c:chgEl.textContent.replace('▲ ','').replace('▼ ','-'),u:up});
   });
-  if(items.length>=4) renderTicker(items);
+  if(items.length<3) return;
+  var tkr=document.getElementById('tkr');
+  var all=items.concat(items);
+  tkr.innerHTML=all.map(function(t){return'<span class="ti"><span class="s">'+t.s+'</span><span>'+t.v+'</span><span class="'+(t.u?'up':'dn')+'">'+t.c+'</span></span>';}).join('');
 }
 
-// Build ticker from already-loaded market bar data after refresh
-setTimeout(buildTickerFromMBMap, 8000);
-setInterval(buildTickerFromMBMap, 60000);
+refreshMarketBar();
+setInterval(refreshMarketBar,60000);
 
 /* ══ Session ══ */
 var l=sessionStorage.getItem('lo');
@@ -961,8 +895,6 @@ function closeViewer(){viewer.classList.remove('open');document.body.style.overf
 function openExternal(){if(currentUrl)window.open(currentUrl,'_blank');}
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&viewer.classList.contains('open'))closeViewer();});
 function go(e,name){e.preventDefault();var card=e.currentTarget,url=card.href;sessionStorage.setItem('lo',name);document.getElementById('lc').textContent=name;var r=document.createElement('div');r.className='rpl';var b=card.getBoundingClientRect();r.style.left=(e.clientX-b.left-30)+'px';r.style.top=(e.clientY-b.top-30)+'px';card.appendChild(r);setTimeout(function(){r.remove();},600);setTimeout(function(){openViewer(url,name);},200);}
-
-/* ══ Staggered entrance ══ */
 document.querySelectorAll('.sc-card[href]').forEach(function(c,i){c.style.opacity='0';c.style.transform='translateY(14px)';c.style.transition='opacity .4s ease '+i*.07+'s,transform .4s ease '+i*.07+'s';setTimeout(function(){c.style.opacity='1';c.style.transform='none';},80+i*60);});
 </script>
 </body>
