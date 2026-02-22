@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>KrishnaMarkets — Intelligence Hub</title>
+<title>NIFTY Indian Markets HUB — Intelligence Hub</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -19,8 +19,8 @@
   --grn:  #00ff88;
   --pur:  #9d00ff;
   --red:  #ff2255;
-  --bc:   rgba(0,245,255,.12);   /* cyan border */
-  --bp:   rgba(255,0,144,.12);   /* pink border */
+  --bc:   rgba(0,245,255,.12);
+  --bp:   rgba(255,0,144,.12);
   --b1:   rgba(0,245,255,.07);
   --b2:   rgba(0,245,255,.14);
   --tx:   rgba(220,240,255,.97);
@@ -103,10 +103,8 @@ header{
   gap:12px;flex-wrap:wrap;
   position:sticky;top:0;z-index:90;
   backdrop-filter:blur(12px);
-  /* neon bottom line */
   box-shadow:0 1px 0 rgba(0,245,255,.2),0 4px 20px rgba(0,0,0,.6);
 }
-/* animated rainbow neon underline */
 header::after{
   content:'';
   position:absolute;bottom:0;left:0;right:0;height:1px;
@@ -133,7 +131,7 @@ header::after{
 
 .bname{
   font-family:'Orbitron',sans-serif;
-  font-size:18px;font-weight:700;letter-spacing:2px;
+  font-size:16px;font-weight:700;letter-spacing:2px;
   color:var(--cyan);
   text-shadow:0 0 20px rgba(0,245,255,.5),0 0 40px rgba(0,245,255,.2);
 }
@@ -185,13 +183,11 @@ header::after{
 .sb{
   background:var(--panel);padding:11px 16px;position:relative;overflow:hidden;
 }
-/* top neon color bar */
 .sb::before{
   content:'';position:absolute;top:0;left:0;right:0;height:2px;
   background:var(--sc,var(--cyan));
   box-shadow:0 0 8px var(--sc,var(--cyan));
 }
-/* subtle bg glyph */
 .sb::after{
   content:var(--sg,'◈');
   position:absolute;bottom:-6px;right:8px;
@@ -231,153 +227,122 @@ header::after{
 }
 
 /* ══════════════════════════════════════
-   GRID — two independent flex columns
+   SAMPLE C — SECTOR PODS GROUPS
 ══════════════════════════════════════ */
-.grid{
-  display:flex;
-  flex-direction:row;
-  border:1px solid var(--bc);
+.groups{
+  display:flex;flex-direction:column;gap:0;
   margin:14px 18px 18px;
 }
-.col{
-  flex:1 1 50%;
-  min-width:0;
-  display:flex;
-  flex-direction:column;
-}
-.col:first-child{
-  border-right:1px solid rgba(0,245,255,.15);
-}
 
-/* ══════════════════════════════════════
-   CARD — only as tall as its own content
-══════════════════════════════════════ */
-.card{
-  background:var(--panel);
-  padding:16px 20px 14px;
-  cursor:pointer;text-decoration:none;
-  display:block;
-  position:relative;overflow:hidden;
-  transition:background .15s;
-  border-bottom:1px solid rgba(0,245,255,.1);
+.sc-group{
+  position:relative;
+  border:1px solid var(--ga, rgba(0,245,255,.15));
+  margin-bottom:14px;
 }
-.col .card:last-child{border-bottom:none}
+.sc-group:last-child{margin-bottom:0;}
+.sc-group::before{
+  content:'';position:absolute;inset:-1px;
+  background:linear-gradient(135deg,var(--ga,rgba(0,245,255,.15)),transparent 40%,transparent 60%,var(--gb,rgba(255,0,144,.08)));
+  pointer-events:none;z-index:0;opacity:.5;
+}
+.sc-inner{position:relative;z-index:1;background:rgba(6,4,15,.96);}
 
-/* scan-line sweep on hover */
-.card::before{
+.sc-head{
+  padding:10px 16px;border-bottom:1px solid rgba(0,245,255,.08);
+  display:flex;align-items:center;gap:12px;
+  background:linear-gradient(90deg,rgba(6,4,15,.99),rgba(6,4,15,.85));
+}
+.sc-head-hex{
+  width:36px;height:36px;flex-shrink:0;
+  clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+  background:linear-gradient(135deg,rgba(0,245,255,.12),rgba(255,0,144,.06));
+  border:1px solid var(--gc,var(--cyan));
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+  box-shadow:0 0 14px rgba(0,245,255,.2);
+  animation:hexglow2 3s ease-in-out infinite;
+}
+@keyframes hexglow2{
+  0%,100%{box-shadow:0 0 10px rgba(0,245,255,.2)}
+  50%{box-shadow:0 0 22px rgba(0,245,255,.45)}
+}
+.sc-head-info{flex:1;}
+.sc-head-tag{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:2.5px;color:var(--t3);margin-bottom:2px;}
+.sc-head-name{font-family:'Orbitron',monospace;font-size:12px;letter-spacing:2px;color:var(--gc,var(--cyan));
+  text-shadow:0 0 12px rgba(0,245,255,.4);}
+.sc-head-right{text-align:right;flex-shrink:0;}
+.sc-head-status{font-family:'Orbitron',monospace;font-size:8px;color:var(--grn);
+  display:flex;align-items:center;gap:5px;justify-content:flex-end;}
+.sc-head-nodes{font-size:9px;color:var(--t3);margin-top:3px;font-family:'Orbitron',monospace;letter-spacing:1px;}
+
+.sc-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
+
+.sc-card{
+  padding:16px;border-right:1px solid rgba(0,245,255,.07);
+  cursor:pointer;position:relative;overflow:hidden;
+  transition:background .2s;text-decoration:none;color:inherit;display:block;
+}
+.sc-card:last-child{border-right:none;}
+.sc-card:hover{background:rgba(0,245,255,.03);}
+
+/* scan-line sweep on hover (matches original) */
+.sc-card::before{
   content:'';position:absolute;inset:0;z-index:0;
-  background:linear-gradient(
-    180deg,transparent 0%,rgba(0,245,255,.025) 50%,transparent 100%
-  );
-  background-size:100% 40px;
-  opacity:0;transition:opacity .25s;
+  background:linear-gradient(180deg,transparent 0%,rgba(0,245,255,.025) 50%,transparent 100%);
+  background-size:100% 40px;opacity:0;transition:opacity .25s;
   animation:scanmove 2s linear infinite;
 }
-@keyframes scanmove{
-  0%{background-position:0 -40px}
-  100%{background-position:0 200px}
-}
-.card:hover::before{opacity:1}
+@keyframes scanmove{0%{background-position:0 -40px}100%{background-position:0 200px}}
+.sc-card:hover::before{opacity:1;}
 
-/* top neon glow bar */
-.card::after{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:var(--ca,var(--cyan));
-  box-shadow:0 0 10px var(--ca,var(--cyan));
-  opacity:.4;transition:opacity .2s;
-}
-.card:hover{background:var(--p2)}
-.card:hover::after{opacity:1}
+.sc-card-inner{position:relative;z-index:2;}
 
-/* neon left accent bar (slides in from bottom) */
-.card .acc{
-  position:absolute;left:0;top:0;bottom:0;width:2px;
-  background:var(--ca,var(--cyan));
-  box-shadow:0 0 10px var(--ca,var(--cyan));
-  transform:scaleY(0);transform-origin:bottom;
-  transition:transform .22s ease;
-  z-index:1;
+/* corner bracket (matches original style) */
+.sc-card .brk{
+  position:absolute;bottom:10px;right:10px;width:12px;height:12px;z-index:3;
+  border-bottom:1px solid var(--t3);border-right:1px solid var(--t3);transition:.2s;
 }
-.card:hover .acc{transform:scaleY(1)}
+.sc-card:hover .brk{border-color:var(--cc,var(--cyan));box-shadow:2px 2px 6px rgba(0,245,255,.2);width:16px;height:16px;bottom:8px;right:8px;}
 
-/* bottom-right bracket */
-.card .brk{
-  position:absolute;bottom:10px;right:10px;
-  width:14px;height:14px;
-  border-bottom:1px solid var(--t3);border-right:1px solid var(--t3);
-  transition:.2s;z-index:1;
+/* top glow indicator per card */
+.sc-card-topbar{height:1px;margin:-16px -16px 14px;background:linear-gradient(90deg,var(--cc,var(--cyan)),transparent);opacity:.5;transition:opacity .2s;}
+.sc-card:hover .sc-card-topbar{opacity:1;}
+
+.sc-card-glow{position:absolute;top:-30px;right:-30px;width:100px;height:100px;border-radius:50%;
+  background:radial-gradient(var(--cc,rgba(0,245,255,.08)),transparent 70%);pointer-events:none;z-index:1;}
+
+.sc-card-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.sc-card-ico-wrap{width:38px;height:38px;flex-shrink:0;position:relative;
+  display:flex;align-items:center;justify-content:center;}
+.sc-card-ico{font-size:20px;}
+.sc-card-ring{position:absolute;inset:0;border:1px solid var(--cc,rgba(0,245,255,.3));border-radius:50%;
+  animation:spin-slow 8s linear infinite;}
+@keyframes spin-slow{to{transform:rotate(360deg)}}
+.sc-card-ring::before{content:'';position:absolute;top:-2px;left:50%;transform:translateX(-50%);
+  width:4px;height:4px;border-radius:50%;background:var(--cc,var(--cyan));
+  box-shadow:0 0 8px var(--cc,var(--cyan));}
+.sc-card-label{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:2px;color:var(--t3);}
+
+.sc-card-name{
+  font-family:'Orbitron',sans-serif;font-size:12px;letter-spacing:1px;
+  color:var(--cc,var(--cyan));margin-bottom:6px;line-height:1.3;
+  text-shadow:0 0 10px rgba(0,245,255,.25);
 }
-.card:hover .brk{
-  border-color:var(--ca,var(--cyan));
-  box-shadow:2px 2px 6px rgba(0,245,255,.2);
-  width:18px;height:18px;bottom:8px;right:8px;
-}
+.sc-card-desc{font-size:12px;color:rgba(180,210,240,.85);line-height:1.5;margin-bottom:12px;}
 
-/* per-card neon accent colors */
-.col:first-child .card:nth-child(1){--ca:#00f5ff}
-.col:first-child .card:nth-child(2){--ca:#ffe000}
-.col:first-child .card:nth-child(3){--ca:#9d00ff}
-.col:first-child .card:nth-child(4){--ca:#00ff88}
-.col:last-child  .card:nth-child(1){--ca:#00ff88}
-.col:last-child  .card:nth-child(2){--ca:#00f5ff}
-.col:last-child  .card:nth-child(3){--ca:#ff0090}
-.col:last-child  .card:nth-child(4){--ca:#ffe000}
-
-/* ── card content ── */
-.card-inner{position:relative;z-index:2}
-
-.cnum{
-  font-family:'Orbitron',sans-serif;
-  font-size:8px;color:var(--t3);letter-spacing:3px;
-  text-transform:uppercase;margin-bottom:8px;
-}
-.cnum b{color:var(--ca,var(--cyan));font-weight:700;margin-right:6px;text-shadow:0 0 8px currentColor}
-
-.ctop{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.cico{
-  width:42px;height:42px;flex-shrink:0;
-  border:1px solid var(--bc);background:rgba(0,0,0,.6);
-  display:flex;align-items:center;justify-content:center;font-size:20px;
-  transition:border-color .15s,box-shadow .15s;
-}
-.card:hover .cico{
-  border-color:var(--ca,var(--cyan));
-  box-shadow:0 0 12px rgba(0,245,255,.25);
-}
-
-.ctitle{
-  font-family:'Orbitron',sans-serif;
-  font-size:14px;font-weight:600;
-  color:var(--cyan);line-height:1.2;margin-bottom:3px;
-  text-shadow:0 0 14px rgba(0,245,255,.3);
-}
-.ccat{font-size:9px;color:var(--t3);letter-spacing:2px;text-transform:uppercase}
-
-.cdesc{
-  font-size:12px;color:rgba(180,210,240,.85);
-  line-height:1.55;font-family:'Rajdhani',sans-serif;
-  margin-bottom:10px;
-}
-
-.cfoot{
+.sc-card-footer{
   display:flex;align-items:center;justify-content:space-between;
-  padding-top:8px;border-top:1px solid rgba(0,245,255,.08);
+  border-top:1px solid rgba(0,245,255,.08);padding-top:9px;
 }
-.ctag{
-  font-family:'Orbitron',sans-serif;font-size:8px;
-  color:var(--t3);letter-spacing:2px;text-transform:uppercase;
-}
-.carr{
-  display:flex;align-items:center;gap:6px;
-  font-family:'Orbitron',sans-serif;font-size:9px;font-weight:700;
-  letter-spacing:2px;color:var(--ca,var(--cyan));
-  transition:gap .18s;text-shadow:0 0 8px currentColor;
-}
-.cln{width:20px;height:1px;background:currentColor;transition:width .18s}
-.card:hover .carr{gap:10px}
-.card:hover .cln{width:30px}
+.sc-card-tag{font-family:'Orbitron',monospace;font-size:7px;letter-spacing:1.5px;
+  padding:2px 7px;border:1px solid rgba(0,245,255,.1);color:var(--t3);}
+.sc-card-btn{font-family:'Orbitron',monospace;font-size:9px;letter-spacing:2px;
+  color:var(--cc,var(--cyan));display:flex;align-items:center;gap:6px;
+  text-shadow:0 0 8px currentColor;transition:gap .18s;}
+.sc-card-btn-line{width:18px;height:1px;background:var(--cc,var(--cyan));transition:width .18s;}
+.sc-card:hover .sc-card-btn{gap:10px;}
+.sc-card:hover .sc-card-btn-line{width:28px;}
 
-/* ripple — neon cyan version */
+/* ripple effect */
 @keyframes rpl{0%{transform:scale(0);opacity:.35}100%{transform:scale(4);opacity:0}}
 .rpl{
   position:absolute;width:60px;height:60px;border-radius:50%;
@@ -407,45 +372,39 @@ footer{
   .stats{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:700px){
-  .grid{flex-direction:column}
-  .col:first-child{border-right:none;border-bottom:1px solid rgba(0,245,255,.15)}
-  .col .card:last-child{border-bottom:1px solid rgba(0,245,255,.1)}
+  .sc-cards{grid-template-columns:1fr;}
+  .sc-card{border-right:none;border-bottom:1px solid rgba(0,245,255,.07);}
+  .sc-card:last-child{border-bottom:none;}
   .stats{grid-template-columns:repeat(2,1fr)}
+  .groups{margin:8px 10px 14px;}
 }
 @media(max-width:560px){
   .tb-l .ver{display:none}
   header{padding:10px 12px}
   .bsub,.pill.p{display:none}
-  .bname{font-size:15px}.logo{width:40px;height:40px;font-size:19px}
-  .grid{margin:6px 8px}.card{padding:14px 14px 12px}
-  .ctitle{font-size:13px}.cico{width:36px;height:36px;font-size:17px}
-  .cdesc{font-size:12px}
+  .bname{font-size:13px}.logo{width:40px;height:40px;font-size:18px}
   .tkr{display:none}
   .stats{grid-template-columns:repeat(2,1fr)}
   .sb .l{font-size:7px}.sb .v{font-size:13px}
+  .sc-head-name{font-size:10px;}
+  .sc-cards{grid-template-columns:1fr;}
 }
 @media(max-width:400px){
   .stats{grid-template-columns:repeat(2,1fr)}
-  .grid{margin:4px 6px}
-  .card{padding:12px}
-  .ctitle{font-size:12px}
+  .groups{margin:4px 6px 10px}
   .hright{gap:4px}
   .pill{padding:4px 8px;font-size:8px}
 }
-/* ── FLOATING BACK BUTTON (always on top) ── */
+
+/* ── FLOATING BACK BUTTON ── */
 #floatback{
   position:fixed;bottom:24px;right:24px;z-index:9999;
-  display:none;
-  align-items:center;gap:8px;
-  padding:10px 18px;
+  display:none;align-items:center;gap:8px;padding:10px 18px;
   font-family:'Orbitron',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;
-  color:var(--bg);
-  background:var(--pink);
-  border:none;cursor:pointer;
+  color:var(--bg);background:var(--pink);border:none;cursor:pointer;
   clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
   box-shadow:0 0 24px rgba(255,0,144,.6),0 0 48px rgba(255,0,144,.3);
-  animation:floatpulse 2s ease-in-out infinite;
-  transition:transform .15s;
+  animation:floatpulse 2s ease-in-out infinite;transition:transform .15s;
 }
 #floatback:hover{transform:scale(1.06)}
 #floatback.visible{display:flex}
@@ -453,87 +412,38 @@ footer{
   0%,100%{box-shadow:0 0 24px rgba(255,0,144,.6),0 0 48px rgba(255,0,144,.3)}
   50%    {box-shadow:0 0 36px rgba(255,0,144,.9),0 0 64px rgba(255,0,144,.5)}
 }
-/* keyboard hint */
 #floatback .kbhint{
   font-size:7px;opacity:.7;letter-spacing:1px;
-  border:1px solid rgba(0,0,0,.3);padding:1px 5px;border-radius:2px;
-  background:rgba(0,0,0,.2);
+  border:1px solid rgba(0,0,0,.3);padding:1px 5px;border-radius:2px;background:rgba(0,0,0,.2);
 }
+
 /* ══════════════════════════════════════
    IFRAME VIEWER OVERLAY
 ══════════════════════════════════════ */
-#viewer{
-  position:fixed;inset:0;z-index:500;
-  display:none;flex-direction:column;
-  background:var(--bg);
-}
+#viewer{position:fixed;inset:0;z-index:500;display:none;flex-direction:column;background:var(--bg);}
 #viewer.open{display:flex}
 
-/* top bar of the viewer */
 #vbar{
-  background:rgba(0,0,0,.92);
-  border-bottom:1px solid var(--cyan);
-  padding:6px 14px;
-  display:flex;align-items:center;gap:12px;
+  background:rgba(0,0,0,.92);border-bottom:1px solid var(--cyan);
+  padding:6px 14px;display:flex;align-items:center;gap:12px;
   font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;
-  flex-shrink:0;
-  box-shadow:0 0 20px rgba(0,245,255,.15);
-  position:relative;z-index:501;
+  flex-shrink:0;box-shadow:0 0 20px rgba(0,245,255,.15);position:relative;z-index:501;
 }
-#vtitle{
-  color:var(--cyan);font-weight:700;font-size:11px;
-  text-shadow:0 0 12px rgba(0,245,255,.5);
-  flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-/* refresh ring in viewer */
+#vtitle{color:var(--cyan);font-weight:700;font-size:11px;text-shadow:0 0 12px rgba(0,245,255,.5);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .vring{display:flex;align-items:center;gap:6px;color:var(--yel)}
 .vring svg{transform:rotate(-90deg);width:16px;height:16px;flex-shrink:0}
 .vring circle{fill:none;stroke:rgba(255,224,0,.2);stroke-width:2}
-.vring .varc{
-  stroke:var(--yel);stroke-width:2;
-  stroke-dasharray:44;stroke-dashoffset:0;
-  transition:stroke-dashoffset 1s linear;
-  filter:drop-shadow(0 0 4px var(--yel));
-}
+.vring .varc{stroke:var(--yel);stroke-width:2;stroke-dasharray:44;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear;filter:drop-shadow(0 0 4px var(--yel));}
 #vrcd{font-size:9px;color:var(--yel);min-width:22px}
-#vopen{
-  padding:5px 12px;font-size:8px;letter-spacing:2px;
-  font-family:'Orbitron',sans-serif;text-transform:uppercase;
-  border:1px solid rgba(0,245,255,.3);color:var(--cyan);
-  background:rgba(0,245,255,.05);cursor:pointer;
-  transition:background .15s;
-}
+#vopen{padding:5px 12px;font-size:8px;letter-spacing:2px;font-family:'Orbitron',sans-serif;text-transform:uppercase;border:1px solid rgba(0,245,255,.3);color:var(--cyan);background:rgba(0,245,255,.05);cursor:pointer;transition:background .15s;}
 #vopen:hover{background:rgba(0,245,255,.12)}
-#vclose{
-  padding:5px 14px;font-size:8px;letter-spacing:2px;
-  font-family:'Orbitron',sans-serif;text-transform:uppercase;
-  border:1px solid rgba(255,0,144,.4);color:var(--pink);
-  background:rgba(255,0,144,.05);cursor:pointer;
-  transition:background .15s;
-  clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);
-}
+#vclose{padding:5px 14px;font-size:8px;letter-spacing:2px;font-family:'Orbitron',sans-serif;text-transform:uppercase;border:1px solid rgba(255,0,144,.4);color:var(--pink);background:rgba(255,0,144,.05);cursor:pointer;transition:background .15s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);}
 #vclose:hover{background:rgba(255,0,144,.15)}
+#vframe{flex:1;border:none;width:100%;background:#000;}
 
-#vframe{
-  flex:1;border:none;width:100%;
-  background:#000;
-}
-
-/* loading shimmer shown while iframe loads */
-#vload{
-  position:absolute;inset:48px 0 0 0;
-  background:var(--bg);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:16px;pointer-events:none;transition:opacity .4s;
-}
+#vload{position:absolute;inset:48px 0 0 0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;pointer-events:none;transition:opacity .4s;}
 #vload.hidden{opacity:0}
-.lspinner{
-  width:40px;height:40px;border-radius:50%;
-  border:2px solid rgba(0,245,255,.1);
-  border-top-color:var(--cyan);
-  animation:spin 1s linear infinite;
-  box-shadow:0 0 16px rgba(0,245,255,.3);
-}
+.lspinner{width:40px;height:40px;border-radius:50%;border:2px solid rgba(0,245,255,.1);border-top-color:var(--cyan);animation:spin 1s linear infinite;box-shadow:0 0 16px rgba(0,245,255,.3);}
 @keyframes spin{to{transform:rotate(360deg)}}
 .ltxt{font-family:'Orbitron',sans-serif;font-size:9px;color:var(--t3);letter-spacing:3px}
 </style>
@@ -544,7 +454,7 @@ footer{
 
 <!-- ══ TOPBAR ══ -->
 <div class="tb">
-  <div class="tb-l">SYS://KRISHNAMARKETS_HUB <span class="ver">// VER_2.0 // NODE:8/8</span></div>
+  <div class="tb-l">NIFTY INDIAN <span class="ver">MARKETS HUB // LIVE</span></div>
   <div class="tb-r">
     <span class="live"><span class="dot"></span>SIGNAL_OK</span>
     <span>IST <span class="v" id="ct">--:--:--</span></span>
@@ -556,7 +466,7 @@ footer{
   <div class="brand">
     <div class="logo">📊</div>
     <div>
-      <div class="bname">Krishna<span>Markets</span></div>
+      <div class="bname">NIFTY Indian <span>Markets HUB</span></div>
       <div class="bsub">Intelligence Hub · 8 Nodes Active</div>
     </div>
   </div>
@@ -601,128 +511,256 @@ footer{
   <div class="sec-bdg">8/8 ONLINE</div>
 </div>
 
-<!-- ══ 2-COLUMN LAYOUT ══ -->
-<div class="grid">
+<!-- ══ GROUPED PODS (Sample C) ══ -->
+<div class="groups">
 
-  <!-- LEFT COLUMN: cards 01 03 05 07 -->
-  <div class="col">
-
-    <a class="card" href="https://krishnateja08.github.io/FII-DII_Pulse/" onclick="go(event,'FII/DII Pulse')">
-      <div class="acc"></div><div class="brk"></div>
-      <div class="card-inner">
-        <div class="cnum"><b>01</b>INSTITUTIONAL</div>
-        <div class="ctop">
-          <div class="cico">📡</div>
-          <div><div class="ctitle">FII / DII Pulse</div><div class="ccat">NSE · Bulk &amp; Block Deals</div></div>
+  <!-- ════ GROUP 1: NIFTY INTELLIGENCE ════ -->
+  <div class="sc-group" style="--ga:rgba(0,245,255,.22);--gb:rgba(0,245,255,.04);--gc:var(--cyan);">
+    <div class="sc-inner">
+      <div class="sc-head">
+        <div class="sc-head-hex" style="border-color:var(--cyan);box-shadow:0 0 14px rgba(0,245,255,.3);">📊</div>
+        <div class="sc-head-info">
+          <div class="sc-head-tag">GROUP 01 // NSE ANALYTICS SUITE</div>
+          <div class="sc-head-name" style="color:var(--cyan);">NIFTY INTELLIGENCE</div>
         </div>
-        <div class="cdesc">Sector-wise institutional activity — FII &amp; DII bulk/block deals with technical signals &amp; RSI.</div>
-        <div class="cfoot"><span class="ctag">NSE · BULK DEALS</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
-      </div>
-    </a>
-
-    <a class="card" href="https://krishnateja08.github.io/Nifty_Indices_scanner/" onclick="go(event,'Nifty Indices Scanner')">
-      <div class="acc"></div><div class="brk"></div>
-      <div class="card-inner">
-        <div class="cnum"><b>03</b>SCANNER</div>
-        <div class="ctop">
-          <div class="cico">🔍</div>
-          <div><div class="ctitle">Nifty Indices Scanner</div><div class="ccat">NSE · All Indices · Momentum</div></div>
+        <div class="sc-head-right">
+          <div class="sc-head-status"><span class="dot"></span>3 NODES ONLINE</div>
+          <div class="sc-head-nodes">NSE · INDIA MARKETS</div>
         </div>
-        <div class="cdesc">Real-time scanner across all Nifty indices — momentum, breakouts and sector rotation signals.</div>
-        <div class="cfoot"><span class="ctag">NSE · INDICES</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
       </div>
-    </a>
+      <div class="sc-cards">
 
-    <a class="card" href="https://krishnateja08.github.io/Nifty-1HR_Track/" onclick="go(event,'Nifty 1HR Track')">
-      <div class="acc"></div><div class="brk"></div>
-      <div class="card-inner">
-        <div class="cnum"><b>05</b>INTRADAY</div>
-        <div class="ctop">
-          <div class="cico">⏱️</div>
-          <div><div class="ctitle">Nifty 1HR Track</div><div class="ccat">NSE · Intraday · Hourly</div></div>
+        <!-- Nifty 50 Analyzer -->
+        <a class="sc-card" href="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" onclick="go(event,'Nifty 50 Analyzer')" style="--cc:var(--cyan);">
+          <div class="brk"></div>
+          <div class="sc-card-inner">
+            <div class="sc-card-topbar"></div>
+            <div class="sc-card-glow"></div>
+            <div class="sc-card-top">
+              <div class="sc-card-ico-wrap">
+                <div class="sc-card-ico">📈</div>
+                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);"></div>
+              </div>
+              <div class="sc-card-label">ANALYSIS</div>
+            </div>
+            <div class="sc-card-name">Nifty 50 Analyzer</div>
+            <div class="sc-card-desc">Deep technical analysis of all Nifty 50 stocks — RSI, MACD, EMA, support &amp; resistance levels.</div>
+            <div class="sc-card-footer">
+              <span class="sc-card-tag">NSE · NIFTY 50</span>
+              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Nifty Indices Scanner -->
+        <a class="sc-card" href="https://krishnateja08.github.io/Nifty_Indices_scanner/" onclick="go(event,'Nifty Indices Scanner')" style="--cc:var(--cyan);">
+          <div class="brk"></div>
+          <div class="sc-card-inner">
+            <div class="sc-card-topbar"></div>
+            <div class="sc-card-glow"></div>
+            <div class="sc-card-top">
+              <div class="sc-card-ico-wrap">
+                <div class="sc-card-ico">🔍</div>
+                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-2.5s;"></div>
+              </div>
+              <div class="sc-card-label">SCANNER</div>
+            </div>
+            <div class="sc-card-name">Nifty Indices Scanner</div>
+            <div class="sc-card-desc">Real-time scanner across all Nifty indices — momentum, breakouts and sector rotation signals.</div>
+            <div class="sc-card-footer">
+              <span class="sc-card-tag">NSE · INDICES</span>
+              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- FII / DII Pulse -->
+        <a class="sc-card" href="https://krishnateja08.github.io/FII-DII_Pulse/" onclick="go(event,'FII/DII Pulse')" style="--cc:var(--cyan);">
+          <div class="brk"></div>
+          <div class="sc-card-inner">
+            <div class="sc-card-topbar"></div>
+            <div class="sc-card-glow"></div>
+            <div class="sc-card-top">
+              <div class="sc-card-ico-wrap">
+                <div class="sc-card-ico">🏛️</div>
+                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-5s;"></div>
+              </div>
+              <div class="sc-card-label">INSTITUTIONAL</div>
+            </div>
+            <div class="sc-card-name">FII / DII Pulse</div>
+            <div class="sc-card-desc">Sector-wise institutional activity — FII &amp; DII bulk/block deals with technical signals &amp; RSI.</div>
+            <div class="sc-card-footer">
+              <span class="sc-card-tag">NSE · BULK DEALS</span>
+              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ GROUP 2: OPTIONS COMMAND ════ -->
+  <div class="sc-group" style="--ga:rgba(255,0,144,.22);--gb:rgba(255,0,144,.04);--gc:var(--pink);">
+    <div class="sc-inner">
+      <div class="sc-head" style="background:linear-gradient(90deg,rgba(6,4,15,.99),rgba(6,4,15,.85));">
+        <div class="sc-head-hex" style="border-color:var(--pink);box-shadow:0 0 14px rgba(255,0,144,.3);background:linear-gradient(135deg,rgba(255,0,144,.12),rgba(157,0,255,.06));">⛓️</div>
+        <div class="sc-head-info">
+          <div class="sc-head-tag">GROUP 02 // OPTIONS &amp; DERIVATIVES DESK</div>
+          <div class="sc-head-name" style="color:var(--pink);text-shadow:0 0 12px rgba(255,0,144,.4);">OPTIONS COMMAND</div>
         </div>
-        <div class="cdesc">Hourly Nifty movement tracking — intraday trend analysis and short-term momentum signals.</div>
-        <div class="cfoot"><span class="ctag">NSE · INTRADAY</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
-      </div>
-    </a>
-
-    <a class="card" href="https://krishnateja08.github.io/Global_Market_News/" onclick="go(event,'Global Market News')">
-      <div class="acc"></div><div class="brk"></div>
-      <div class="card-inner">
-        <div class="cnum"><b>07</b>INTELLIGENCE</div>
-        <div class="ctop">
-          <div class="cico">🗞️</div>
-          <div><div class="ctitle">Global Market News</div><div class="ccat">Global · Macro · Earnings</div></div>
+        <div class="sc-head-right">
+          <div class="sc-head-status"><span class="dot"></span>3 NODES ONLINE</div>
+          <div class="sc-head-nodes">NSE · DERIVATIVES</div>
         </div>
-        <div class="cdesc">Curated global market news — macro events, earnings, central bank decisions and market moves.</div>
-        <div class="cfoot"><span class="ctag">GLOBAL · NEWS</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
       </div>
-    </a>
+      <div class="sc-cards">
 
-  </div><!-- /col left -->
+        <!-- Nifty Option Chain -->
+        <a class="sc-card" href="https://krishnateja08.github.io/Nifty_option_chain/" onclick="go(event,'Nifty Option Chain')" style="--cc:var(--pink);">
+          <div class="brk"></div>
+          <div class="sc-card-inner">
+            <div class="sc-card-topbar" style="background:linear-gradient(90deg,var(--pink),transparent);"></div>
+            <div class="sc-card-glow" style="background:radial-gradient(rgba(255,0,144,.1),transparent 70%);"></div>
+            <div class="sc-card-top">
+              <div class="sc-card-ico-wrap">
+                <div class="sc-card-ico">⛓️</div>
+                <div class="sc-card-ring" style="border-color:rgba(255,0,144,.4);"></div>
+              </div>
+              <div class="sc-card-label">OPTIONS</div>
+            </div>
+            <div class="sc-card-name" style="color:var(--pink);text-shadow:0 0 10px rgba(255,0,144,.3);">Nifty Option Chain</div>
+            <div class="sc-card-desc">Live option chain analysis — OI buildup, PCR ratio, max pain and key strike price levels.</div>
+            <div class="sc-card-footer" style="border-top-color:rgba(255,0,144,.1);">
+              <span class="sc-card-tag" style="border-color:rgba(255,0,144,.15);">NSE · OPTIONS</span>
+              <div class="sc-card-btn" style="color:var(--pink);text-shadow:0 0 8px rgba(255,0,144,.5);"><div class="sc-card-btn-line" style="background:var(--pink);"></div>LAUNCH</div>
+            </div>
+          </div>
+        </a>
 
-  <!-- RIGHT COLUMN: cards 02 04 06 08 -->
-  <div class="col">
+        <!-- Nifty 1HR Track -->
+        <a class="sc-card" href="https://krishnateja08.github.io/Nifty-1HR_Track/" onclick="go(event,'Nifty 1HR Track')" style="--cc:var(--pink);">
+          <div class="brk"></div>
+          <div class="sc-card-inner">
+            <div class="sc-card-topbar" style="background:linear-gradient(90deg,var(--pink),transparent);"></div>
+            <div class="sc-card-glow" style="background:radial-gradient(rgba(255,0,144,.08),transparent 70%);"></div>
+            <div class="sc-card-top">
+              <div class="sc-card-ico-wrap">
+                <div class="sc-card-ico">⏱️</div>
+                <div class="sc-card-ring" style="border-color:rgba(255,0,144,.4);animation-delay:-3s;"></div>
+              </div>
+              <div class="sc-card-label">INTRADAY</div>
+            </div>
+            <div class="sc-card-name" style="color:var(--pink);text-shadow:0 0 10px rgba(255,0,144,.3);">Nifty 1HR Track</div>
+            <div class="sc-card-desc">Hourly Nifty movement tracking — intraday trend analysis and short-term momentum signals.</div>
+            <div class="sc-card-footer" style="border-top-color:rgba(255,0,144,.1);">
+              <span class="sc-card-tag" style="border-color:rgba(255,0,144,.15);">NSE · INTRADAY</span>
+              <div class="sc-card-btn" style="color:var(--pink);text-shadow:0 0 8px rgba(255,0,144,.5);"><div class="sc-card-btn-line" style="background:var(--pink);"></div>LAUNCH</div>
+            </div>
+          </div>
+        </a>
 
-    <a class="card" href="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" onclick="go(event,'Nifty 50 Analyzer')">
-      <div class="acc"></div><div class="brk"></div>
-      <div class="card-inner">
-        <div class="cnum"><b>02</b>ANALYSIS</div>
-        <div class="ctop">
-          <div class="cico">📈</div>
-          <div><div class="ctitle">Nifty 50 Analyzer</div><div class="ccat">NSE · Nifty 50 · Technicals</div></div>
+        <!-- Option Strategy Builder -->
+        <a class="sc-card" href="https://krishnateja08.github.io/optionstrategybuilder/" onclick="go(event,'Strategy Builder')" style="--cc:var(--pink);">
+          <div class="brk"></div>
+          <div class="sc-card-inner">
+            <div class="sc-card-topbar" style="background:linear-gradient(90deg,var(--pink),transparent);"></div>
+            <div class="sc-card-glow" style="background:radial-gradient(rgba(255,0,144,.08),transparent 70%);"></div>
+            <div class="sc-card-top">
+              <div class="sc-card-ico-wrap">
+                <div class="sc-card-ico">🧮</div>
+                <div class="sc-card-ring" style="border-color:rgba(255,0,144,.4);animation-delay:-6s;"></div>
+              </div>
+              <div class="sc-card-label">STRATEGY</div>
+            </div>
+            <div class="sc-card-name" style="color:var(--pink);text-shadow:0 0 10px rgba(255,0,144,.3);">Option Strategy Builder</div>
+            <div class="sc-card-desc">Build and visualise options strategies — P&amp;L charts, Greeks, breakeven for any strike &amp; expiry.</div>
+            <div class="sc-card-footer" style="border-top-color:rgba(255,0,144,.1);">
+              <span class="sc-card-tag" style="border-color:rgba(255,0,144,.15);">NSE · P&amp;L · GREEKS</span>
+              <div class="sc-card-btn" style="color:var(--pink);text-shadow:0 0 8px rgba(255,0,144,.5);"><div class="sc-card-btn-line" style="background:var(--pink);"></div>LAUNCH</div>
+            </div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ GROUP 3: GLOBAL INTELLIGENCE ════ -->
+  <div class="sc-group" style="--ga:rgba(255,224,0,.2);--gb:rgba(255,224,0,.04);--gc:var(--yel);">
+    <div class="sc-inner">
+      <div class="sc-head" style="background:linear-gradient(90deg,rgba(6,4,15,.99),rgba(6,4,15,.85));">
+        <div class="sc-head-hex" style="border-color:var(--yel);box-shadow:0 0 14px rgba(255,224,0,.25);background:linear-gradient(135deg,rgba(255,224,0,.1),rgba(255,160,0,.05));">🌐</div>
+        <div class="sc-head-info">
+          <div class="sc-head-tag">GROUP 03 // MACRO &amp; GLOBAL MARKETS</div>
+          <div class="sc-head-name" style="color:var(--yel);text-shadow:0 0 12px rgba(255,224,0,.35);">GLOBAL INTELLIGENCE</div>
         </div>
-        <div class="cdesc">Deep technical analysis of all Nifty 50 stocks — RSI, MACD, EMA, support &amp; resistance levels.</div>
-        <div class="cfoot"><span class="ctag">NSE · NIFTY 50</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
-      </div>
-    </a>
-
-    <a class="card" href="https://krishnateja08.github.io/USA-SP500-Stocks-Review/" onclick="go(event,'S&P 500 Review')">
-      <div class="acc"></div><div class="brk"></div>
-      <div class="card-inner">
-        <div class="cnum"><b>04</b>GLOBAL</div>
-        <div class="ctop">
-          <div class="cico">🌐</div>
-          <div><div class="ctitle">USA S&amp;P 500 Review</div><div class="ccat">NYSE · S&amp;P 500 · 500 Stocks</div></div>
+        <div class="sc-head-right">
+          <div class="sc-head-status"><span class="dot"></span>2 NODES ONLINE</div>
+          <div class="sc-head-nodes">NYSE · GLOBAL</div>
         </div>
-        <div class="cdesc">Comprehensive S&amp;P 500 stock review — US market analysis, sector performance and signals.</div>
-        <div class="cfoot"><span class="ctag">NYSE · S&amp;P 500</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
       </div>
-    </a>
+      <div class="sc-cards">
 
-    <a class="card" href="https://krishnateja08.github.io/Nifty_option_chain/" onclick="go(event,'Nifty Option Chain')">
-      <div class="acc"></div><div class="brk"></div>
-      <div class="card-inner">
-        <div class="cnum"><b>06</b>OPTIONS</div>
-        <div class="ctop">
-          <div class="cico">⛓️</div>
-          <div><div class="ctitle">Nifty Option Chain</div><div class="ccat">NSE · Options · OI · PCR</div></div>
+        <!-- USA S&P 500 Review -->
+        <a class="sc-card" href="https://krishnateja08.github.io/USA-SP500-Stocks-Review/" onclick="go(event,'S&P 500 Review')" style="--cc:var(--yel);">
+          <div class="brk"></div>
+          <div class="sc-card-inner">
+            <div class="sc-card-topbar" style="background:linear-gradient(90deg,var(--yel),transparent);"></div>
+            <div class="sc-card-glow" style="background:radial-gradient(rgba(255,224,0,.08),transparent 70%);"></div>
+            <div class="sc-card-top">
+              <div class="sc-card-ico-wrap">
+                <div class="sc-card-ico">🗽</div>
+                <div class="sc-card-ring" style="border-color:rgba(255,224,0,.4);"></div>
+              </div>
+              <div class="sc-card-label">GLOBAL</div>
+            </div>
+            <div class="sc-card-name" style="color:var(--yel);text-shadow:0 0 10px rgba(255,224,0,.3);">USA S&amp;P 500 Review</div>
+            <div class="sc-card-desc">Comprehensive S&amp;P 500 stock review — US market analysis, sector performance and signals.</div>
+            <div class="sc-card-footer" style="border-top-color:rgba(255,224,0,.1);">
+              <span class="sc-card-tag" style="border-color:rgba(255,224,0,.2);">NYSE · S&amp;P 500</span>
+              <div class="sc-card-btn" style="color:var(--yel);text-shadow:0 0 8px rgba(255,224,0,.4);"><div class="sc-card-btn-line" style="background:var(--yel);"></div>LAUNCH</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Global Market News -->
+        <a class="sc-card" href="https://krishnateja08.github.io/Global_Market_News/" onclick="go(event,'Global Market News')" style="--cc:var(--yel);">
+          <div class="brk"></div>
+          <div class="sc-card-inner">
+            <div class="sc-card-topbar" style="background:linear-gradient(90deg,var(--yel),transparent);"></div>
+            <div class="sc-card-glow" style="background:radial-gradient(rgba(255,224,0,.07),transparent 70%);"></div>
+            <div class="sc-card-top">
+              <div class="sc-card-ico-wrap">
+                <div class="sc-card-ico">🌍</div>
+                <div class="sc-card-ring" style="border-color:rgba(255,224,0,.4);animation-delay:-4s;"></div>
+              </div>
+              <div class="sc-card-label">INTELLIGENCE</div>
+            </div>
+            <div class="sc-card-name" style="color:var(--yel);text-shadow:0 0 10px rgba(255,224,0,.3);">Global Market News</div>
+            <div class="sc-card-desc">Curated global market news — macro events, earnings, central bank decisions and market moves.</div>
+            <div class="sc-card-footer" style="border-top-color:rgba(255,224,0,.1);">
+              <span class="sc-card-tag" style="border-color:rgba(255,224,0,.2);">GLOBAL · NEWS</span>
+              <div class="sc-card-btn" style="color:var(--yel);text-shadow:0 0 8px rgba(255,224,0,.4);"><div class="sc-card-btn-line" style="background:var(--yel);"></div>LAUNCH</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Placeholder slot -->
+        <div class="sc-card" style="cursor:default;opacity:.18;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;min-height:160px;">
+          <div style="font-family:'Orbitron',monospace;font-size:28px;color:var(--yel);">+</div>
+          <div style="font-family:'Orbitron',monospace;font-size:7px;letter-spacing:3px;color:var(--yel);">EXPAND NODE</div>
         </div>
-        <div class="cdesc">Live option chain analysis — OI buildup, PCR ratio, max pain and key strike price levels.</div>
-        <div class="cfoot"><span class="ctag">NSE · OPTIONS</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
+
       </div>
-    </a>
+    </div>
+  </div>
 
-    <a class="card" href="https://krishnateja08.github.io/optionstrategybuilder/" onclick="go(event,'Strategy Builder')">
-      <div class="acc"></div><div class="brk"></div>
-      <div class="card-inner">
-        <div class="cnum"><b>08</b>STRATEGY</div>
-        <div class="ctop">
-          <div class="cico">🧮</div>
-          <div><div class="ctitle">Option Strategy Builder</div><div class="ccat">NSE · P&amp;L · Greeks · Charts</div></div>
-        </div>
-        <div class="cdesc">Build and visualise options strategies — P&amp;L charts, Greeks, breakeven for any strike &amp; expiry.</div>
-        <div class="cfoot"><span class="ctag">NSE · STRATEGIES</span><span class="carr"><span class="cln"></span>LAUNCH</span></div>
-      </div>
-    </a>
-
-  </div><!-- /col right -->
-
-</div>
+</div><!-- /groups -->
 
 <!-- ══ FOOTER ══ -->
 <footer>
-  <div class="fl"><span>KRISHNAMARKETS HUB</span> // CYBER_NEON v2.0 // 8_NODES_ACTIVE</div>
+  <div class="fl"><span>NIFTY INDIAN MARKETS HUB</span> // CYBER_NEON v2.0 // 8_NODES_ACTIVE</div>
   <div class="fr">SELECT_NODE → OPEN // BACK → RETURN_TO_HUB</div>
 </footer>
 
@@ -732,6 +770,7 @@ footer{
 <button id="floatback" onclick="closeViewer()">
   ← HUB <span class="kbhint">ESC</span>
 </button>
+
 <div id="viewer">
   <div id="vbar">
     <div id="vtitle">— NODE VIEWER —</div>
@@ -782,7 +821,7 @@ if(l) document.getElementById('lc').textContent=l;
 /* ══════════════════════════════════════
    IFRAME VIEWER + AUTO-REFRESH
 ══════════════════════════════════════ */
-const IFRAME_REFRESH=30; // seconds between iframe reloads
+const IFRAME_REFRESH=30;
 let currentUrl='';
 let viewerTimer=null;
 let viewerRem=IFRAME_REFRESH;
@@ -793,7 +832,7 @@ const vtitle  = document.getElementById('vtitle');
 const vload   = document.getElementById('vload');
 const vrcd    = document.getElementById('vrcd');
 const varc    = document.getElementById('varc');
-const VARC_C  = 44; // circumference for r=7
+const VARC_C  = 44;
 
 function openViewer(url, name){
   currentUrl = url;
@@ -807,11 +846,8 @@ function openViewer(url, name){
 
 function loadFrame(){
   vload.classList.remove('hidden');
-  // Force reload by appending timestamp to bust cache
   vframe.src = currentUrl + (currentUrl.includes('?')?'&':'?') + '_t=' + Date.now();
-  vframe.onload = ()=>{
-    vload.classList.add('hidden');
-  };
+  vframe.onload = ()=>{ vload.classList.add('hidden'); };
 }
 
 function startViewerTimer(){
@@ -819,7 +855,6 @@ function startViewerTimer(){
   viewerRem = IFRAME_REFRESH;
   vrcd.textContent = viewerRem + 's';
   varc.style.strokeDashoffset = 0;
-
   viewerTimer = setInterval(()=>{
     viewerRem--;
     vrcd.textContent = viewerRem + 's';
@@ -827,7 +862,7 @@ function startViewerTimer(){
     if(viewerRem <= 0){
       viewerRem = IFRAME_REFRESH;
       varc.style.strokeDashoffset = 0;
-      loadFrame(); // reload the iframe
+      loadFrame();
     }
   }, 1000);
 }
@@ -845,7 +880,6 @@ function openExternal(){
   if(currentUrl) window.open(currentUrl,'_blank');
 }
 
-/* ESC key → back to hub */
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape' && viewer.classList.contains('open')) closeViewer();
 });
@@ -858,7 +892,6 @@ function go(e, name){
   sessionStorage.setItem('lo', name);
   document.getElementById('lc').textContent = name;
 
-  // ripple effect
   const r = document.createElement('div');
   r.className='rpl';
   const b = card.getBoundingClientRect();
@@ -866,17 +899,15 @@ function go(e, name){
   r.style.top =(e.clientY-b.top -30)+'px';
   card.appendChild(r);
   setTimeout(()=>r.remove(), 600);
-
-  // open iframe after brief ripple delay
   setTimeout(()=> openViewer(url, name), 200);
 }
 
 /* ── Staggered entrance ── */
-document.querySelectorAll('.card').forEach((c,i)=>{
+document.querySelectorAll('.sc-card[href]').forEach((c,i)=>{
   c.style.opacity='0';
   c.style.transform='translateY(14px)';
-  c.style.transition=`opacity .4s ease ${i*.055}s,transform .4s ease ${i*.055}s,background .15s`;
-  setTimeout(()=>{c.style.opacity='1';c.style.transform='none';},65+i*50);
+  c.style.transition=`opacity .4s ease ${i*.07}s,transform .4s ease ${i*.07}s`;
+  setTimeout(()=>{c.style.opacity='1';c.style.transform='none';},80+i*60);
 });
 </script>
 </body>
