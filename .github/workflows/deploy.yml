@@ -1,0 +1,64 @@
+# ═══════════════════════════════════════════════════════
+#  Krishna Markets — Intelligence Hub
+#  GitHub Actions: Deploy static index.html to GitHub Pages
+#
+#  HOW IT WORKS:
+#    This workflow simply copies the index.html (the Glass
+#    Aurora hub) to GitHub Pages. No Python, no build step.
+#    It's a pure static HTML file — no re-execution needed.
+#    The page auto-refreshes content dynamically via iframes.
+#
+#  TRIGGERS:
+#    • On every push to main branch (auto-deploy)
+#    • Manually via Actions → Run workflow button
+# ═══════════════════════════════════════════════════════
+
+name: Deploy Krishna Markets Hub
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:   # allows manual trigger from GitHub Actions tab
+
+# Required permissions for GitHub Pages deployment
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deployment at a time
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+
+      # Step 1: Check out your repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Set up GitHub Pages
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      # Step 3: Upload the entire repo as the Pages artifact
+      #         index.html at root will be served automatically
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'   # uploads everything in root (index.html + any assets)
+
+      # Step 4: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
