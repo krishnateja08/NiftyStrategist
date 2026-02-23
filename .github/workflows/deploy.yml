@@ -1,66 +1,82 @@
-#!/usr/bin/env python3
-"""
-fetch_market_data.py
-Runs via GitHub Actions on a schedule.
-Fetches global market data using yfinance and writes data.json to repo root.
-"""
-import json, datetime, sys
+# ═══════════════════════════════════════════════════════
+#  Krishna Markets Intelligence Hub
+#  GitHub Actions: Fetch market data + Deploy to GitHub Pages
+#
+#  Job 1 (fetch-data): Runs every 15 min via cron
+#                      Uses Python + yfinance to write data.json
+#  Job 2 (deploy):     Deploys static site to GitHub Pages
+# ═══════════════════════════════════════════════════════
+name: Krishna Markets Hub
 
-try:
-    import yfinance as yf
-except ImportError:
-    print("yfinance not installed, installing...")
-    import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "yfinance"])
-    import yfinance as yf
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '*/15 * * * *'   # every 15 minutes
+  workflow_dispatch:
 
-SYMBOLS = {
-    'sp':     '^GSPC',
-    'ndq':    '^IXIC',
-    'dji':    '^DJI',
-    'inr':    'INR=X',
-    'crude':  'CL=F',
-    'gold':   'GC=F',
-    'silver': 'SI=F',
-    'n50':    '^NSEI',
-    'bn':     '^NSEBANK',
-    'sx':     '^BSESN',
-    'fn':     'NIFTY_FIN_SERVICE.NS',
-    'vix':    '^INDIAVIX',
-}
+permissions:
+  contents: write           # needed to git push data.json
+  pages: write
+  id-token: write
 
-data = {}
-errors = []
+jobs:
 
-for key, sym in SYMBOLS.items():
-    try:
-        ticker = yf.Ticker(sym)
-        info = ticker.fast_info
-        price = info.last_price
-        prev  = info.previous_close
-        if price and prev and prev > 0:
-            chg_pct = ((price - prev) / prev) * 100
-            data[key] = {
-                'price': round(float(price), 2),
-                'chgPct': round(float(chg_pct), 2),
-                'src': 'GHA'
-            }
-            print(f"[OK] {key} ({sym}): {price:.2f} ({chg_pct:+.2f}%)")
-        else:
-            errors.append(f"{key}: no price data")
-            print(f"[SKIP] {key} ({sym}): price={price}, prev={prev}")
-    except Exception as e:
-        errors.append(f"{key}: {e}")
-        print(f"[ERR] {key} ({sym}): {e}")
+  # ── Job 1: Fetch market data with Python ──────────────
+  fetch-data:
+    name: Fetch Market Data
+    runs-on: ubuntu-latest
+    concurrency:
+      group: fetch-data
+      cancel-in-progress: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
-output = {
-    'updated': datetime.datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ'),
-    'data': data,
-    'errors': errors
-}
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-with open('data.json', 'w') as f:
-    json.dump(output, f, indent=2)
+      - name: Install dependencies
+        run: pip install yfinance
 
-print(f"\nWrote data.json with {len(data)} symbols")
-print(json.dumps(output, indent=2))
+      - name: Fetch market data
+        run: python fetch_market_data.py
+
+      - name: Commit data.json if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.json
+          git diff --staged --quiet || git commit -m "chore: update market data [skip ci]"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # ── Job 2: Deploy to GitHub Pages ─────────────────────
+  deploy:
+    name: Deploy to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: fetch-data
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
