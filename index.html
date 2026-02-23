@@ -718,13 +718,13 @@ var MB_MAP = [
   {id:'vix',   valId:'mv-vix',   chgId:'mc-vix',   srcId:'ms-vix',   yfSym:'^INDIAVIX',           fhSym:null,              nseKey:'INDIA VIX',         prefix:'',  isVix:true},
   {id:'fn',    valId:'mv-fn',    chgId:'mc-fn',    srcId:'ms-fn',    yfSym:'NIFTY_FIN_SERVICE.NS',fhSym:null,              nseKey:'NIFTY FIN SERVICE', prefix:'',  isVix:false},
   {id:'sx',    valId:'mv-sx',    chgId:'mc-sx',    srcId:'ms-sx',    yfSym:'^BSESN',              fhSym:null,              nseKey:'SENSEX',            prefix:'',  isVix:false},
-  {id:'sp',    valId:'mv-sp',    chgId:'mc-sp',    srcId:'ms-sp',    yfSym:'^GSPC',               fhSym:null,nseKey:null, prefix:'',  isVix:false},
-  {id:'ndq',   valId:'mv-ndq',   chgId:'mc-ndq',   srcId:'ms-ndq',   yfSym:'^IXIC',               fhSym:null,nseKey:null, prefix:'',  isVix:false},
-  {id:'dji',   valId:'mv-dji',   chgId:'mc-dji',   srcId:'ms-dji',   yfSym:'^DJI',                fhSym:null,  nseKey:null, prefix:'',  isVix:false},
-  {id:'inr',   valId:'mv-inr',   chgId:'mc-inr',   srcId:'ms-inr',   yfSym:'INR=X',               fhSym:null,   nseKey:null, prefix:'',  isVix:false},
-  {id:'crude', valId:'mv-crude', chgId:'mc-crude', srcId:'ms-crude', yfSym:'CL=F',                fhSym:null, nseKey:null, prefix:'$', isVix:false},
-  {id:'gold',  valId:'mv-gold',  chgId:'mc-gold',  srcId:'ms-gold',  yfSym:'GC=F',                fhSym:null,   nseKey:null, prefix:'$', isVix:false},
-  {id:'silver',valId:'mv-silver',chgId:'mc-silver',srcId:'ms-silver',yfSym:'SI=F',                fhSym:null,   nseKey:null, prefix:'$', isVix:false},
+  {id:'sp',    valId:'mv-sp',    chgId:'mc-sp',    srcId:'ms-sp',    yfSym:'^GSPC',               fhSym:'OANDA:SPX500_USD',nseKey:null, prefix:'',  isVix:false},
+  {id:'ndq',   valId:'mv-ndq',   chgId:'mc-ndq',   srcId:'ms-ndq',   yfSym:'^IXIC',               fhSym:'OANDA:NAS100_USD',nseKey:null, prefix:'',  isVix:false},
+  {id:'dji',   valId:'mv-dji',   chgId:'mc-dji',   srcId:'ms-dji',   yfSym:'^DJI',                fhSym:'OANDA:US30_USD',  nseKey:null, prefix:'',  isVix:false},
+  {id:'inr',   valId:'mv-inr',   chgId:'mc-inr',   srcId:'ms-inr',   yfSym:'INR=X',               fhSym:'OANDA:USD_INR',   nseKey:null, prefix:'',  isVix:false},
+  {id:'crude', valId:'mv-crude', chgId:'mc-crude', srcId:'ms-crude', yfSym:'CL=F',                fhSym:'OANDA:USOIL_USD', nseKey:null, prefix:'$', isVix:false},
+  {id:'gold',  valId:'mv-gold',  chgId:'mc-gold',  srcId:'ms-gold',  yfSym:'GC=F',                fhSym:'OANDA:XAU_USD',   nseKey:null, prefix:'$', isVix:false},
+  {id:'silver',valId:'mv-silver',chgId:'mc-silver',srcId:'ms-silver',yfSym:'SI=F',                fhSym:'OANDA:XAG_USD',   nseKey:null, prefix:'$', isVix:false},
 ];
 
 function fmtV(n,d){
@@ -806,168 +806,63 @@ function fetchFinnhub(){
   });
 }
 
-/* ══ SOURCE 3: Global Markets — direct CORS-enabled APIs, no proxy needed ══ */
-
-/* --- MarketStack free: S&P500, NASDAQ, DOW via ETF proxies (SPY, QQQ, DIA) --- */
-/* --- We use multiple truly-CORS-friendly endpoints below --- */
-
-/* Helper: fetch one URL, return parsed JSON or null */
-function fetchJSON(url, timeout){
-  timeout = timeout || 8000;
-  return fetch(url, {signal: AbortSignal.timeout(timeout), cache: 'no-store'})
-    .then(function(r){ return r.ok ? r.json() : null; })
-    .catch(function(){ return null; });
-}
-
-/* 
-  Twelve Data — free tier, 800 calls/day, native CORS support
-  Get free key: https://twelvedata.com/register (instant)
-  Supports: indices, forex, commodities
-*/
-var TWELVE_KEY = ''; /* optional — works without key for basic quotes but rate limited */
-
-/*
-  Fallback: Use public financial APIs that truly support CORS from any origin
-  
-  Strategy:
-  1. Frankfurter (forex) — completely free, no key, native CORS
-  2. Metals-API (gold/silver) — free tier available  
-  3. Yahoo Finance via allorigins/corsproxy for indices
-  4. Fallback to last known value if all fail
-*/
-
-/* USD/INR via Frankfurter — 100% free, no key, native CORS */
-function fetchFrankfurterFX(){
-  return fetchJSON('https://api.frankfurter.app/latest?from=USD&to=INR')
+/* ══ SOURCE 3: data.json — written by GitHub Actions every 15 min ══ */
+function fetchDataJson(){
+  return fetch('./data.json?_t='+Date.now(),{cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
     .then(function(j){
-      if(j && j.rates && j.rates.INR){
-        console.log('[Frankfurter] USD/INR =', j.rates.INR);
-        return {inr: {price: j.rates.INR, chgPct: 0}};
-      }
+      if(j&&j.data){console.log('[JSON] loaded, updated:',j.updated);return j.data;}
       return {};
-    });
+    }).catch(function(e){console.warn('[JSON] failed:',e);return {};});
 }
 
-/* Open Exchange Rates — free, no key needed for latest */
+/* ══ SOURCE 4: Frankfurter — free, no key, native CORS for USD/INR ══ */
+function fetchFrankfurter(){
+  return fetch('https://api.frankfurter.app/latest?from=USD&to=INR',{signal:AbortSignal.timeout(6000),cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(j){
+      if(j&&j.rates&&j.rates.INR){console.log('[FX] USD/INR',j.rates.INR);return {inr:{price:j.rates.INR,chgPct:0}};}
+      return {};
+    }).catch(function(){return {};});
+}
+
+/* ══ SOURCE 5: Open Exchange Rates — free INR fallback ══ */
 function fetchOpenFX(){
-  return fetchJSON('https://open.er-api.com/v6/latest/USD')
+  return fetch('https://open.er-api.com/v6/latest/USD',{signal:AbortSignal.timeout(6000),cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
     .then(function(j){
-      if(j && j.rates && j.rates.INR){
-        console.log('[OpenFX] USD/INR =', j.rates.INR);
-        return {inr: {price: j.rates.INR, chgPct: 0}};
-      }
+      if(j&&j.rates&&j.rates.INR){return {inr:{price:j.rates.INR,chgPct:0}};}
       return {};
-    });
-}
-
-/* 
-  Yahoo Finance via multiple proxy services — for indices & commodities
-  Tried in parallel, first success wins
-*/
-function fetchYahoo(){
-  var items = [
-    {id:'sp',    sym:'^GSPC'},
-    {id:'ndq',   sym:'^IXIC'},
-    {id:'dji',   sym:'^DJI'},
-    {id:'inr',   sym:'INR=X'},
-    {id:'crude', sym:'CL=F'},
-    {id:'gold',  sym:'GC=F'},
-    {id:'silver',sym:'SI=F'},
-    {id:'n50',   sym:'^NSEI'},
-    {id:'bn',    sym:'^NSEBANK'},
-    {id:'sx',    sym:'^BSESN'},
-    {id:'fn',    sym:'NIFTY_FIN_SERVICE.NS'},
-  ];
-  var syms = items.map(function(x){return x.sym;}).join(',');
-  var yfUrl = 'https://query1.finance.yahoo.com/v8/finance/quote?symbols=' + encodeURIComponent(syms) + '&fields=regularMarketPrice,regularMarketChangePercent';
-  var yfUrl2 = yfUrl.replace('query1','query2');
-
-  var proxies = [
-    'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(yfUrl),
-    'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(yfUrl2),
-    'https://corsproxy.io/?' + encodeURIComponent(yfUrl),
-    'https://api.allorigins.win/get?url=' + encodeURIComponent(yfUrl),
-  ];
-
-  function parseYF(j){
-    /* allorigins wraps in {contents:'...'}, codetabs returns direct JSON */
-    if(j && typeof j.contents === 'string'){try{j=JSON.parse(j.contents);}catch(e){return null;}}
-    /* handle string body (some proxies return {body:'...'}) */
-    if(j && typeof j.body === 'string'){try{j=JSON.parse(j.body);}catch(e){return null;}}
-    var res = j && j.quoteResponse && j.quoteResponse.result;
-    return (res && res.length > 0) ? res : null;
-  }
-
-  return new Promise(function(resolve){
-    var done = false, n = 0;
-    proxies.forEach(function(px){
-      fetchJSON(px, 10000).then(function(j){
-        if(done) return;
-        var res = parseYF(j);
-        if(res){
-          var map = {};
-          res.forEach(function(q){
-            var it = items.find(function(x){return x.sym === q.symbol;});
-            if(it && q.regularMarketPrice != null){
-              map[it.id] = {price: q.regularMarketPrice, chgPct: q.regularMarketChangePercent || 0};
-            }
-          });
-          if(Object.keys(map).length > 0 && !done){
-            done = true;
-            console.log('[YF] OK got', Object.keys(map).length, 'via proxy');
-            resolve(map);
-          }
-        }
-      }).finally(function(){
-        n++;
-        if(n === proxies.length && !done){
-          console.warn('[YF] All proxies failed');
-          resolve({});
-        }
-      });
-    });
-  });
+    }).catch(function(){return {};});
 }
 
 /* ══ MAIN REFRESH ══ */
 function refreshMarketBar(){
   console.log('[MBar] fetching all sources...');
-  Promise.all([fetchNSE(), fetchYahoo(), fetchFrankfurterFX(), fetchOpenFX()]).then(function(res){
-    var nseArr = res[0], yfMap = res[1], fxFrank = res[2], fxOpen = res[3];
-    var updated = 0;
-
+  Promise.all([fetchNSE(), fetchFinnhub(), fetchDataJson(), fetchFrankfurter(), fetchOpenFX()]).then(function(res){
+    var nseArr=res[0], fhMap=res[1], jsonMap=res[2], fxFrank=res[3], fxOpen=res[4];
+    var updated=0;
     MB_MAP.forEach(function(item){
-      var price = null, chgPct = null, src = null;
-
-      /* Priority 1: NSE for Indian indices */
-      if(item.nseKey && nseArr.length){
-        var f = nseArr.find(function(d){
-          return d.index === item.nseKey || d.indexSymbol === item.nseKey ||
-                 (d.index||'').toLowerCase() === item.nseKey.toLowerCase();
+      var price=null,chgPct=null,src=null;
+      /* Priority 1: NSE for Indian indices (live) */
+      if(item.nseKey&&nseArr.length){
+        var f=nseArr.find(function(d){
+          return d.index===item.nseKey||d.indexSymbol===item.nseKey||(d.index||'').toLowerCase()===item.nseKey.toLowerCase();
         });
-        if(f && f.last != null){price = parseFloat(f.last); chgPct = parseFloat(f.percentChange); src = 'NSE';}
+        if(f&&f.last!=null){price=parseFloat(f.last);chgPct=parseFloat(f.percentChange);src='NSE';}
       }
-
-      /* Priority 2: Yahoo Finance (covers everything) */
-      if(price === null && yfMap[item.id]){
-        price = yfMap[item.id].price; chgPct = yfMap[item.id].chgPct; src = 'YF';
-      }
-
-      /* Priority 3: Frankfurter for INR specifically */
-      if(price === null && fxFrank[item.id]){
-        price = fxFrank[item.id].price; chgPct = fxFrank[item.id].chgPct; src = 'FX';
-      }
-
-      /* Priority 4: Open Exchange Rates for INR */
-      if(price === null && fxOpen[item.id]){
-        price = fxOpen[item.id].price; chgPct = fxOpen[item.id].chgPct; src = 'FX2';
-      }
-
-      if(price !== null){silentUpdate(item, price, chgPct, src); updated++;}
+      /* Priority 2: Finnhub */
+      if(price===null&&fhMap[item.id]){price=fhMap[item.id].price;chgPct=fhMap[item.id].chgPct;src='FH';}
+      /* Priority 3: data.json (GitHub Actions yfinance — most reliable) */
+      if(price===null&&jsonMap[item.id]){price=jsonMap[item.id].price;chgPct=jsonMap[item.id].chgPct;src='GHA';}
+      /* Priority 4: Frankfurter for INR */
+      if(price===null&&fxFrank[item.id]){price=fxFrank[item.id].price;chgPct=fxFrank[item.id].chgPct;src='FX';}
+      /* Priority 5: OpenFX for INR */
+      if(price===null&&fxOpen[item.id]){price=fxOpen[item.id].price;chgPct=fxOpen[item.id].chgPct;src='FX2';}
+      if(price!==null){silentUpdate(item,price,chgPct,src);updated++;}
     });
-
-    if(updated > 0) setTs();
-    console.log('[MBar] updated', updated, '/', MB_MAP.length);
+    if(updated>0) setTs();
+    console.log('[MBar] updated',updated,'/',MB_MAP.length);
     buildTicker();
   });
 }
