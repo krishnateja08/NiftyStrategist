@@ -863,62 +863,68 @@ function refreshMarketBar(){
 
 /* ══ TICKER — Nifty Top 10 + Global Indices ══ */
 
-/* Nifty Top 10 companies by weight */
-var NIFTY_TOP10 = [
-  {sym:'RELIANCE.NS', name:'RELIANCE'},
-  {sym:'HDFCBANK.NS', name:'HDFC BANK'},
-  {sym:'ICICIBANK.NS', name:'ICICI BANK'},
-  {sym:'INFY.NS',     name:'INFOSYS'},
-  {sym:'TCS.NS',      name:'TCS'},
-  {sym:'BHARTIARTL.NS',name:'AIRTEL'},
-  {sym:'ITC.NS',      name:'ITC'},
-  {sym:'SBIN.NS',     name:'SBI'},
-  {sym:'KOTAKBANK.NS',name:'KOTAK BANK'},
-  {sym:'LT.NS',       name:'L&T'},
+/* Nifty Top 10 — read from data.json (written by GitHub Actions Python script) */
+var STOCK_KEYS = [
+  /* Nifty Top 10 */
+  {key:'t_RELIANCE', name:'RELIANCE',   prefix:'₹'},
+  {key:'t_HDFCBANK', name:'HDFC BANK',  prefix:'₹'},
+  {key:'t_ICICIBANK',name:'ICICI BANK', prefix:'₹'},
+  {key:'t_INFY',     name:'INFOSYS',    prefix:'₹'},
+  {key:'t_TCS',      name:'TCS',        prefix:'₹'},
+  {key:'t_AIRTEL',   name:'AIRTEL',     prefix:'₹'},
+  {key:'t_ITC',      name:'ITC',        prefix:'₹'},
+  {key:'t_SBI',      name:'SBI',        prefix:'₹'},
+  {key:'t_KOTAK',    name:'KOTAK BANK', prefix:'₹'},
+  {key:'t_LT',       name:'L&T',        prefix:'₹'},
+  /* US Top 10 */
+  {key:'u_AAPL',  name:'APPLE',     prefix:'$'},
+  {key:'u_MSFT',  name:'MICROSOFT', prefix:'$'},
+  {key:'u_NVDA',  name:'NVIDIA',    prefix:'$'},
+  {key:'u_AMZN',  name:'AMAZON',    prefix:'$'},
+  {key:'u_GOOGL', name:'GOOGLE',    prefix:'$'},
+  {key:'u_META',  name:'META',      prefix:'$'},
+  {key:'u_TSLA',  name:'TESLA',     prefix:'$'},
+  {key:'u_BRK',   name:'BERKSHIRE', prefix:'$'},
+  {key:'u_JPM',   name:'JPMORGAN',  prefix:'$'},
+  {key:'u_UNH',   name:'UNITEDHLTH',prefix:'$'},
 ];
 
 function fetchNiftyTop10(){
-  var syms = NIFTY_TOP10.map(function(x){return x.sym;}).join(',');
-  var yfUrl = 'https://query1.finance.yahoo.com/v8/finance/quote?symbols=' + encodeURIComponent(syms) + '&fields=regularMarketPrice,regularMarketChangePercent';
-  var proxies = [
-    'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(yfUrl),
-    'https://api.allorigins.win/get?url=' + encodeURIComponent(yfUrl),
-    'https://corsproxy.io/?' + encodeURIComponent(yfUrl),
-  ];
-  function parse(j){
-    if(j&&j.contents){try{j=JSON.parse(j.contents);}catch(e){return null;}}
-    if(j&&j.body){try{j=JSON.parse(j.body);}catch(e){return null;}}
-    var res=j&&j.quoteResponse&&j.quoteResponse.result;
-    return res&&res.length>0?res:null;
-  }
-  return new Promise(function(resolve){
-    var done=false,n=0;
-    proxies.forEach(function(px){
-      fetch(px,{signal:AbortSignal.timeout(10000),cache:'no-store'})
-        .then(function(r){return r.ok?r.json():Promise.reject();})
-        .then(function(j){
-          var res=parse(j);
-          if(res&&!done){done=true;console.log('[TOP10] got',res.length);resolve(res);}
-        }).catch(function(){})
-        .finally(function(){n++;if(n===proxies.length&&!done)resolve([]);});
-    });
-  });
+  return fetch('./data.json?_t='+Date.now(),{cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(j){
+      if(!j||!j.data) return [];
+      var results=[];
+      STOCK_KEYS.forEach(function(item){
+        var d=j.data[item.key];
+        if(d&&d.price){
+          results.push({
+            name: item.name,
+            prefix: item.prefix,
+            regularMarketPrice: d.price,
+            regularMarketChangePercent: d.chgPct
+          });
+        }
+      });
+      console.log('[STOCKS] from data.json:',results.length,'stocks');
+      return results;
+    }).catch(function(e){console.warn('[STOCKS] data.json failed:',e);return[];});
 }
 
 function buildTicker(top10){
   var items=[];
 
-  /* Nifty Top 10 stocks */
+  /* Nifty Top 10 + US Top 10 stocks from data.json */
   if(top10&&top10.length){
     top10.forEach(function(q){
-      var info=NIFTY_TOP10.find(function(x){return x.sym===q.symbol;});
-      if(!info||q.regularMarketPrice==null) return;
+      if(q.regularMarketPrice==null) return;
       var price=q.regularMarketPrice;
       var chg=q.regularMarketChangePercent||0;
       var up=chg>=0;
+      var pfx=q.prefix||'₹';
       items.push({
-        s:info.name,
-        v:'₹'+price.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}),
+        s:q.name,
+        v:pfx+price.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}),
         c:(up?'+':'')+chg.toFixed(2)+'%',
         u:up
       });
