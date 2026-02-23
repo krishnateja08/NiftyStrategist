@@ -168,7 +168,7 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .tkr::before,.tkr::after{content:'';position:absolute;top:0;bottom:0;width:70px;z-index:2;pointer-events:none;}
 .tkr::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
 .tkr::after{right:0;background:linear-gradient(-90deg,var(--bg),transparent)}
-.tkr-t{display:inline-flex;animation:tscroll 32s linear infinite}
+.tkr-t{display:inline-flex;animation:tscroll 80s linear infinite}
 @keyframes tscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 .ti{display:inline-flex;align-items:center;gap:10px;padding:0 24px;font-size:12px;
   font-family:'Orbitron',monospace;border-right:1px solid rgba(0,245,255,.2);}
@@ -834,25 +834,58 @@ function fetchYahoo(){
   });
 }
 
+/* ══ Frankfurter — free USD/INR, native CORS ══ */
+function fetchFrankfurter(){
+  return fetch('https://api.frankfurter.app/latest?from=USD&to=INR',{signal:AbortSignal.timeout(6000),cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(j){
+      if(j&&j.rates&&j.rates.INR){return {inr:{price:j.rates.INR,chgPct:0}};}
+      return {};
+    }).catch(function(){return {};});
+}
+
+/* ══ Open Exchange Rates — free INR fallback ══ */
+function fetchOpenFX(){
+  return fetch('https://open.er-api.com/v6/latest/USD',{signal:AbortSignal.timeout(6000),cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(j){
+      if(j&&j.rates&&j.rates.INR){return {inr:{price:j.rates.INR,chgPct:0}};}
+      return {};
+    }).catch(function(){return {};});
+}
+
 /* ══ MAIN REFRESH ══ */
+function fetchDataJson(){
+  return fetch('./data.json?_t='+Date.now(),{cache:'no-store'})
+    .then(function(r){return r.ok?r.json():null;})
+    .then(function(j){
+      if(j&&j.data){console.log('[JSON] loaded, updated:',j.updated);return j.data;}
+      return {};
+    }).catch(function(e){console.warn('[JSON] failed:',e);return {};});
+}
+
 function refreshMarketBar(){
   console.log('[MBar] fetching all sources...');
-  Promise.all([fetchNSE(), fetchFinnhub(), fetchYahoo()]).then(function(res){
-    var nseArr=res[0], fhMap=res[1], yfArr=res[2];
+  Promise.all([fetchNSE(), fetchFinnhub(), fetchDataJson(), fetchFrankfurter(), fetchOpenFX()]).then(function(res){
+    var nseArr=res[0], fhMap=res[1], jsonMap=res[2], fxFrank=res[3], fxOpen=res[4];
     var updated=0;
     MB_MAP.forEach(function(item){
       var price=null,chgPct=null,src=null;
+      /* Priority 1: NSE for Indian indices (live) */
       if(item.nseKey&&nseArr.length){
         var f=nseArr.find(function(d){
           return d.index===item.nseKey||d.indexSymbol===item.nseKey||(d.index||'').toLowerCase()===item.nseKey.toLowerCase();
         });
         if(f&&f.last!=null){price=parseFloat(f.last);chgPct=parseFloat(f.percentChange);src='NSE';}
       }
+      /* Priority 2: Finnhub */
       if(price===null&&fhMap[item.id]){price=fhMap[item.id].price;chgPct=fhMap[item.id].chgPct;src='FH';}
-      if(price===null&&yfArr.length){
-        var q=yfArr.find(function(x){return x.symbol===item.yfSym;});
-        if(q&&q.regularMarketPrice!=null){price=q.regularMarketPrice;chgPct=q.regularMarketChangePercent||0;src='YF';}
-      }
+      /* Priority 3: data.json from GitHub Actions */
+      if(price===null&&jsonMap[item.id]){price=jsonMap[item.id].price;chgPct=jsonMap[item.id].chgPct;src='GHA';}
+      /* Priority 4: Frankfurter for INR */
+      if(price===null&&fxFrank[item.id]){price=fxFrank[item.id].price;chgPct=fxFrank[item.id].chgPct;src='FX';}
+      /* Priority 5: OpenFX for INR */
+      if(price===null&&fxOpen[item.id]){price=fxOpen[item.id].price;chgPct=fxOpen[item.id].chgPct;src='FX2';}
       if(price!==null){silentUpdate(item,price,chgPct,src);updated++;}
     });
     if(updated>0) setTs();
