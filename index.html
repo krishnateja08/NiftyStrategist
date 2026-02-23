@@ -823,7 +823,7 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:9px 18p
     <button id="vclose" onclick="closeViewer(false)">✕ BACK TO HUB</button>
   </div>
   <div id="vload"><div class="lspinner"></div><div class="ltxt">LOADING NODE...</div></div>
-  <iframe id="vframe" src="about:blank"></iframe>
+  <div id="vframe-wrap" style="flex:1;width:100%;background:#000;position:relative;overflow:hidden;"></div>
 </div>
 
 <script>
@@ -1061,19 +1061,49 @@ refreshMarketBar();setInterval(refreshMarketBar,60000);
 var l=sessionStorage.getItem('lo');
 if(l)document.getElementById('lc').textContent=l;
 
-/* ══ Iframe Viewer ══ */
-var IFRAME_REFRESH=30,currentUrl='',viewerTimer=null,viewerRem=IFRAME_REFRESH;
-var viewer=document.getElementById('viewer'),vframe=document.getElementById('vframe');
-var vtitle=document.getElementById('vtitle'),vload=document.getElementById('vload');
-var vrcd=document.getElementById('vrcd'),varc=document.getElementById('varc'),VARC_C=44;
+/* ══ Iframe Viewer ══
+   KEY FIX: We DESTROY and RECREATE the iframe every time a node opens.
+   A fresh iframe has zero history — so the browser back button can never
+   get trapped inside the iframe's own navigation stack, regardless of how
+   many redirects or internal links the node site follows.
+   ════════════════════════════════════════════════════════════════════════ */
+var IFRAME_REFRESH=30, currentUrl='', viewerTimer=null, viewerRem=IFRAME_REFRESH;
+var viewer   = document.getElementById('viewer');
+var vwrap    = document.getElementById('vframe-wrap');   /* wrapper div */
+var vtitle   = document.getElementById('vtitle');
+var vload    = document.getElementById('vload');
+var vrcd     = document.getElementById('vrcd');
+var varc     = document.getElementById('varc');
+var VARC_C   = 44;
+var _vframe  = null;   /* always reference through this variable */
 
-function openViewer(url,name){
-  currentUrl=url;
-  vtitle.textContent='▶ '+name.toUpperCase();
+/* Create a brand-new iframe inside the wrapper — no history baggage */
+function spawnFrame(){
+  /* Destroy previous iframe completely */
+  if(_vframe){
+    _vframe.src = 'about:blank';
+    vwrap.removeChild(_vframe);
+    _vframe = null;
+  }
+  var f = document.createElement('iframe');
+  f.style.cssText = 'width:100%;height:100%;border:none;background:#000;position:absolute;inset:0;';
+  /* 'allow-scripts allow-same-origin allow-forms allow-popups' lets the
+     node sites run normally; crucially we do NOT add allow-top-navigation
+     which would let the iframe break out into the parent window */
+  f.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox');
+  f.setAttribute('referrerpolicy','no-referrer');
+  vwrap.appendChild(f);
+  _vframe = f;
+  return f;
+}
+
+function openViewer(url, name){
+  currentUrl = url;
+  vtitle.textContent = '▶ ' + name.toUpperCase();
   viewer.classList.add('open');
-  document.body.style.overflow='hidden';
+  document.body.style.overflow = 'hidden';
   document.getElementById('floatback').classList.add('visible');
-  /* ── Push a new history entry so the browser back button works ── */
+  /* Push ONE clean entry → back button pops this and triggers popstate */
   history.pushState({viewer:true, url:url, name:name}, '', '#node');
   loadFrame();
   startViewerTimer();
@@ -1081,60 +1111,63 @@ function openViewer(url,name){
 
 function loadFrame(){
   vload.classList.remove('hidden');
-  /* Load the iframe WITHOUT any cache-busting param — prevents the iframe
-     itself from adding extra history entries on reload */
-  vframe.src=currentUrl;
-  vframe.onload=function(){vload.classList.add('hidden');};
+  /* Spawn fresh iframe — zero internal history, no redirects polluting parent */
+  var f = spawnFrame();
+  f.onload = function(){ vload.classList.add('hidden'); };
+  f.src = currentUrl;
 }
 
 function startViewerTimer(){
   clearInterval(viewerTimer);
-  viewerRem=IFRAME_REFRESH;
-  vrcd.textContent=viewerRem+'s';
-  varc.style.strokeDashoffset=0;
-  viewerTimer=setInterval(function(){
+  viewerRem = IFRAME_REFRESH;
+  vrcd.textContent = viewerRem + 's';
+  varc.style.strokeDashoffset = 0;
+  viewerTimer = setInterval(function(){
     viewerRem--;
-    vrcd.textContent=viewerRem+'s';
-    varc.style.strokeDashoffset=VARC_C*(1-(viewerRem/IFRAME_REFRESH));
-    if(viewerRem<=0){
-      viewerRem=IFRAME_REFRESH;
-      varc.style.strokeDashoffset=0;
-      /* Silently refresh iframe src without touching browser history */
-      vframe.src=currentUrl;
+    vrcd.textContent = viewerRem + 's';
+    varc.style.strokeDashoffset = VARC_C * (1 - (viewerRem / IFRAME_REFRESH));
+    if(viewerRem <= 0){
+      viewerRem = IFRAME_REFRESH;
+      varc.style.strokeDashoffset = 0;
+      loadFrame(); /* spawns a fresh iframe — still no history pollution */
     }
-  },1000);
+  }, 1000);
 }
 
 function closeViewer(fromPopState){
   viewer.classList.remove('open');
-  document.body.style.overflow='';
+  document.body.style.overflow = '';
   document.getElementById('floatback').classList.remove('visible');
   clearInterval(viewerTimer);
-  vframe.src='about:blank';
-  currentUrl='';
-  /* If closed by button: silently remove the #node hash without
-     triggering navigation — replaceState rewrites the current history
-     entry in place so no blank-page step is added */
-  if(!fromPopState && location.hash==='#node'){
-    history.replaceState(null,'',location.pathname);
+  /* Destroy iframe completely so its history is gone for next open */
+  if(_vframe){
+    _vframe.src = 'about:blank';
+    vwrap.removeChild(_vframe);
+    _vframe = null;
+  }
+  currentUrl = '';
+  /* Button close: overwrite the #node entry in-place — no navigation step,
+     so user never sees a blank intermediate page */
+  if(!fromPopState && location.hash === '#node'){
+    history.replaceState(null, '', location.pathname);
   }
 }
 
-function openExternal(){if(currentUrl)window.open(currentUrl,'_blank');}
+function openExternal(){ if(currentUrl) window.open(currentUrl, '_blank'); }
 
-/* ── Browser back button handler ── */
-window.addEventListener('popstate',function(e){
+/* Browser Back button → popstate fires → close viewer, stay on hub */
+window.addEventListener('popstate', function(e){
   if(viewer.classList.contains('open')){
-    /* Back was pressed while viewer is open → close it, stay on hub */
-    closeViewer(true); /* pass true = already popped, don't call history.back() again */
+    closeViewer(true);
   }
 });
 
-/* ── On page load: if URL has #node hash (e.g. refresh while viewer was open),
-   clear it so we start cleanly on the hub ── */
-if(location.hash==='#node'){history.replaceState(null,'',location.pathname);}
+/* If page is refreshed while #node hash is in URL, clear it cleanly */
+if(location.hash === '#node'){ history.replaceState(null, '', location.pathname); }
 
-document.addEventListener('keydown',function(e){if(e.key==='Escape'&&viewer.classList.contains('open'))closeViewer(false);});
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape' && viewer.classList.contains('open')) closeViewer(false);
+});
 function go(e,name){e.preventDefault();var card=e.currentTarget,url=card.href;sessionStorage.setItem('lo',name);document.getElementById('lc').textContent=name;var r=document.createElement('div');r.className='rpl';var b=card.getBoundingClientRect();r.style.left=(e.clientX-b.left-30)+'px';r.style.top=(e.clientY-b.top-30)+'px';card.appendChild(r);setTimeout(function(){r.remove();},600);setTimeout(function(){openViewer(url,name);},200);}
 document.querySelectorAll('.sc-card[href]').forEach(function(c,i){c.style.opacity='0';c.style.transform='translateY(14px)';c.style.transition='opacity .4s ease '+i*.07+'s,transform .4s ease '+i*.07+'s';setTimeout(function(){c.style.opacity='1';c.style.transform='none';},80+i*60);});
 </script>
