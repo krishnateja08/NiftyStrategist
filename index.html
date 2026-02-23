@@ -362,11 +362,7 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:9px 18p
   display:flex;align-items:center;gap:12px;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;
   flex-shrink:0;box-shadow:0 0 20px rgba(0,245,255,.15);position:relative;z-index:501;}
 #vtitle{color:var(--cyan);font-weight:700;font-size:11px;text-shadow:0 0 12px rgba(0,245,255,.5);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.vring{display:flex;align-items:center;gap:6px;color:var(--yel)}
-.vring svg{transform:rotate(-90deg);width:16px;height:16px;flex-shrink:0}
-.vring circle{fill:none;stroke:rgba(255,224,0,.2);stroke-width:2}
-.vring .varc{stroke:var(--yel);stroke-width:2;stroke-dasharray:44;stroke-dashoffset:0;transition:stroke-dashoffset 1s linear;filter:drop-shadow(0 0 4px var(--yel));}
-#vrcd{font-size:9px;color:var(--yel);min-width:22px}
+
 #vopen{padding:5px 12px;font-size:8px;letter-spacing:2px;font-family:'Orbitron',sans-serif;text-transform:uppercase;border:1px solid rgba(0,245,255,.3);color:var(--cyan);background:rgba(0,245,255,.05);cursor:pointer;transition:background .15s;}
 #vopen:hover{background:rgba(0,245,255,.12)}
 #vclose{padding:5px 14px;font-size:8px;letter-spacing:2px;font-family:'Orbitron',sans-serif;text-transform:uppercase;border:1px solid rgba(255,0,144,.4);color:var(--pink);background:rgba(255,0,144,.05);cursor:pointer;transition:background .15s;clip-path:polygon(6px 0%,100% 0%,calc(100% - 6px) 100%,0% 100%);}
@@ -815,10 +811,7 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:9px 18p
 <div id="viewer">
   <div id="vbar">
     <div id="vtitle">— NODE VIEWER —</div>
-    <div class="vring">
-      <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="7"/><circle class="varc" id="varc" cx="8" cy="8" r="7"/></svg>
-      REFRESH <span id="vrcd">30s</span>
-    </div>
+
     <button id="vopen" onclick="openExternal()">↗ OPEN TAB</button>
     <button id="vclose" onclick="closeViewer(false)">✕ BACK TO HUB</button>
   </div>
@@ -1062,24 +1055,18 @@ var l=sessionStorage.getItem('lo');
 if(l)document.getElementById('lc').textContent=l;
 
 /* ══ Iframe Viewer ══
-   KEY FIX: We DESTROY and RECREATE the iframe every time a node opens.
-   A fresh iframe has zero history — so the browser back button can never
-   get trapped inside the iframe's own navigation stack, regardless of how
-   many redirects or internal links the node site follows.
-   ════════════════════════════════════════════════════════════════════════ */
-var IFRAME_REFRESH=30, currentUrl='', viewerTimer=null, viewerRem=IFRAME_REFRESH;
-var viewer   = document.getElementById('viewer');
-var vwrap    = document.getElementById('vframe-wrap');   /* wrapper div */
-var vtitle   = document.getElementById('vtitle');
-var vload    = document.getElementById('vload');
-var vrcd     = document.getElementById('vrcd');
-var varc     = document.getElementById('varc');
-var VARC_C   = 44;
-var _vframe  = null;   /* always reference through this variable */
+   No auto-refresh — each node handles its own refresh internally.
+   Fresh iframe is created on every open to keep browser history clean.
+   ════════════════════════════════════════════════════════════════════ */
+var currentUrl = '';
+var viewer  = document.getElementById('viewer');
+var vwrap   = document.getElementById('vframe-wrap');
+var vtitle  = document.getElementById('vtitle');
+var vload   = document.getElementById('vload');
+var _vframe = null;
 
-/* Create a brand-new iframe inside the wrapper — no history baggage */
+/* Destroy old iframe and create a fresh one — zero history baggage */
 function spawnFrame(){
-  /* Destroy previous iframe completely */
   if(_vframe){
     _vframe.src = 'about:blank';
     vwrap.removeChild(_vframe);
@@ -1087,9 +1074,6 @@ function spawnFrame(){
   }
   var f = document.createElement('iframe');
   f.style.cssText = 'width:100%;height:100%;border:none;background:#000;position:absolute;inset:0;';
-  /* 'allow-scripts allow-same-origin allow-forms allow-popups' lets the
-     node sites run normally; crucially we do NOT add allow-top-navigation
-     which would let the iframe break out into the parent window */
   f.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox');
   f.setAttribute('referrerpolicy','no-referrer');
   vwrap.appendChild(f);
@@ -1103,51 +1087,23 @@ function openViewer(url, name){
   viewer.classList.add('open');
   document.body.style.overflow = 'hidden';
   document.getElementById('floatback').classList.add('visible');
-  /* Push ONE clean entry → back button pops this and triggers popstate */
   history.pushState({viewer:true, url:url, name:name}, '', '#node');
-  loadFrame();
-  startViewerTimer();
-}
-
-function loadFrame(){
   vload.classList.remove('hidden');
-  /* Spawn fresh iframe — zero internal history, no redirects polluting parent */
   var f = spawnFrame();
   f.onload = function(){ vload.classList.add('hidden'); };
   f.src = currentUrl;
-}
-
-function startViewerTimer(){
-  clearInterval(viewerTimer);
-  viewerRem = IFRAME_REFRESH;
-  vrcd.textContent = viewerRem + 's';
-  varc.style.strokeDashoffset = 0;
-  viewerTimer = setInterval(function(){
-    viewerRem--;
-    vrcd.textContent = viewerRem + 's';
-    varc.style.strokeDashoffset = VARC_C * (1 - (viewerRem / IFRAME_REFRESH));
-    if(viewerRem <= 0){
-      viewerRem = IFRAME_REFRESH;
-      varc.style.strokeDashoffset = 0;
-      loadFrame(); /* spawns a fresh iframe — still no history pollution */
-    }
-  }, 1000);
 }
 
 function closeViewer(fromPopState){
   viewer.classList.remove('open');
   document.body.style.overflow = '';
   document.getElementById('floatback').classList.remove('visible');
-  clearInterval(viewerTimer);
-  /* Destroy iframe completely so its history is gone for next open */
   if(_vframe){
     _vframe.src = 'about:blank';
     vwrap.removeChild(_vframe);
     _vframe = null;
   }
   currentUrl = '';
-  /* Button close: overwrite the #node entry in-place — no navigation step,
-     so user never sees a blank intermediate page */
   if(!fromPopState && location.hash === '#node'){
     history.replaceState(null, '', location.pathname);
   }
@@ -1155,14 +1111,12 @@ function closeViewer(fromPopState){
 
 function openExternal(){ if(currentUrl) window.open(currentUrl, '_blank'); }
 
-/* Browser Back button → popstate fires → close viewer, stay on hub */
-window.addEventListener('popstate', function(e){
-  if(viewer.classList.contains('open')){
-    closeViewer(true);
-  }
+/* Browser Back button → close viewer, return to hub */
+window.addEventListener('popstate', function(){
+  if(viewer.classList.contains('open')) closeViewer(true);
 });
 
-/* If page is refreshed while #node hash is in URL, clear it cleanly */
+/* Clear stale #node hash on page load */
 if(location.hash === '#node'){ history.replaceState(null, '', location.pathname); }
 
 document.addEventListener('keydown', function(e){
