@@ -1112,10 +1112,11 @@ function closeViewer(fromPopState){
   clearInterval(viewerTimer);
   vframe.src='about:blank';
   currentUrl='';
-  /* If closed by button (not by browser back), pop the history entry we pushed
-     so the URL goes back to the hub cleanly */
+  /* If closed by button: silently remove the #node hash without
+     triggering navigation — replaceState rewrites the current history
+     entry in place so no blank-page step is added */
   if(!fromPopState && location.hash==='#node'){
-    history.back();
+    history.replaceState(null,'',location.pathname);
   }
 }
 
