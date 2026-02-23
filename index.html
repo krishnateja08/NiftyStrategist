@@ -810,7 +810,7 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:9px 18p
 </footer>
 </div><!-- /#app -->
 
-<button id="floatback" onclick="closeViewer()">← HUB <span class="kbhint">ESC</span></button>
+<button id="floatback" onclick="closeViewer(false)">← HUB <span class="kbhint">ESC</span></button>
 
 <div id="viewer">
   <div id="vbar">
@@ -820,7 +820,7 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:9px 18p
       REFRESH <span id="vrcd">30s</span>
     </div>
     <button id="vopen" onclick="openExternal()">↗ OPEN TAB</button>
-    <button id="vclose" onclick="closeViewer()">✕ BACK TO HUB</button>
+    <button id="vclose" onclick="closeViewer(false)">✕ BACK TO HUB</button>
   </div>
   <div id="vload"><div class="lspinner"></div><div class="ltxt">LOADING NODE...</div></div>
   <iframe id="vframe" src="about:blank"></iframe>
@@ -1066,12 +1066,74 @@ var IFRAME_REFRESH=30,currentUrl='',viewerTimer=null,viewerRem=IFRAME_REFRESH;
 var viewer=document.getElementById('viewer'),vframe=document.getElementById('vframe');
 var vtitle=document.getElementById('vtitle'),vload=document.getElementById('vload');
 var vrcd=document.getElementById('vrcd'),varc=document.getElementById('varc'),VARC_C=44;
-function openViewer(url,name){currentUrl=url;vtitle.textContent='▶ '+name.toUpperCase();viewer.classList.add('open');document.body.style.overflow='hidden';document.getElementById('floatback').classList.add('visible');loadFrame();startViewerTimer();}
-function loadFrame(){vload.classList.remove('hidden');vframe.src=currentUrl+(currentUrl.includes('?')?'&':'?')+'_t='+Date.now();vframe.onload=function(){vload.classList.add('hidden');};}
-function startViewerTimer(){clearInterval(viewerTimer);viewerRem=IFRAME_REFRESH;vrcd.textContent=viewerRem+'s';varc.style.strokeDashoffset=0;viewerTimer=setInterval(function(){viewerRem--;vrcd.textContent=viewerRem+'s';varc.style.strokeDashoffset=VARC_C*(1-(viewerRem/IFRAME_REFRESH));if(viewerRem<=0){viewerRem=IFRAME_REFRESH;varc.style.strokeDashoffset=0;loadFrame();}},1000);}
-function closeViewer(){viewer.classList.remove('open');document.body.style.overflow='';document.getElementById('floatback').classList.remove('visible');clearInterval(viewerTimer);vframe.src='about:blank';currentUrl='';}
+
+function openViewer(url,name){
+  currentUrl=url;
+  vtitle.textContent='▶ '+name.toUpperCase();
+  viewer.classList.add('open');
+  document.body.style.overflow='hidden';
+  document.getElementById('floatback').classList.add('visible');
+  /* ── Push a new history entry so the browser back button works ── */
+  history.pushState({viewer:true, url:url, name:name}, '', '#node');
+  loadFrame();
+  startViewerTimer();
+}
+
+function loadFrame(){
+  vload.classList.remove('hidden');
+  /* Load the iframe WITHOUT any cache-busting param — prevents the iframe
+     itself from adding extra history entries on reload */
+  vframe.src=currentUrl;
+  vframe.onload=function(){vload.classList.add('hidden');};
+}
+
+function startViewerTimer(){
+  clearInterval(viewerTimer);
+  viewerRem=IFRAME_REFRESH;
+  vrcd.textContent=viewerRem+'s';
+  varc.style.strokeDashoffset=0;
+  viewerTimer=setInterval(function(){
+    viewerRem--;
+    vrcd.textContent=viewerRem+'s';
+    varc.style.strokeDashoffset=VARC_C*(1-(viewerRem/IFRAME_REFRESH));
+    if(viewerRem<=0){
+      viewerRem=IFRAME_REFRESH;
+      varc.style.strokeDashoffset=0;
+      /* Silently refresh iframe src without touching browser history */
+      vframe.src=currentUrl;
+    }
+  },1000);
+}
+
+function closeViewer(fromPopState){
+  viewer.classList.remove('open');
+  document.body.style.overflow='';
+  document.getElementById('floatback').classList.remove('visible');
+  clearInterval(viewerTimer);
+  vframe.src='about:blank';
+  currentUrl='';
+  /* If closed by button (not by browser back), pop the history entry we pushed
+     so the URL goes back to the hub cleanly */
+  if(!fromPopState && location.hash==='#node'){
+    history.back();
+  }
+}
+
 function openExternal(){if(currentUrl)window.open(currentUrl,'_blank');}
-document.addEventListener('keydown',function(e){if(e.key==='Escape'&&viewer.classList.contains('open'))closeViewer();});
+
+/* ── Browser back button handler ── */
+window.addEventListener('popstate',function(e){
+  if(viewer.classList.contains('open')){
+    /* Back was pressed while viewer is open → close it, stay on hub */
+    closeViewer(true); /* pass true = already popped, don't call history.back() again */
+  }
+});
+
+/* ── On page load: if URL has #node hash (e.g. refresh while viewer was open),
+   clear it so we start cleanly on the hub ── */
+if(location.hash==='#node'){history.replaceState(null,'',location.pathname);}
+
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&viewer.classList.contains('open'))closeViewer(false);});
 function go(e,name){e.preventDefault();var card=e.currentTarget,url=card.href;sessionStorage.setItem('lo',name);document.getElementById('lc').textContent=name;var r=document.createElement('div');r.className='rpl';var b=card.getBoundingClientRect();r.style.left=(e.clientX-b.left-30)+'px';r.style.top=(e.clientY-b.top-30)+'px';card.appendChild(r);setTimeout(function(){r.remove();},600);setTimeout(function(){openViewer(url,name);},200);}
 document.querySelectorAll('.sc-card[href]').forEach(function(c,i){c.style.opacity='0';c.style.transform='translateY(14px)';c.style.transition='opacity .4s ease '+i*.07+'s,transform .4s ease '+i*.07+'s';setTimeout(function(){c.style.opacity='1';c.style.transform='none';},80+i*60);});
 </script>
