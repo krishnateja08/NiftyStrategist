@@ -163,17 +163,19 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 }
 
 /* ══ TICKER ══ */
-.tkr{background:rgba(0,0,0,.7);border-bottom:1px solid var(--b1);
-  padding:5px 0;overflow:hidden;white-space:nowrap;position:relative;}
+.tkr{background:rgba(0,5,20,.92);border-top:1px solid rgba(0,245,255,.3);border-bottom:1px solid rgba(0,245,255,.3);
+  padding:6px 0;overflow:hidden;white-space:nowrap;position:relative;box-shadow:0 0 20px rgba(0,245,255,.08);}
 .tkr::before,.tkr::after{content:'';position:absolute;top:0;bottom:0;width:70px;z-index:2;pointer-events:none;}
 .tkr::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
 .tkr::after{right:0;background:linear-gradient(-90deg,var(--bg),transparent)}
 .tkr-t{display:inline-flex;animation:tscroll 32s linear infinite}
 @keyframes tscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.ti{display:inline-flex;align-items:center;gap:9px;padding:0 20px;font-size:11px;
-  font-family:'Orbitron',monospace;border-right:1px solid rgba(0,245,255,.08);}
-.ti .s{color:var(--cyan);font-size:9px;letter-spacing:1.5px;font-weight:600}
-.up{color:var(--grn)}.dn{color:var(--red)}
+.ti{display:inline-flex;align-items:center;gap:10px;padding:0 24px;font-size:12px;
+  font-family:'Orbitron',monospace;border-right:1px solid rgba(0,245,255,.2);}
+.ti .s{color:#00ffff;font-size:9px;letter-spacing:1.5px;font-weight:700;text-shadow:0 0 8px #00ffff;}
+.ti .tv{color:#ffffff;font-weight:600;text-shadow:0 0 6px rgba(255,255,255,.5);}
+.up{color:#00ff88;text-shadow:0 0 8px #00ff88;font-weight:700;}
+.dn{color:#ff3366;text-shadow:0 0 8px #ff3366;font-weight:700;}
 
 /* ══ STATS BAR ══ */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);background:rgba(0,245,255,.06);gap:1px;border-bottom:1px solid var(--bc);}
@@ -806,83 +808,157 @@ function fetchFinnhub(){
   });
 }
 
-/* ══ SOURCE 3: data.json — written by GitHub Actions every 15 min ══ */
-function fetchDataJson(){
-  return fetch('./data.json?_t='+Date.now(),{cache:'no-store'})
-    .then(function(r){return r.ok?r.json():null;})
-    .then(function(j){
-      if(j&&j.data){console.log('[JSON] loaded, updated:',j.updated);return j.data;}
-      return {};
-    }).catch(function(e){console.warn('[JSON] failed:',e);return {};});
-}
-
-/* ══ SOURCE 4: Frankfurter — free, no key, native CORS for USD/INR ══ */
-function fetchFrankfurter(){
-  return fetch('https://api.frankfurter.app/latest?from=USD&to=INR',{signal:AbortSignal.timeout(6000),cache:'no-store'})
-    .then(function(r){return r.ok?r.json():null;})
-    .then(function(j){
-      if(j&&j.rates&&j.rates.INR){console.log('[FX] USD/INR',j.rates.INR);return {inr:{price:j.rates.INR,chgPct:0}};}
-      return {};
-    }).catch(function(){return {};});
-}
-
-/* ══ SOURCE 5: Open Exchange Rates — free INR fallback ══ */
-function fetchOpenFX(){
-  return fetch('https://open.er-api.com/v6/latest/USD',{signal:AbortSignal.timeout(6000),cache:'no-store'})
-    .then(function(r){return r.ok?r.json():null;})
-    .then(function(j){
-      if(j&&j.rates&&j.rates.INR){return {inr:{price:j.rates.INR,chgPct:0}};}
-      return {};
-    }).catch(function(){return {};});
+/* ══ SOURCE 3: Yahoo Finance — race proxies simultaneously ══ */
+function fetchYahoo(){
+  var syms=MB_MAP.map(function(x){return x.yfSym;}).join(',');
+  var fields='regularMarketPrice,regularMarketChangePercent';
+  var q1='https://query1.finance.yahoo.com/v8/finance/quote?symbols='+encodeURIComponent(syms)+'&fields='+fields;
+  var q2=q1.replace('query1','query2');
+  var list=[
+    'https://corsproxy.io/?'+encodeURIComponent(q1),
+    'https://corsproxy.io/?'+encodeURIComponent(q2),
+    'https://api.allorigins.win/get?url='+encodeURIComponent(q1),
+    'https://api.allorigins.win/get?url='+encodeURIComponent(q2),
+  ];
+  return new Promise(function(resolve){
+    var done=false,n=0;
+    list.forEach(function(px){
+      fetch(px,{signal:AbortSignal.timeout(9000),cache:'no-store'})
+        .then(function(r){return r.ok?r.json():Promise.reject();})
+        .then(function(j){
+          if(j&&j.contents){try{j=JSON.parse(j.contents);}catch(e){return;}}
+          var res=(j&&j.quoteResponse&&j.quoteResponse.result)||[];
+          if(res.length>0&&!done){done=true;console.log('[YF]',res.length,'ok');resolve(res);}
+        }).catch(function(){}).finally(function(){n++;if(n===list.length&&!done)resolve([]);});
+    });
+  });
 }
 
 /* ══ MAIN REFRESH ══ */
 function refreshMarketBar(){
   console.log('[MBar] fetching all sources...');
-  Promise.all([fetchNSE(), fetchFinnhub(), fetchDataJson(), fetchFrankfurter(), fetchOpenFX()]).then(function(res){
-    var nseArr=res[0], fhMap=res[1], jsonMap=res[2], fxFrank=res[3], fxOpen=res[4];
+  Promise.all([fetchNSE(), fetchFinnhub(), fetchYahoo()]).then(function(res){
+    var nseArr=res[0], fhMap=res[1], yfArr=res[2];
     var updated=0;
     MB_MAP.forEach(function(item){
       var price=null,chgPct=null,src=null;
-      /* Priority 1: NSE for Indian indices (live) */
       if(item.nseKey&&nseArr.length){
         var f=nseArr.find(function(d){
           return d.index===item.nseKey||d.indexSymbol===item.nseKey||(d.index||'').toLowerCase()===item.nseKey.toLowerCase();
         });
         if(f&&f.last!=null){price=parseFloat(f.last);chgPct=parseFloat(f.percentChange);src='NSE';}
       }
-      /* Priority 2: Finnhub */
       if(price===null&&fhMap[item.id]){price=fhMap[item.id].price;chgPct=fhMap[item.id].chgPct;src='FH';}
-      /* Priority 3: data.json (GitHub Actions yfinance — most reliable) */
-      if(price===null&&jsonMap[item.id]){price=jsonMap[item.id].price;chgPct=jsonMap[item.id].chgPct;src='GHA';}
-      /* Priority 4: Frankfurter for INR */
-      if(price===null&&fxFrank[item.id]){price=fxFrank[item.id].price;chgPct=fxFrank[item.id].chgPct;src='FX';}
-      /* Priority 5: OpenFX for INR */
-      if(price===null&&fxOpen[item.id]){price=fxOpen[item.id].price;chgPct=fxOpen[item.id].chgPct;src='FX2';}
+      if(price===null&&yfArr.length){
+        var q=yfArr.find(function(x){return x.symbol===item.yfSym;});
+        if(q&&q.regularMarketPrice!=null){price=q.regularMarketPrice;chgPct=q.regularMarketChangePercent||0;src='YF';}
+      }
       if(price!==null){silentUpdate(item,price,chgPct,src);updated++;}
     });
     if(updated>0) setTs();
     console.log('[MBar] updated',updated,'/',MB_MAP.length);
-    buildTicker();
+    buildTicker(_top10Cache);
   });
 }
 
-/* ══ TICKER from live market bar data ══ */
-var TICKER_LABELS={n50:'NIFTY 50',bn:'BANK NIFTY',vix:'INDIA VIX',fn:'FINNIFTY',sx:'SENSEX',sp:'S&P 500',ndq:'NASDAQ',dji:'DOW JONES',inr:'USD/INR',crude:'CRUDE OIL',gold:'GOLD',silver:'SILVER'};
-function buildTicker(){
-  var items=[];
-  MB_MAP.forEach(function(item){
-    var valEl=document.getElementById(item.valId);
-    var chgEl=document.getElementById(item.chgId);
-    if(!valEl||valEl.textContent==='···'||valEl.textContent==='—') return;
-    var up=chgEl.classList.contains('up')||chgEl.classList.contains('vix');
-    items.push({s:TICKER_LABELS[item.id],v:valEl.textContent,c:chgEl.textContent.replace('▲ ','').replace('▼ ','-'),u:up});
+/* ══ TICKER — Nifty Top 10 + Global Indices ══ */
+
+/* Nifty Top 10 companies by weight */
+var NIFTY_TOP10 = [
+  {sym:'RELIANCE.NS', name:'RELIANCE'},
+  {sym:'HDFCBANK.NS', name:'HDFC BANK'},
+  {sym:'ICICIBANK.NS', name:'ICICI BANK'},
+  {sym:'INFY.NS',     name:'INFOSYS'},
+  {sym:'TCS.NS',      name:'TCS'},
+  {sym:'BHARTIARTL.NS',name:'AIRTEL'},
+  {sym:'ITC.NS',      name:'ITC'},
+  {sym:'SBIN.NS',     name:'SBI'},
+  {sym:'KOTAKBANK.NS',name:'KOTAK BANK'},
+  {sym:'LT.NS',       name:'L&T'},
+];
+
+function fetchNiftyTop10(){
+  var syms = NIFTY_TOP10.map(function(x){return x.sym;}).join(',');
+  var yfUrl = 'https://query1.finance.yahoo.com/v8/finance/quote?symbols=' + encodeURIComponent(syms) + '&fields=regularMarketPrice,regularMarketChangePercent';
+  var proxies = [
+    'https://api.codetabs.com/v1/proxy?quest=' + encodeURIComponent(yfUrl),
+    'https://api.allorigins.win/get?url=' + encodeURIComponent(yfUrl),
+    'https://corsproxy.io/?' + encodeURIComponent(yfUrl),
+  ];
+  function parse(j){
+    if(j&&j.contents){try{j=JSON.parse(j.contents);}catch(e){return null;}}
+    if(j&&j.body){try{j=JSON.parse(j.body);}catch(e){return null;}}
+    var res=j&&j.quoteResponse&&j.quoteResponse.result;
+    return res&&res.length>0?res:null;
+  }
+  return new Promise(function(resolve){
+    var done=false,n=0;
+    proxies.forEach(function(px){
+      fetch(px,{signal:AbortSignal.timeout(10000),cache:'no-store'})
+        .then(function(r){return r.ok?r.json():Promise.reject();})
+        .then(function(j){
+          var res=parse(j);
+          if(res&&!done){done=true;console.log('[TOP10] got',res.length);resolve(res);}
+        }).catch(function(){})
+        .finally(function(){n++;if(n===proxies.length&&!done)resolve([]);});
+    });
   });
+}
+
+function buildTicker(top10){
+  var items=[];
+
+  /* Nifty Top 10 stocks */
+  if(top10&&top10.length){
+    top10.forEach(function(q){
+      var info=NIFTY_TOP10.find(function(x){return x.sym===q.symbol;});
+      if(!info||q.regularMarketPrice==null) return;
+      var price=q.regularMarketPrice;
+      var chg=q.regularMarketChangePercent||0;
+      var up=chg>=0;
+      items.push({
+        s:info.name,
+        v:'₹'+price.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2}),
+        c:(up?'+':'')+chg.toFixed(2)+'%',
+        u:up
+      });
+    });
+  }
+
+  /* Fallback: add market bar values if top10 empty */
+  if(items.length<3){
+    var TICKER_LABELS={n50:'NIFTY 50',bn:'BANK NIFTY',vix:'INDIA VIX',fn:'FINNIFTY',sx:'SENSEX',sp:'S&P 500',ndq:'NASDAQ',dji:'DOW JONES',inr:'USD/INR',crude:'CRUDE OIL',gold:'GOLD',silver:'SILVER'};
+    MB_MAP.forEach(function(item){
+      var valEl=document.getElementById(item.valId);
+      var chgEl=document.getElementById(item.chgId);
+      if(!valEl||valEl.textContent==='···'||valEl.textContent==='—') return;
+      var up=chgEl.classList.contains('up')||chgEl.classList.contains('vix');
+      items.push({s:TICKER_LABELS[item.id],v:valEl.textContent,c:chgEl.textContent.replace('▲ ','').replace('▼ ','-'),u:up});
+    });
+  }
+
   if(items.length<3) return;
   var tkr=document.getElementById('tkr');
-  var all=items.concat(items);
-  tkr.innerHTML=all.map(function(t){return'<span class="ti"><span class="s">'+t.s+'</span><span>'+t.v+'</span><span class="'+(t.u?'up':'dn')+'">'+t.c+'</span></span>';}).join('');
+  var all=items.concat(items).concat(items); /* triple for seamless loop */
+  tkr.innerHTML=all.map(function(t){
+    return'<span class="ti">'
+      +'<span class="s">'+t.s+'</span>'
+      +'<span class="tv">'+t.v+'</span>'
+      +'<span class="'+(t.u?'up':'dn')+'">'+(t.u?'▲ ':'▼ ')+t.c+'</span>'
+      +'</span>';
+  }).join('');
 }
+
+/* Load top 10 once on startup, refresh every 5 min */
+var _top10Cache=[];
+function refreshTicker(){
+  fetchNiftyTop10().then(function(res){
+    _top10Cache=res||[];
+    buildTicker(_top10Cache);
+  });
+}
+refreshTicker();
+setInterval(refreshTicker, 5*60*1000);
 
 refreshMarketBar();
 setInterval(refreshMarketBar,60000);
