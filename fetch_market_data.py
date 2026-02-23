@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 """
 fetch_market_data.py
-Runs via GitHub Actions on a schedule.
-Fetches global market data using yfinance and writes data.json to repo root.
+Runs via GitHub Actions every 15 min.
+Fetches global indices + Nifty Top 10 stocks via yfinance → writes data.json
 """
 import json, datetime, sys
 
 try:
     import yfinance as yf
 except ImportError:
-    print("yfinance not installed, installing...")
     import subprocess
     subprocess.check_call([sys.executable, "-m", "pip", "install", "yfinance"])
     import yfinance as yf
 
 SYMBOLS = {
+    # Global indices & commodities
     'sp':     '^GSPC',
     'ndq':    '^IXIC',
     'dji':    '^DJI',
@@ -22,11 +22,34 @@ SYMBOLS = {
     'crude':  'CL=F',
     'gold':   'GC=F',
     'silver': 'SI=F',
+    # Indian indices
     'n50':    '^NSEI',
     'bn':     '^NSEBANK',
     'sx':     '^BSESN',
     'fn':     'NIFTY_FIN_SERVICE.NS',
     'vix':    '^INDIAVIX',
+    # Nifty Top 10 stocks
+    't_RELIANCE':   'RELIANCE.NS',
+    't_HDFCBANK':   'HDFCBANK.NS',
+    't_ICICIBANK':  'ICICIBANK.NS',
+    't_INFY':       'INFY.NS',
+    't_TCS':        'TCS.NS',
+    't_AIRTEL':     'BHARTIARTL.NS',
+    't_ITC':        'ITC.NS',
+    't_SBI':        'SBIN.NS',
+    't_KOTAK':      'KOTAKBANK.NS',
+    't_LT':         'LT.NS',
+    # US Top 10 stocks (by market cap)
+    'u_AAPL':   'AAPL',
+    'u_MSFT':   'MSFT',
+    'u_NVDA':   'NVDA',
+    'u_AMZN':   'AMZN',
+    'u_GOOGL':  'GOOGL',
+    'u_META':   'META',
+    'u_TSLA':   'TSLA',
+    'u_BRK':    'BRK-B',
+    'u_JPM':    'JPM',
+    'u_UNH':    'UNH',
 }
 
 data = {}
@@ -41,14 +64,14 @@ for key, sym in SYMBOLS.items():
         if price and prev and prev > 0:
             chg_pct = ((price - prev) / prev) * 100
             data[key] = {
-                'price': round(float(price), 2),
+                'price':  round(float(price), 2),
                 'chgPct': round(float(chg_pct), 2),
-                'src': 'GHA'
+                'src':    'GHA'
             }
             print(f"[OK] {key} ({sym}): {price:.2f} ({chg_pct:+.2f}%)")
         else:
-            errors.append(f"{key}: no price data")
-            print(f"[SKIP] {key} ({sym}): price={price}, prev={prev}")
+            errors.append(f"{key}: no price")
+            print(f"[SKIP] {key}: price={price}, prev={prev}")
     except Exception as e:
         errors.append(f"{key}: {e}")
         print(f"[ERR] {key} ({sym}): {e}")
@@ -62,5 +85,4 @@ output = {
 with open('data.json', 'w') as f:
     json.dump(output, f, indent=2)
 
-print(f"\nWrote data.json with {len(data)} symbols")
-print(json.dumps(output, indent=2))
+print(f"\nWrote data.json — {len(data)} symbols, {len(errors)} errors")
