@@ -259,13 +259,13 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .sc-head-status{font-family:'Orbitron',monospace;font-size:7.5px;color:var(--grn);display:flex;align-items:center;gap:4px;justify-content:flex-end;}
 .sc-head-nodes{font-size:8px;color:var(--t3);margin-top:2px;font-family:'Orbitron',monospace;letter-spacing:1px;}
 
-/* ══ CARDS GRID — default 3-col, Group 01 uses 2-col via class ══ */
+/* ══ CARDS — default 3-col ══ */
 .sc-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
-.sc-cards.grid-2{grid-template-columns:repeat(2,1fr);}
+
+/* Group 01 override — 4-col single row */
+.sc-cards-4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;}
 
 .sc-card{padding:14px;border-right:1px solid rgba(0,245,255,.07);cursor:pointer;position:relative;overflow:hidden;transition:background .2s;text-decoration:none;color:inherit;display:block;}
-.sc-cards.grid-2 .sc-card:nth-child(2n){border-right:none;}
-.sc-cards.grid-2 .sc-card:nth-child(n+3){border-top:1px solid rgba(0,245,255,.07);}
 .sc-card:last-child{border-right:none;}
 .sc-card:hover{background:rgba(0,245,255,.03);}
 .sc-card::before{content:'';position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,transparent 0%,rgba(0,245,255,.025) 50%,transparent 100%);background-size:100% 40px;opacity:0;transition:opacity .25s;animation:scanmove 2s linear infinite;}
@@ -292,6 +292,18 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .sc-card-btn-line{width:16px;height:1px;background:var(--cc,var(--cyan));transition:width .18s;}
 .sc-card:hover .sc-card-btn{gap:8px;}
 .sc-card:hover .sc-card-btn-line{width:24px;}
+
+/* NEW badge */
+.new-badge{
+  position:absolute;top:8px;right:8px;z-index:10;
+  font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1.5px;
+  color:var(--bg);background:var(--grn);padding:2px 6px;
+  box-shadow:0 0 10px rgba(0,255,136,.6);
+  clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);
+  animation:newbadge 2s ease-in-out infinite;
+}
+@keyframes newbadge{0%,100%{box-shadow:0 0 10px rgba(0,255,136,.6)}50%{box-shadow:0 0 20px rgba(0,255,136,.9),0 0 35px rgba(0,255,136,.4)}}
+
 @keyframes rpl{0%{transform:scale(0);opacity:.35}100%{transform:scale(4);opacity:0}}
 .rpl{position:absolute;width:60px;height:60px;border-radius:50%;background:rgba(0,245,255,.15);pointer-events:none;animation:rpl .55s ease-out forwards;transform-origin:center;z-index:5;}
 
@@ -336,9 +348,9 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
 @keyframes spin{to{transform:rotate(360deg)}}
 .ltxt{font-family:'Orbitron',sans-serif;font-size:8px;color:var(--t3);letter-spacing:3px}
 
-/* ═══════════════════════════════════════
+/* ═══════════════════════════════════════════════
    RESPONSIVE BREAKPOINTS
-   ═══════════════════════════════════════ */
+   ═══════════════════════════════════════════════ */
 
 /* ── Desktop large (1280px+) ── */
 @media(min-width:1280px){
@@ -357,8 +369,6 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .groups{margin:14px 18px 18px;}
   .sec{padding:11px 18px 9px;}
   footer{padding:9px 18px;}
-  /* Group 01 2-col: can be wider on big screens */
-  .sc-cards.grid-2{grid-template-columns:repeat(2,1fr);}
 }
 
 /* ── Tablet landscape (960–1279px) ── */
@@ -367,19 +377,21 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .wc-sep.hide-lg{display:none;}
   .wc-time{font-size:12px;}
   .mbar-item{min-width:95px;}
-  /* Group 01 stays 2-col on tablet land */
-  .sc-cards.grid-2{grid-template-columns:repeat(2,1fr);}
+  /* Group 01 4-col still fits fine at 960+ */
 }
 
 /* ── Tablet portrait (600–959px) ── */
 @media(max-width:959px){
   .stats{grid-template-columns:repeat(2,1fr);}
-  /* All groups go 2-col on tablet */
+  /* 3-col groups → 2-col */
   .sc-cards{grid-template-columns:repeat(2,1fr);}
-  .sc-cards .sc-card:nth-child(2n){border-right:none;}
-  .sc-cards .sc-card:nth-child(n+3){border-top:1px solid rgba(0,245,255,.07);}
-  /* grid-2 keeps its even 2-col */
-  .sc-cards.grid-2{grid-template-columns:repeat(2,1fr);}
+  .sc-card:nth-child(2n){border-right:none;}
+  .sc-card:nth-child(n+3){border-top:1px solid rgba(0,245,255,.07);}
+  /* Group 01 4-col → 2-col */
+  .sc-cards-4{grid-template-columns:repeat(2,1fr);}
+  .sc-cards-4 .sc-card:nth-child(2n){border-right:none;}
+  .sc-cards-4 .sc-card:nth-child(n+3){border-top:1px solid rgba(0,245,255,.07);}
+  /* hide less important clocks */
   .wc#wc-hkt,.wc#wc-jst{display:none;}
   .wc-sep.hide-md{display:none;}
 }
@@ -390,12 +402,10 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .brand{order:1;flex:1;}
   .hright{order:2;}
   .wclocks{order:3;width:100%;justify-content:flex-start;padding:5px 0 2px;border-top:1px solid rgba(0,245,255,.07);}
-  /* All grids go 2-col */
-  .sc-cards,.sc-cards.grid-2{grid-template-columns:repeat(2,1fr);}
-  .sc-cards .sc-card:nth-child(2n),
-  .sc-cards.grid-2 .sc-card:nth-child(2n){border-right:none;}
-  .sc-cards .sc-card:nth-child(n+3),
-  .sc-cards.grid-2 .sc-card:nth-child(n+3){border-top:1px solid rgba(0,245,255,.07);}
+  .sc-cards{grid-template-columns:repeat(2,1fr);}
+  .sc-cards-4{grid-template-columns:repeat(2,1fr);}
+  .sc-card:nth-child(2n),.sc-cards-4 .sc-card:nth-child(2n){border-right:none;}
+  .sc-card:nth-child(n+3),.sc-cards-4 .sc-card:nth-child(n+3){border-top:1px solid rgba(0,245,255,.07);}
 }
 
 /* ── Mobile (up to 599px) ── */
@@ -453,19 +463,14 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .sc-head-status{font-size:7px;}
   .sc-head-nodes{font-size:7.5px;}
 
-  /* Single column on mobile for ALL grids */
-  .sc-cards,.sc-cards.grid-2{grid-template-columns:1fr;}
-  .sc-card{
-    border-right:none;
-    border-bottom:1px solid rgba(0,245,255,.07);
-    padding:12px;
-  }
-  /* Reset 2n / n+3 overrides for single col */
-  .sc-cards .sc-card:nth-child(2n),
-  .sc-cards.grid-2 .sc-card:nth-child(2n){border-right:none;}
-  .sc-cards .sc-card:nth-child(n+3),
-  .sc-cards.grid-2 .sc-card:nth-child(n+3){border-top:none;}
+  /* Single column on mobile — all grids */
+  .sc-cards,.sc-cards-4{grid-template-columns:1fr;}
+  .sc-card{border-right:none;border-bottom:1px solid rgba(0,245,255,.07);padding:12px;}
   .sc-card:last-child{border-bottom:none;}
+  .sc-card:nth-child(2n){border-right:none;}
+  .sc-card:nth-child(n+3){border-top:none;}
+  .sc-cards-4 .sc-card:nth-child(2n){border-right:none;}
+  .sc-cards-4 .sc-card:nth-child(n+3){border-top:none;}
   .sc-card-topbar{margin:-12px -12px 10px;}
   .sc-card-name{font-size:11px;}
   .sc-card-desc{font-size:11px;margin-bottom:8px;}
@@ -736,9 +741,9 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
 <!-- ══ GROUPED PODS ══ -->
 <div class="groups">
 
-  <!-- ══════════════════════════════════════════════
-       GROUP 1: NIFTY INTELLIGENCE — 4 cards, 2×2 grid
-       ══════════════════════════════════════════════ -->
+  <!-- ══════════════════════════════════════════════════
+       GROUP 1: NIFTY INTELLIGENCE — 4 cards, single row
+       ══════════════════════════════════════════════════ -->
   <div class="sc-group" style="--ga:rgba(0,245,255,.22);--gb:rgba(0,245,255,.04);--gc:var(--cyan);">
     <div class="sc-inner">
       <div class="sc-head">
@@ -753,98 +758,71 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
         </div>
       </div>
 
-      <!-- grid-2 class = 2-column layout -->
-      <div class="sc-cards grid-2">
+      <!-- sc-cards-4 = 4-col single row on desktop -->
+      <div class="sc-cards-4">
 
-        <!-- CARD 1: AlphaScreener (NEW — added first) -->
-        <a class="sc-card" href="https://krishnateja08.github.io/Alphascreener/" onclick="go(event,'AlphaScreener')" style="--cc:var(--cyan);">
-          <div class="brk"></div>
-          <div class="sc-card-inner">
-            <div class="sc-card-topbar"></div>
-            <div class="sc-card-glow"></div>
-            <div class="sc-card-top">
-              <div class="sc-card-ico-wrap">
-                <div class="sc-card-ico">🎛️</div>
-                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-1s;"></div>
-              </div>
-              <div class="sc-card-label">SCREENER</div>
-            </div>
-            <div class="sc-card-name">AlphaScreener</div>
-            <div class="sc-card-desc">Multi-timeframe stock &amp; index screener — India &amp; USA, sector filters, Nifty 50, Bank Nifty &amp; Fin Nifty analysis.</div>
-            <div class="sc-card-footer">
-              <span class="sc-card-tag">NSE · USA · MULTI-TF</span>
-              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
-            </div>
-          </div>
-        </a>
-
-        <!-- CARD 2: Nifty 50 Analyzer -->
+        <!-- 01: Nifty 50 Analyzer -->
         <a class="sc-card" href="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" onclick="go(event,'Nifty 50 Analyzer')" style="--cc:var(--cyan);">
           <div class="brk"></div>
           <div class="sc-card-inner">
-            <div class="sc-card-topbar"></div>
-            <div class="sc-card-glow"></div>
+            <div class="sc-card-topbar"></div><div class="sc-card-glow"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap">
-                <div class="sc-card-ico">📈</div>
-                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);"></div>
-              </div>
+              <div class="sc-card-ico-wrap"><div class="sc-card-ico">📈</div><div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);"></div></div>
               <div class="sc-card-label">ANALYSIS</div>
             </div>
             <div class="sc-card-name">Nifty 50 Analyzer</div>
             <div class="sc-card-desc">Deep technical analysis of all Nifty 50 stocks — RSI, MACD, EMA, support &amp; resistance levels.</div>
-            <div class="sc-card-footer">
-              <span class="sc-card-tag">NSE · NIFTY 50</span>
-              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
-            </div>
+            <div class="sc-card-footer"><span class="sc-card-tag">NSE · NIFTY 50</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
           </div>
         </a>
 
-        <!-- CARD 3: Nifty Indices Scanner -->
+        <!-- 02: Nifty Indices Scanner -->
         <a class="sc-card" href="https://krishnateja08.github.io/Nifty_Indices_scanner/" onclick="go(event,'Nifty Indices Scanner')" style="--cc:var(--cyan);">
           <div class="brk"></div>
           <div class="sc-card-inner">
-            <div class="sc-card-topbar"></div>
-            <div class="sc-card-glow"></div>
+            <div class="sc-card-topbar"></div><div class="sc-card-glow"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap">
-                <div class="sc-card-ico">🔍</div>
-                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-2.5s;"></div>
-              </div>
+              <div class="sc-card-ico-wrap"><div class="sc-card-ico">🔍</div><div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-2.5s;"></div></div>
               <div class="sc-card-label">SCANNER</div>
             </div>
             <div class="sc-card-name">Nifty Indices Scanner</div>
             <div class="sc-card-desc">Real-time scanner across all Nifty indices — momentum, breakouts and sector rotation signals.</div>
-            <div class="sc-card-footer">
-              <span class="sc-card-tag">NSE · INDICES</span>
-              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
-            </div>
+            <div class="sc-card-footer"><span class="sc-card-tag">NSE · INDICES</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
           </div>
         </a>
 
-        <!-- CARD 4: FII/DII Pulse -->
+        <!-- 03: AlphaScreener — NEW -->
+        <a class="sc-card" href="https://krishnateja08.github.io/Alphascreener/" onclick="go(event,'AlphaScreener')" style="--cc:var(--cyan);">
+          <div class="new-badge">NEW</div>
+          <div class="brk"></div>
+          <div class="sc-card-inner">
+            <div class="sc-card-topbar"></div><div class="sc-card-glow"></div>
+            <div class="sc-card-top">
+              <div class="sc-card-ico-wrap"><div class="sc-card-ico">🎛️</div><div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-1s;"></div></div>
+              <div class="sc-card-label">SCREENER</div>
+            </div>
+            <div class="sc-card-name">AlphaScreener</div>
+            <div class="sc-card-desc">Multi-timeframe stock &amp; index screener — India &amp; USA, sector filters, Nifty 50, Bank Nifty &amp; Fin Nifty.</div>
+            <div class="sc-card-footer"><span class="sc-card-tag">NSE · USA · MULTI-TF</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
+          </div>
+        </a>
+
+        <!-- 04: FII/DII Pulse -->
         <a class="sc-card" href="https://krishnateja08.github.io/FII-DII_Pulse/" onclick="go(event,'FII/DII Pulse')" style="--cc:var(--cyan);">
           <div class="brk"></div>
           <div class="sc-card-inner">
-            <div class="sc-card-topbar"></div>
-            <div class="sc-card-glow"></div>
+            <div class="sc-card-topbar"></div><div class="sc-card-glow"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap">
-                <div class="sc-card-ico">🏛️</div>
-                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-5s;"></div>
-              </div>
+              <div class="sc-card-ico-wrap"><div class="sc-card-ico">🏛️</div><div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-5s;"></div></div>
               <div class="sc-card-label">INSTITUTIONAL</div>
             </div>
             <div class="sc-card-name">FII / DII Pulse</div>
             <div class="sc-card-desc">Sector-wise institutional activity — FII &amp; DII bulk/block deals with technical signals &amp; RSI.</div>
-            <div class="sc-card-footer">
-              <span class="sc-card-tag">NSE · BULK DEALS</span>
-              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
-            </div>
+            <div class="sc-card-footer"><span class="sc-card-tag">NSE · BULK DEALS</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
           </div>
         </a>
 
-      </div><!-- /sc-cards grid-2 -->
+      </div><!-- /sc-cards-4 -->
     </div>
   </div>
 
