@@ -1,5 +1,5 @@
 {
-  "updated": "2026-02-24T02:51:19Z",
+  "updated": "2026-02-24T02:56:28Z",
   "data": {
     "sp": {
       "price": 6837.75,
@@ -18,22 +18,22 @@
     },
     "inr": {
       "price": 90.97,
-      "chgPct": -0.02,
+      "chgPct": -0.03,
       "src": "GHA"
     },
     "crude": {
-      "price": 66.66,
-      "chgPct": 1.65,
+      "price": 66.71,
+      "chgPct": 1.72,
       "src": "GHA"
     },
     "gold": {
-      "price": 5206.4,
-      "chgPct": 0.48,
+      "price": 5203.9,
+      "chgPct": 0.44,
       "src": "GHA"
     },
     "silver": {
-      "price": 86.85,
-      "chgPct": -0.18,
+      "price": 86.95,
+      "chgPct": -0.06,
       "src": "GHA"
     },
     "n50": {
@@ -63,7 +63,7 @@
     },
     "t_RELIANCE": {
       "price": 1428.0,
-      "chgPct": 0.61,
+      "chgPct": 1.47,
       "src": "GHA"
     },
     "t_HDFCBANK": {
@@ -108,7 +108,7 @@
     },
     "t_LT": {
       "price": 4418.1,
-      "chgPct": 0.87,
+      "chgPct": 3.42,
       "src": "GHA"
     },
     "u_AAPL": {
@@ -123,7 +123,7 @@
     },
     "u_NVDA": {
       "price": 191.55,
-      "chgPct": 0.9,
+      "chgPct": 2.22,
       "src": "GHA"
     },
     "u_AMZN": {
