@@ -24,7 +24,6 @@ html,body{
   font-weight:500;
   overflow-x:hidden;
   min-height:100vh;
-  /* prevent zoom on input tap on iOS */
   -webkit-text-size-adjust:100%;
 }
 
@@ -159,7 +158,6 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .mbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,var(--cyan),var(--pink),var(--yel),var(--pur),var(--cyan));opacity:.35;}
 
-/* India + Global rows */
 .mbar-row{
   display:flex;
   align-items:stretch;
@@ -260,8 +258,14 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .sc-head-right{text-align:right;flex-shrink:0;}
 .sc-head-status{font-family:'Orbitron',monospace;font-size:7.5px;color:var(--grn);display:flex;align-items:center;gap:4px;justify-content:flex-end;}
 .sc-head-nodes{font-size:8px;color:var(--t3);margin-top:2px;font-family:'Orbitron',monospace;letter-spacing:1px;}
+
+/* ══ CARDS GRID — default 3-col, Group 01 uses 2-col via class ══ */
 .sc-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
+.sc-cards.grid-2{grid-template-columns:repeat(2,1fr);}
+
 .sc-card{padding:14px;border-right:1px solid rgba(0,245,255,.07);cursor:pointer;position:relative;overflow:hidden;transition:background .2s;text-decoration:none;color:inherit;display:block;}
+.sc-cards.grid-2 .sc-card:nth-child(2n){border-right:none;}
+.sc-cards.grid-2 .sc-card:nth-child(n+3){border-top:1px solid rgba(0,245,255,.07);}
 .sc-card:last-child{border-right:none;}
 .sc-card:hover{background:rgba(0,245,255,.03);}
 .sc-card::before{content:'';position:absolute;inset:0;z-index:0;background:linear-gradient(180deg,transparent 0%,rgba(0,245,255,.025) 50%,transparent 100%);background-size:100% 40px;opacity:0;transition:opacity .25s;animation:scanmove 2s linear infinite;}
@@ -332,9 +336,9 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
 @keyframes spin{to{transform:rotate(360deg)}}
 .ltxt{font-family:'Orbitron',sans-serif;font-size:8px;color:var(--t3);letter-spacing:3px}
 
-/* ═══════════════════════════════════════════════
-   RESPONSIVE BREAKPOINTS — Mobile-First Approach
-   ═══════════════════════════════════════════════ */
+/* ═══════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   ═══════════════════════════════════════ */
 
 /* ── Desktop large (1280px+) ── */
 @media(min-width:1280px){
@@ -353,6 +357,8 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .groups{margin:14px 18px 18px;}
   .sec{padding:11px 18px 9px;}
   footer{padding:9px 18px;}
+  /* Group 01 2-col: can be wider on big screens */
+  .sc-cards.grid-2{grid-template-columns:repeat(2,1fr);}
 }
 
 /* ── Tablet landscape (960–1279px) ── */
@@ -361,49 +367,43 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .wc-sep.hide-lg{display:none;}
   .wc-time{font-size:12px;}
   .mbar-item{min-width:95px;}
+  /* Group 01 stays 2-col on tablet land */
+  .sc-cards.grid-2{grid-template-columns:repeat(2,1fr);}
 }
 
 /* ── Tablet portrait (600–959px) ── */
 @media(max-width:959px){
   .stats{grid-template-columns:repeat(2,1fr);}
+  /* All groups go 2-col on tablet */
   .sc-cards{grid-template-columns:repeat(2,1fr);}
-  /* hide less important clocks */
+  .sc-cards .sc-card:nth-child(2n){border-right:none;}
+  .sc-cards .sc-card:nth-child(n+3){border-top:1px solid rgba(0,245,255,.07);}
+  /* grid-2 keeps its even 2-col */
+  .sc-cards.grid-2{grid-template-columns:repeat(2,1fr);}
   .wc#wc-hkt,.wc#wc-jst{display:none;}
   .wc-sep.hide-md{display:none;}
 }
 
 /* ── Mobile landscape / small tablet (600–767px) ── */
 @media(max-width:767px){
-  /* Header: stack brand + clocks */
-  header{
-    flex-wrap:wrap;
-    padding:8px 12px 6px;
-    gap:6px;
-  }
+  header{flex-wrap:wrap;padding:8px 12px 6px;gap:6px;}
   .brand{order:1;flex:1;}
   .hright{order:2;}
-  .wclocks{
-    order:3;
-    width:100%;
-    justify-content:flex-start;
-    padding:5px 0 2px;
-    border-top:1px solid rgba(0,245,255,.07);
-  }
-  /* Cards go 2-col on tablet */
-  .sc-cards{grid-template-columns:repeat(2,1fr);}
-  .sc-card:nth-child(2){border-right:none;}
-  .sc-card:nth-child(3){border-top:1px solid rgba(0,245,255,.07);grid-column:1/-1;border-right:none;}
+  .wclocks{order:3;width:100%;justify-content:flex-start;padding:5px 0 2px;border-top:1px solid rgba(0,245,255,.07);}
+  /* All grids go 2-col */
+  .sc-cards,.sc-cards.grid-2{grid-template-columns:repeat(2,1fr);}
+  .sc-cards .sc-card:nth-child(2n),
+  .sc-cards.grid-2 .sc-card:nth-child(2n){border-right:none;}
+  .sc-cards .sc-card:nth-child(n+3),
+  .sc-cards.grid-2 .sc-card:nth-child(n+3){border-top:1px solid rgba(0,245,255,.07);}
 }
 
 /* ── Mobile (up to 599px) ── */
 @media(max-width:599px){
-
-  /* Topbar — tighten */
   .tb{padding:3px 10px;font-size:7.5px;}
   .tb-l{font-size:7px;letter-spacing:1px;}
   .tb-r{gap:8px;font-size:7px;}
 
-  /* Header */
   header{padding:8px 10px 6px;gap:6px;}
   .brand{gap:8px;}
   .logo{width:34px;height:34px;font-size:15px;}
@@ -413,13 +413,7 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .pill.p{display:none;}
   .pill{padding:3px 6px;font-size:6.5px;}
 
-  /* World clocks — scrollable row, show 5 clocks */
-  .wclocks{
-    gap:2px;
-    padding:4px 0 2px;
-    flex-wrap:nowrap;
-    overflow-x:auto;
-  }
+  .wclocks{gap:2px;padding:4px 0 2px;flex-wrap:nowrap;overflow-x:auto;}
   .wc#wc-hkt,.wc#wc-jst{display:none;}
   .wc{min-width:54px;padding:3px 6px;}
   .wc-flag{font-size:7px;}
@@ -429,7 +423,6 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .wc-status-dot{width:3px;height:3px;top:3px;right:3px;}
   .wc-sep{height:18px;}
 
-  /* Market bar — vertical stacked rows, horizontal scroll inside */
   .mbar-label{width:28px;padding:5px 4px;}
   .mbar-label-flag{font-size:10px;}
   .mbar-label-txt{font-size:4.5px;}
@@ -438,26 +431,21 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .mbar-chg{font-size:8px;}
   .mbar-name{font-size:6px;letter-spacing:1px;}
 
-  /* Ticker — hide on smallest screens */
   .tkr{display:none;}
 
-  /* Stats — 2x2 grid */
   .stats{grid-template-columns:repeat(2,1fr);}
   .sb{padding:8px 10px;}
   .sb .l{font-size:6.5px;letter-spacing:1.5px;}
   .sb .v{font-size:12px;}
   .sb .s{font-size:8px;}
 
-  /* Section bar */
   .sec{padding:8px 10px;}
   .sec-txt{font-size:7px;letter-spacing:1.5px;}
   .sec-bdg{font-size:6.5px;padding:2px 6px;}
 
-  /* Groups */
   .groups{margin:8px 8px 12px;}
   .sc-group{margin-bottom:10px;}
 
-  /* Group header */
   .sc-head{padding:8px 10px;gap:8px;}
   .sc-head-hex{width:30px;height:30px;font-size:13px;}
   .sc-head-tag{display:none;}
@@ -465,13 +453,18 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .sc-head-status{font-size:7px;}
   .sc-head-nodes{font-size:7.5px;}
 
-  /* Cards — single column on mobile */
-  .sc-cards{grid-template-columns:1fr;}
+  /* Single column on mobile for ALL grids */
+  .sc-cards,.sc-cards.grid-2{grid-template-columns:1fr;}
   .sc-card{
     border-right:none;
     border-bottom:1px solid rgba(0,245,255,.07);
     padding:12px;
   }
+  /* Reset 2n / n+3 overrides for single col */
+  .sc-cards .sc-card:nth-child(2n),
+  .sc-cards.grid-2 .sc-card:nth-child(2n){border-right:none;}
+  .sc-cards .sc-card:nth-child(n+3),
+  .sc-cards.grid-2 .sc-card:nth-child(n+3){border-top:none;}
   .sc-card:last-child{border-bottom:none;}
   .sc-card-topbar{margin:-12px -12px 10px;}
   .sc-card-name{font-size:11px;}
@@ -481,16 +474,13 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .sc-card-ico{font-size:16px;}
   .sc-card-ico-wrap{width:30px;height:30px;}
 
-  /* Footer */
   footer{padding:7px 10px;flex-direction:column;gap:3px;}
   .fl,.fr{font-size:6.5px;letter-spacing:1px;}
   .fr{display:none;}
 
-  /* Float back */
   #floatback{bottom:14px;right:12px;padding:8px 12px;font-size:8px;}
   #floatback .kbhint{display:none;}
 
-  /* Viewer bar */
   #vbar{padding:5px 10px;gap:8px;}
   #vtitle{font-size:8.5px;}
   #vopen{font-size:7px;padding:4px 8px;}
@@ -544,16 +534,14 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
 
 <!-- ══ HEADER ══ -->
 <header>
-  <!-- BRAND -->
   <div class="brand">
     <div class="logo">📊</div>
     <div>
       <div class="bname">NIFTY Indian <span>Markets HUB</span></div>
-      <div class="bsub">Intelligence Hub · 8 Nodes Active</div>
+      <div class="bsub">Intelligence Hub · 9 Nodes Active</div>
     </div>
   </div>
 
-  <!-- WORLD CLOCK STRIP -->
   <div class="wclocks" id="wclocks">
     <div class="wc" id="wc-ist">
       <div class="wc-flag">🇮🇳</div>
@@ -612,17 +600,15 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
     </div>
   </div>
 
-  <!-- RIGHT PILLS -->
   <div class="hright">
     <div class="pill g"><span class="dot"></span>ALL LIVE</div>
     <div class="pill p">NSE · BSE · NYSE</div>
   </div>
 </header>
 
-<!-- ══ LIVE MARKET BAR — two rows (India / Global) ══ -->
+<!-- ══ LIVE MARKET BAR ══ -->
 <div class="mbar" id="mbar">
   <div class="mbar-updated" id="mbar-ts"></div>
-  <!-- India row -->
   <div class="mbar-row">
     <div class="mbar-label india">
       <div class="mbar-label-flag">🇮🇳</div>
@@ -661,7 +647,6 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
       </div>
     </div>
   </div>
-  <!-- Global row -->
   <div class="mbar-row">
     <div class="mbar-label global">
       <div class="mbar-label-flag">🌐</div>
@@ -719,9 +704,9 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
 
 <!-- ══ STATS ══ -->
 <div class="stats">
-  <div class="sb" style="--sc:#00f5ff;--sg:'08'">
+  <div class="sb" style="--sc:#00f5ff;--sg:'09'">
     <div class="l">Nodes Online</div>
-    <div class="v">08</div>
+    <div class="v">09</div>
     <div class="s">All dashboards active</div>
   </div>
   <div class="sb" style="--sc:#00ff88;--sg:'IN'">
@@ -745,13 +730,15 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
 <div class="sec">
   <div class="sec-bar"></div>
   <div class="sec-txt">▶ Select Dashboard Node</div>
-  <div class="sec-bdg">8/8 ONLINE</div>
+  <div class="sec-bdg">9/9 ONLINE</div>
 </div>
 
 <!-- ══ GROUPED PODS ══ -->
 <div class="groups">
 
-  <!-- GROUP 1: NIFTY INTELLIGENCE -->
+  <!-- ══════════════════════════════════════════════
+       GROUP 1: NIFTY INTELLIGENCE — 4 cards, 2×2 grid
+       ══════════════════════════════════════════════ -->
   <div class="sc-group" style="--ga:rgba(0,245,255,.22);--gb:rgba(0,245,255,.04);--gc:var(--cyan);">
     <div class="sc-inner">
       <div class="sc-head">
@@ -761,55 +748,109 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
           <div class="sc-head-name" style="color:var(--cyan);">NIFTY INTELLIGENCE</div>
         </div>
         <div class="sc-head-right">
-          <div class="sc-head-status"><span class="dot"></span>3 NODES ONLINE</div>
+          <div class="sc-head-status"><span class="dot"></span>4 NODES ONLINE</div>
           <div class="sc-head-nodes">NSE · INDIA MARKETS</div>
         </div>
       </div>
-      <div class="sc-cards">
+
+      <!-- grid-2 class = 2-column layout -->
+      <div class="sc-cards grid-2">
+
+        <!-- CARD 1: AlphaScreener (NEW — added first) -->
+        <a class="sc-card" href="https://krishnateja08.github.io/Alphascreener/" onclick="go(event,'AlphaScreener')" style="--cc:var(--cyan);">
+          <div class="brk"></div>
+          <div class="sc-card-inner">
+            <div class="sc-card-topbar"></div>
+            <div class="sc-card-glow"></div>
+            <div class="sc-card-top">
+              <div class="sc-card-ico-wrap">
+                <div class="sc-card-ico">🎛️</div>
+                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-1s;"></div>
+              </div>
+              <div class="sc-card-label">SCREENER</div>
+            </div>
+            <div class="sc-card-name">AlphaScreener</div>
+            <div class="sc-card-desc">Multi-timeframe stock &amp; index screener — India &amp; USA, sector filters, Nifty 50, Bank Nifty &amp; Fin Nifty analysis.</div>
+            <div class="sc-card-footer">
+              <span class="sc-card-tag">NSE · USA · MULTI-TF</span>
+              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
+            </div>
+          </div>
+        </a>
+
+        <!-- CARD 2: Nifty 50 Analyzer -->
         <a class="sc-card" href="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" onclick="go(event,'Nifty 50 Analyzer')" style="--cc:var(--cyan);">
           <div class="brk"></div>
           <div class="sc-card-inner">
-            <div class="sc-card-topbar"></div><div class="sc-card-glow"></div>
+            <div class="sc-card-topbar"></div>
+            <div class="sc-card-glow"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap"><div class="sc-card-ico">📈</div><div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);"></div></div>
+              <div class="sc-card-ico-wrap">
+                <div class="sc-card-ico">📈</div>
+                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);"></div>
+              </div>
               <div class="sc-card-label">ANALYSIS</div>
             </div>
             <div class="sc-card-name">Nifty 50 Analyzer</div>
             <div class="sc-card-desc">Deep technical analysis of all Nifty 50 stocks — RSI, MACD, EMA, support &amp; resistance levels.</div>
-            <div class="sc-card-footer"><span class="sc-card-tag">NSE · NIFTY 50</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
+            <div class="sc-card-footer">
+              <span class="sc-card-tag">NSE · NIFTY 50</span>
+              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
+            </div>
           </div>
         </a>
+
+        <!-- CARD 3: Nifty Indices Scanner -->
         <a class="sc-card" href="https://krishnateja08.github.io/Nifty_Indices_scanner/" onclick="go(event,'Nifty Indices Scanner')" style="--cc:var(--cyan);">
           <div class="brk"></div>
           <div class="sc-card-inner">
-            <div class="sc-card-topbar"></div><div class="sc-card-glow"></div>
+            <div class="sc-card-topbar"></div>
+            <div class="sc-card-glow"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap"><div class="sc-card-ico">🔍</div><div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-2.5s;"></div></div>
+              <div class="sc-card-ico-wrap">
+                <div class="sc-card-ico">🔍</div>
+                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-2.5s;"></div>
+              </div>
               <div class="sc-card-label">SCANNER</div>
             </div>
             <div class="sc-card-name">Nifty Indices Scanner</div>
             <div class="sc-card-desc">Real-time scanner across all Nifty indices — momentum, breakouts and sector rotation signals.</div>
-            <div class="sc-card-footer"><span class="sc-card-tag">NSE · INDICES</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
+            <div class="sc-card-footer">
+              <span class="sc-card-tag">NSE · INDICES</span>
+              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
+            </div>
           </div>
         </a>
+
+        <!-- CARD 4: FII/DII Pulse -->
         <a class="sc-card" href="https://krishnateja08.github.io/FII-DII_Pulse/" onclick="go(event,'FII/DII Pulse')" style="--cc:var(--cyan);">
           <div class="brk"></div>
           <div class="sc-card-inner">
-            <div class="sc-card-topbar"></div><div class="sc-card-glow"></div>
+            <div class="sc-card-topbar"></div>
+            <div class="sc-card-glow"></div>
             <div class="sc-card-top">
-              <div class="sc-card-ico-wrap"><div class="sc-card-ico">🏛️</div><div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-5s;"></div></div>
+              <div class="sc-card-ico-wrap">
+                <div class="sc-card-ico">🏛️</div>
+                <div class="sc-card-ring" style="border-color:rgba(0,245,255,.35);animation-delay:-5s;"></div>
+              </div>
               <div class="sc-card-label">INSTITUTIONAL</div>
             </div>
             <div class="sc-card-name">FII / DII Pulse</div>
             <div class="sc-card-desc">Sector-wise institutional activity — FII &amp; DII bulk/block deals with technical signals &amp; RSI.</div>
-            <div class="sc-card-footer"><span class="sc-card-tag">NSE · BULK DEALS</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
+            <div class="sc-card-footer">
+              <span class="sc-card-tag">NSE · BULK DEALS</span>
+              <div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div>
+            </div>
           </div>
         </a>
-      </div>
+
+      </div><!-- /sc-cards grid-2 -->
     </div>
   </div>
 
-  <!-- GROUP 2: OPTIONS COMMAND -->
+  <!-- ══════════════════════════
+       GROUP 2: OPTIONS COMMAND
+       ══════════════════════════ -->
   <div class="sc-group" style="--ga:rgba(255,0,144,.22);--gb:rgba(255,0,144,.04);--gc:var(--pink);">
     <div class="sc-inner">
       <div class="sc-head" style="background:linear-gradient(90deg,rgba(6,4,15,.99),rgba(6,4,15,.85));">
@@ -879,7 +920,9 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
     </div>
   </div>
 
-  <!-- GROUP 3: GLOBAL INTELLIGENCE -->
+  <!-- ════════════════════════════
+       GROUP 3: GLOBAL INTELLIGENCE
+       ════════════════════════════ -->
   <div class="sc-group" style="--ga:rgba(255,224,0,.2);--gb:rgba(255,224,0,.04);--gc:var(--yel);">
     <div class="sc-inner">
       <div class="sc-head" style="background:linear-gradient(90deg,rgba(6,4,15,.99),rgba(6,4,15,.85));">
@@ -940,7 +983,7 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
 
 <!-- ══ FOOTER ══ -->
 <footer>
-  <div class="fl"><span>NIFTY INDIAN MARKETS HUB</span> // CYBER_NEON v2.1 // 8_NODES_ACTIVE</div>
+  <div class="fl"><span>NIFTY INDIAN MARKETS HUB</span> // CYBER_NEON v2.2 // 9_NODES_ACTIVE</div>
   <div class="fr">SELECT_NODE → OPEN // BACK → RETURN_TO_HUB</div>
 </footer>
 </div><!-- /#app -->
@@ -963,7 +1006,7 @@ function tick(){
   var t=new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());
   document.getElementById('ct').textContent=t;
 }
-tick(); setInterval(tick,1000);
+tick();setInterval(tick,1000);
 
 /* ══ WORLD CLOCKS ══ */
 var ZONES=[
@@ -975,14 +1018,12 @@ var ZONES=[
   {id:'est',timeId:'wt-est',zoneId:'wz-est',tz:'America/New_York',label:'EST',marketOpen:{h:9,m:30},marketClose:{h:16,m:0}},
   {id:'jst',timeId:'wt-jst',zoneId:null,tz:'Asia/Tokyo',label:'JST',marketOpen:{h:9,m:0},marketClose:{h:15,m:30}}
 ];
-
 function isMarketOpen(zone){
   var d=new Date(new Date().toLocaleString('en-US',{timeZone:zone.tz}));
   var day=d.getDay();if(day===0||day===6)return false;
   var mins=d.getHours()*60+d.getMinutes();
-  return mins>=zone.marketOpen.h*60+zone.marketOpen.m && mins<zone.marketClose.h*60+zone.marketClose.m;
+  return mins>=zone.marketOpen.h*60+zone.marketOpen.m&&mins<zone.marketClose.h*60+zone.marketClose.m;
 }
-
 function tickWorldClocks(){
   var now=new Date();
   ZONES.forEach(function(zone){
