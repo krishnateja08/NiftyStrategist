@@ -96,44 +96,94 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .bname span{color:var(--pink);text-shadow:0 0 20px rgba(255,0,144,.5)}
 .bsub{font-size:8px;color:var(--t3);letter-spacing:2px;margin-top:2px;font-family:'Orbitron',sans-serif}
 
-/* ══ WORLD CLOCK STRIP ══ */
+/* ══ WORLD CLOCK — OPTION C (Table Grid) ══ */
 .wclocks{
   flex:1;
-  display:flex;align-items:center;justify-content:center;
-  gap:3px;
-  padding:0 10px;
+  display:flex;align-items:stretch;
   overflow-x:auto;
   overflow-y:hidden;
   scrollbar-width:none;
   min-width:0;
+  background:rgba(0,0,0,.45);
+  border:1px solid rgba(0,245,255,.15);
 }
 .wclocks::-webkit-scrollbar{display:none;}
 
+/* each city column */
 .wc{
-  display:flex;flex-direction:column;align-items:center;
-  padding:4px 8px;
-  border:1px solid rgba(0,245,255,.1);
-  background:rgba(0,245,255,.03);
-  position:relative;
-  flex-shrink:0;
-  clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);
-  transition:background .2s,border-color .2s;
-  min-width:64px;
+  display:flex;flex-direction:column;
+  min-width:90px;flex-shrink:0;
+  border-right:1px solid rgba(0,245,255,.08);
   cursor:default;
+  transition:background .2s;
+  position:relative;
 }
-.wc:hover{background:rgba(0,245,255,.07);border-color:rgba(0,245,255,.3);}
-.wc.active-market{border-color:rgba(0,255,136,.35);background:rgba(0,255,136,.04);}
-.wc.active-market .wc-zone{color:var(--grn);}
-.wc.active-market::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--grn);box-shadow:0 0 6px var(--grn);}
-.wc.closed-market{border-color:rgba(255,34,85,.2);background:rgba(255,34,85,.02);}
-.wc.closed-market .wc-zone{color:rgba(255,80,100,.6);}
-.wc-zone{font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1.5px;color:var(--t3);margin-bottom:2px;white-space:nowrap;text-transform:uppercase;}
-.wc-time{font-family:'Share Tech Mono',monospace;font-size:12px;font-weight:700;color:var(--tx);line-height:1;white-space:nowrap;text-shadow:0 0 8px rgba(0,245,255,.25);}
-.wc-label{font-family:'Orbitron',monospace;font-size:5px;letter-spacing:1.5px;color:var(--t3);margin-top:2px;white-space:nowrap;}
-.wc-flag{font-size:8px;margin-bottom:1px;line-height:1;}
-.wc-status-dot{position:absolute;top:4px;right:4px;width:4px;height:4px;border-radius:50%;background:var(--grn);box-shadow:0 0 5px var(--grn);animation:blink 1.4s ease-in-out infinite;}
-.wc.closed-market .wc-status-dot{background:var(--red);box-shadow:0 0 5px var(--red);animation:none;opacity:.5;}
-.wc-sep{width:1px;height:24px;background:linear-gradient(180deg,transparent,rgba(0,245,255,.2),transparent);flex-shrink:0;}
+.wc:last-child{border-right:none;}
+.wc:hover{background:rgba(0,245,255,.04);}
+
+/* active market highlight */
+.wc.active-market{background:rgba(0,255,136,.04);}
+.wc.active-market .wc-top{border-bottom-color:rgba(0,255,136,.25);}
+.wc.active-market .wc-country{color:var(--grn);}
+.wc.active-market .wc-top::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--grn);box-shadow:0 0 8px var(--grn);
+}
+.wc.closed-market .wc-country{color:rgba(200,220,240,.55);}
+
+/* top row: flag + country + status dot */
+.wc-top{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 10px 5px;
+  border-bottom:1px solid rgba(0,245,255,.08);
+  position:relative;
+  flex:0 0 auto;
+}
+/* country name — clear, readable */
+.wc-country{
+  font-family:'Rajdhani',sans-serif;
+  font-size:12px;
+  font-weight:700;
+  color:#e8f4ff;
+  letter-spacing:.3px;
+  white-space:nowrap;
+  flex:1;
+  line-height:1;
+}
+.wc-flag{font-size:13px;flex-shrink:0;line-height:1;}
+
+/* status dot */
+.wc-status-dot{
+  width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-left:auto;
+}
+.wc.active-market .wc-status-dot{
+  background:var(--grn);box-shadow:0 0 6px var(--grn);
+  animation:blink 1.4s ease-in-out infinite;
+}
+.wc.closed-market .wc-status-dot{
+  background:rgba(255,34,85,.4);
+}
+
+/* bottom row: time + timezone */
+.wc-bot{
+  display:flex;align-items:baseline;justify-content:space-between;
+  padding:5px 10px 7px;gap:6px;
+}
+.wc-time{
+  font-family:'Share Tech Mono',monospace;
+  font-size:14px;
+  color:var(--cyan);
+  text-shadow:0 0 8px rgba(0,245,255,.3);
+  line-height:1;
+  white-space:nowrap;
+}
+.wc-zone{
+  font-family:'Orbitron',monospace;
+  font-size:6px;
+  letter-spacing:1.5px;
+  color:rgba(0,245,255,.45);
+  white-space:nowrap;
+}
 
 /* ══ HEADER RIGHT PILLS ══ */
 .hright{display:flex;gap:5px;flex-shrink:0;align-items:center;}
@@ -259,7 +309,7 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .sc-head-status{font-family:'Orbitron',monospace;font-size:7.5px;color:var(--grn);display:flex;align-items:center;gap:4px;justify-content:flex-end;}
 .sc-head-nodes{font-size:8px;color:var(--t3);margin-top:2px;font-family:'Orbitron',monospace;letter-spacing:1px;}
 
-/* ══ CARDS — default 3-col ══ */
+/* ══ CARDS ══ */
 .sc-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
 .sc-cards-4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;}
 
@@ -291,7 +341,6 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .sc-card:hover .sc-card-btn{gap:8px;}
 .sc-card:hover .sc-card-btn-line{width:24px;}
 
-/* NEW badge */
 .new-badge{
   position:absolute;top:8px;right:8px;z-index:10;
   font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1.5px;
@@ -314,7 +363,6 @@ footer{
   box-shadow:0 0 20px rgba(0,245,255,.06);
 }
 
-/* ── Visitor counter bar inside footer ── */
 .vc-bar{
   display:flex;align-items:stretch;
   border-bottom:1px solid rgba(0,245,255,.1);
@@ -355,13 +403,11 @@ footer{
   transition:all .4s;white-space:nowrap;}
 .vc-cell-sub{font-family:'Orbitron',monospace;font-size:5px;letter-spacing:1.5px;color:var(--t3);white-space:nowrap;}
 
-/* live pulse dot */
 .vc-pulse{display:inline-block;width:6px;height:6px;border-radius:50%;
   background:var(--grn);box-shadow:0 0 8px var(--grn);
   animation:blink 1.2s ease-in-out infinite;
   margin-right:3px;vertical-align:middle;flex-shrink:0;}
 
-/* right side: update time + source */
 .vc-right{
   margin-left:auto;flex-shrink:0;
   display:flex;flex-direction:column;align-items:flex-end;justify-content:center;
@@ -372,11 +418,9 @@ footer{
 .vc-upd span{color:var(--t2);}
 .vc-src{font-family:'Orbitron',monospace;font-size:5px;letter-spacing:1px;color:rgba(0,245,255,.2);}
 
-/* number update flash */
 @keyframes num-flash{0%{opacity:.3;transform:translateY(-4px)}100%{opacity:1;transform:translateY(0)}}
 .num-updated{animation:num-flash .35s ease;}
 
-/* ── Footer bottom row ── */
 .footer-bottom{
   padding:7px 14px;
   display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;
@@ -385,7 +429,7 @@ footer{
 .fl span{color:var(--cyan);text-shadow:0 0 8px rgba(0,245,255,.4)}
 .fr{font-size:7px;color:rgba(0,245,255,.45);letter-spacing:1px}
 
-/* ══ FLOATING CORNER BADGE (bottom-left) ══ */
+/* ══ FLOATING CORNER BADGE ══ */
 #vc-corner{
   position:fixed;bottom:20px;left:16px;z-index:9990;
   background:rgba(0,0,0,.92);
@@ -427,7 +471,7 @@ footer{
 @keyframes floatpulse{
   0%,100%{box-shadow:0 0 24px rgba(255,0,144,.6),0 0 48px rgba(255,0,144,.3)}
   50%{box-shadow:0 0 36px rgba(255,0,144,.9),0 0 64px rgba(255,0,144,.5)}}
-#floatback .kbhint{font-size:6px;opacity:.7;letter-spacing:1px;border:1px solid rgba(0,0,0,.3);padding:1px 4px;border-radius:2px;background:rgba(0,0,0,.2);}
+#floatback .kbhint{font-size:6px;opacity:.7;letter-spacing:1px;border:1px solid rgba(0,0,0,.3);padding:1px 4px;border-radius:2px;}
 
 /* ══ IFRAME VIEWER ══ */
 #viewer{position:fixed;inset:0;z-index:500;display:none;flex-direction:column;background:var(--bg);}
@@ -448,13 +492,12 @@ footer{
 .ltxt{font-family:'Orbitron',sans-serif;font-size:8px;color:var(--t3);letter-spacing:3px}
 
 /* ═══════════════════════════════════════════════
-   RESPONSIVE BREAKPOINTS
+   RESPONSIVE
    ═══════════════════════════════════════════════ */
 @media(min-width:1280px){
-  .wc{min-width:72px;padding:5px 10px;}
-  .wc-time{font-size:13px;}
-  .wc-zone{font-size:6.5px;}
-  .wc-flag{font-size:10px;}
+  .wc{min-width:100px;}
+  .wc-time{font-size:15px;}
+  .wc-country{font-size:13px;}
   .bname{font-size:15px;}
   .logo{width:46px;height:46px;font-size:20px;}
   .mbar-item{min-width:110px;}
@@ -469,12 +512,6 @@ footer{
   .vc-cell{min-width:110px;padding:9px 20px;}
   .vc-cell-val{font-size:20px;}
 }
-@media(max-width:1279px) and (min-width:960px){
-  .wc.hide-lg{display:none;}
-  .wc-sep.hide-lg{display:none;}
-  .wc-time{font-size:12px;}
-  .mbar-item{min-width:95px;}
-}
 @media(max-width:959px){
   .stats{grid-template-columns:repeat(2,1fr);}
   .sc-cards{grid-template-columns:repeat(2,1fr);}
@@ -484,7 +521,6 @@ footer{
   .sc-cards-4 .sc-card:nth-child(2n){border-right:none;}
   .sc-cards-4 .sc-card:nth-child(n+3){border-top:1px solid rgba(0,245,255,.07);}
   .wc#wc-hkt,.wc#wc-jst{display:none;}
-  .wc-sep.hide-md{display:none;}
   .vc-cell{min-width:90px;padding:7px 12px;}
   .vc-cell-val{font-size:16px;}
 }
@@ -492,7 +528,7 @@ footer{
   header{flex-wrap:wrap;padding:8px 12px 6px;gap:6px;}
   .brand{order:1;flex:1;}
   .hright{order:2;}
-  .wclocks{order:3;width:100%;justify-content:flex-start;padding:5px 0 2px;border-top:1px solid rgba(0,245,255,.07);}
+  .wclocks{order:3;width:100%;}
   .sc-cards{grid-template-columns:repeat(2,1fr);}
   .sc-cards-4{grid-template-columns:repeat(2,1fr);}
   .sc-card:nth-child(2n),.sc-cards-4 .sc-card:nth-child(2n){border-right:none;}
@@ -500,101 +536,36 @@ footer{
   #vc-corner{bottom:14px;left:10px;}
 }
 @media(max-width:599px){
-  .tb{padding:3px 10px;font-size:7.5px;}
-  .tb-l{font-size:7px;letter-spacing:1px;}
-  .tb-r{gap:8px;font-size:7px;}
-  header{padding:8px 10px 6px;gap:6px;}
+  .tb{padding:3px 10px;}
+  header{padding:8px 10px 6px;}
   .brand{gap:8px;}
   .logo{width:34px;height:34px;font-size:15px;}
   .bname{font-size:11px;letter-spacing:1px;}
   .bsub{display:none;}
-  .hright{gap:4px;}
   .pill.p{display:none;}
-  .pill{padding:3px 6px;font-size:6.5px;}
-  .wclocks{gap:2px;padding:4px 0 2px;flex-wrap:nowrap;overflow-x:auto;}
+  .wc{min-width:72px;}
+  .wc-time{font-size:12px;}
+  .wc-country{font-size:10px;}
+  .wc-flag{font-size:11px;}
   .wc#wc-hkt,.wc#wc-jst{display:none;}
-  .wc{min-width:54px;padding:3px 6px;}
-  .wc-flag{font-size:7px;}
-  .wc-time{font-size:10px;}
-  .wc-zone{font-size:5.5px;letter-spacing:1px;}
-  .wc-label{display:none;}
-  .wc-status-dot{width:3px;height:3px;top:3px;right:3px;}
-  .wc-sep{height:18px;}
-  .mbar-label{width:28px;padding:5px 4px;}
-  .mbar-label-flag{font-size:10px;}
-  .mbar-label-txt{font-size:4.5px;}
   .mbar-item{min-width:84px;padding:5px 10px;}
   .mbar-val{font-size:12px;}
-  .mbar-chg{font-size:8px;}
-  .mbar-name{font-size:6px;letter-spacing:1px;}
   .tkr{display:none;}
   .stats{grid-template-columns:repeat(2,1fr);}
-  .sb{padding:8px 10px;}
-  .sb .l{font-size:6.5px;letter-spacing:1.5px;}
-  .sb .v{font-size:12px;}
-  .sb .s{font-size:8px;}
-  .sec{padding:8px 10px;}
-  .sec-txt{font-size:7px;letter-spacing:1.5px;}
-  .sec-bdg{font-size:6.5px;padding:2px 6px;}
   .groups{margin:8px 8px 12px;}
-  .sc-group{margin-bottom:10px;}
-  .sc-head{padding:8px 10px;gap:8px;}
-  .sc-head-hex{width:30px;height:30px;font-size:13px;}
-  .sc-head-tag{display:none;}
-  .sc-head-name{font-size:10px;letter-spacing:1px;}
-  .sc-head-status{font-size:7px;}
-  .sc-head-nodes{font-size:7.5px;}
   .sc-cards,.sc-cards-4{grid-template-columns:1fr;}
   .sc-card{border-right:none;border-bottom:1px solid rgba(0,245,255,.07);padding:12px;}
-  .sc-card:last-child{border-bottom:none;}
-  .sc-card:nth-child(2n){border-right:none;}
-  .sc-card:nth-child(n+3){border-top:none;}
-  .sc-cards-4 .sc-card:nth-child(2n){border-right:none;}
-  .sc-cards-4 .sc-card:nth-child(n+3){border-top:none;}
-  .sc-card-topbar{margin:-12px -12px 10px;}
-  .sc-card-name{font-size:11px;}
-  .sc-card-desc{font-size:11px;margin-bottom:8px;}
-  .sc-card-tag{font-size:6px;}
-  .sc-card-btn{font-size:7.5px;}
-  .sc-card-ico{font-size:16px;}
-  .sc-card-ico-wrap{width:30px;height:30px;}
-  .footer-bottom{padding:7px 10px;flex-direction:column;gap:3px;}
-  .fl,.fr{font-size:6.5px;letter-spacing:1px;}
-  .fr{display:none;}
-  #floatback{bottom:14px;right:12px;padding:8px 12px;font-size:8px;}
-  #floatback .kbhint{display:none;}
-  #vbar{padding:5px 10px;gap:8px;}
-  #vtitle{font-size:8.5px;}
-  #vopen{font-size:7px;padding:4px 8px;}
-  #vclose{font-size:7px;padding:4px 10px;}
-  .vc-cell{min-width:78px;padding:6px 10px;}
-  .vc-cell-val{font-size:14px;}
-  .vc-cell-lbl{font-size:5px;}
-  .vc-cell-sub{display:none;}
-  .vc-label-cell{min-width:40px;padding:5px 6px;}
-  #vc-corner{bottom:12px;left:8px;min-width:130px;padding:7px 12px 7px;}
-  .vc-corner-big{font-size:17px;}
+  .footer-bottom{padding:7px 10px;flex-direction:column;}
+  #vc-corner{bottom:12px;left:8px;min-width:130px;}
 }
 @media(max-width:380px){
   .bname{font-size:10px;}
-  .wc{min-width:48px;}
-  .wc-time{font-size:9px;}
-  .mbar-item{min-width:76px;padding:4px 8px;}
-  .mbar-val{font-size:11px;}
-  .sc-card-name{font-size:10px;}
-  .sc-head-name{font-size:9px;}
-  header{padding:6px 8px;}
-  .logo{width:30px;height:30px;font-size:13px;}
-  .pill.g .dot{display:none;}
+  .wc-time{font-size:11px;}
+  .wc-country{font-size:9px;}
 }
 @media(hover:none){
   .sc-card:hover{background:transparent;}
-  .sc-card:hover .sc-card-topbar{opacity:.5;}
-  .sc-card:hover .brk{width:10px;height:10px;bottom:10px;right:10px;border-color:var(--t3);}
-  .sc-card:hover .sc-card-btn{gap:5px;}
-  .sc-card:hover .sc-card-btn-line{width:16px;}
   .sc-card:active{background:rgba(0,245,255,.04);}
-  .wc:hover{background:rgba(0,245,255,.03);}
 }
 @supports(padding-bottom:env(safe-area-inset-bottom)){
   footer{padding-bottom:env(safe-area-inset-bottom);}
@@ -626,61 +597,84 @@ footer{
     </div>
   </div>
 
+  <!-- ══ WORLD CLOCK — OPTION C ══ -->
   <div class="wclocks" id="wclocks">
     <div class="wc" id="wc-ist">
-      <div class="wc-flag">🇮🇳</div>
-      <div class="wc-zone">IST</div>
-      <div class="wc-time" id="wt-ist">--:--:--</div>
-      <div class="wc-label">INDIA</div>
-      <div class="wc-status-dot"></div>
+      <div class="wc-top">
+        <div class="wc-flag">🇮🇳</div>
+        <div class="wc-country">INDIA</div>
+        <div class="wc-status-dot"></div>
+      </div>
+      <div class="wc-bot">
+        <div class="wc-time" id="wt-ist">--:--:--</div>
+        <div class="wc-zone">IST</div>
+      </div>
     </div>
-    <div class="wc-sep"></div>
     <div class="wc" id="wc-sgt">
-      <div class="wc-flag">🇸🇬</div>
-      <div class="wc-zone">SGT</div>
-      <div class="wc-time" id="wt-sgt">--:--:--</div>
-      <div class="wc-label">SGX NIFTY</div>
-      <div class="wc-status-dot"></div>
+      <div class="wc-top">
+        <div class="wc-flag">🇸🇬</div>
+        <div class="wc-country">SINGAPORE</div>
+        <div class="wc-status-dot"></div>
+      </div>
+      <div class="wc-bot">
+        <div class="wc-time" id="wt-sgt">--:--:--</div>
+        <div class="wc-zone">SGT</div>
+      </div>
     </div>
-    <div class="wc-sep"></div>
     <div class="wc" id="wc-hkt">
-      <div class="wc-flag">🇭🇰</div>
-      <div class="wc-zone">HKT</div>
-      <div class="wc-time" id="wt-hkt">--:--:--</div>
-      <div class="wc-label">HANG SENG</div>
-      <div class="wc-status-dot"></div>
+      <div class="wc-top">
+        <div class="wc-flag">🇭🇰</div>
+        <div class="wc-country">HONG KONG</div>
+        <div class="wc-status-dot"></div>
+      </div>
+      <div class="wc-bot">
+        <div class="wc-time" id="wt-hkt">--:--:--</div>
+        <div class="wc-zone">HKT</div>
+      </div>
     </div>
-    <div class="wc-sep"></div>
     <div class="wc" id="wc-gmt">
-      <div class="wc-flag">🇬🇧</div>
-      <div class="wc-zone" id="wz-gmt">GMT</div>
-      <div class="wc-time" id="wt-gmt">--:--:--</div>
-      <div class="wc-label">LONDON</div>
-      <div class="wc-status-dot"></div>
+      <div class="wc-top">
+        <div class="wc-flag">🇬🇧</div>
+        <div class="wc-country">LONDON</div>
+        <div class="wc-status-dot"></div>
+      </div>
+      <div class="wc-bot">
+        <div class="wc-time" id="wt-gmt">--:--:--</div>
+        <div class="wc-zone" id="wz-gmt">GMT</div>
+      </div>
     </div>
-    <div class="wc-sep"></div>
     <div class="wc" id="wc-cet">
-      <div class="wc-flag">🇪🇺</div>
-      <div class="wc-zone" id="wz-cet">CET</div>
-      <div class="wc-time" id="wt-cet">--:--:--</div>
-      <div class="wc-label">FRANKFURT</div>
-      <div class="wc-status-dot"></div>
+      <div class="wc-top">
+        <div class="wc-flag">🇪🇺</div>
+        <div class="wc-country">FRANKFURT</div>
+        <div class="wc-status-dot"></div>
+      </div>
+      <div class="wc-bot">
+        <div class="wc-time" id="wt-cet">--:--:--</div>
+        <div class="wc-zone" id="wz-cet">CET</div>
+      </div>
     </div>
-    <div class="wc-sep"></div>
     <div class="wc" id="wc-est">
-      <div class="wc-flag">🇺🇸</div>
-      <div class="wc-zone" id="wz-est">EST</div>
-      <div class="wc-time" id="wt-est">--:--:--</div>
-      <div class="wc-label">NEW YORK</div>
-      <div class="wc-status-dot"></div>
+      <div class="wc-top">
+        <div class="wc-flag">🇺🇸</div>
+        <div class="wc-country">NEW YORK</div>
+        <div class="wc-status-dot"></div>
+      </div>
+      <div class="wc-bot">
+        <div class="wc-time" id="wt-est">--:--:--</div>
+        <div class="wc-zone" id="wz-est">EST</div>
+      </div>
     </div>
-    <div class="wc-sep"></div>
     <div class="wc" id="wc-jst">
-      <div class="wc-flag">🇯🇵</div>
-      <div class="wc-zone">JST</div>
-      <div class="wc-time" id="wt-jst">--:--:--</div>
-      <div class="wc-label">TOKYO</div>
-      <div class="wc-status-dot"></div>
+      <div class="wc-top">
+        <div class="wc-flag">🇯🇵</div>
+        <div class="wc-country">TOKYO</div>
+        <div class="wc-status-dot"></div>
+      </div>
+      <div class="wc-bot">
+        <div class="wc-time" id="wt-jst">--:--:--</div>
+        <div class="wc-zone">JST</div>
+      </div>
     </div>
   </div>
 
@@ -820,7 +814,7 @@ footer{
 <!-- ══ GROUPED PODS ══ -->
 <div class="groups">
 
-  <!-- GROUP 1: NIFTY INTELLIGENCE -->
+  <!-- GROUP 1 -->
   <div class="sc-group" style="--ga:rgba(0,245,255,.22);--gb:rgba(0,245,255,.04);--gc:var(--cyan);">
     <div class="sc-inner">
       <div class="sc-head">
@@ -892,7 +886,7 @@ footer{
     </div>
   </div>
 
-  <!-- GROUP 2: OPTIONS COMMAND -->
+  <!-- GROUP 2 -->
   <div class="sc-group" style="--ga:rgba(255,0,144,.22);--gb:rgba(255,0,144,.04);--gc:var(--pink);">
     <div class="sc-inner">
       <div class="sc-head" style="background:linear-gradient(90deg,rgba(6,4,15,.99),rgba(6,4,15,.85));">
@@ -962,7 +956,7 @@ footer{
     </div>
   </div>
 
-  <!-- GROUP 3: GLOBAL INTELLIGENCE -->
+  <!-- GROUP 3 -->
   <div class="sc-group" style="--ga:rgba(255,224,0,.2);--gb:rgba(255,224,0,.04);--gc:var(--yel);">
     <div class="sc-inner">
       <div class="sc-head" style="background:linear-gradient(90deg,rgba(6,4,15,.99),rgba(6,4,15,.85));">
@@ -1019,62 +1013,49 @@ footer{
     </div>
   </div>
 
-</div><!-- /groups -->
+</div>
 
-<!-- ══ FOOTER WITH VISITOR COUNTER ══ -->
+<!-- ══ FOOTER ══ -->
 <footer>
-  <!-- Visitor Counter Bar -->
   <div class="vc-bar">
     <div class="vc-label-cell">
       <div class="vc-label-icon">👁️</div>
       <div class="vc-label-txt">HUB<br>STATS</div>
     </div>
-
-    <!-- Live Now -->
     <div class="vc-cell" style="--vc:var(--grn);">
       <div class="vc-cell-lbl"><span class="vc-pulse"></span>Live Now</div>
       <div class="vc-cell-val" id="vc-live">—</div>
       <div class="vc-cell-sub">ACTIVE SESSIONS</div>
     </div>
-
-    <!-- Today -->
     <div class="vc-cell" style="--vc:var(--cyan);">
       <div class="vc-cell-lbl">Today</div>
       <div class="vc-cell-val" id="vc-today">—</div>
       <div class="vc-cell-sub">VISITS TODAY</div>
     </div>
-
-    <!-- Total -->
     <div class="vc-cell" style="--vc:var(--pink);">
       <div class="vc-cell-lbl">Total</div>
       <div class="vc-cell-val" id="vc-total">—</div>
       <div class="vc-cell-sub">ALL TIME</div>
     </div>
-
-    <!-- Peak -->
     <div class="vc-cell" style="--vc:var(--yel);">
       <div class="vc-cell-lbl">Peak Today</div>
       <div class="vc-cell-val" id="vc-peak">—</div>
       <div class="vc-cell-sub">MAX CONCURRENT</div>
     </div>
-
-    <!-- Right meta -->
     <div class="vc-right">
       <div class="vc-upd">UPD <span id="vc-ts">--:--</span> IST</div>
       <div class="vc-src">COUNTAPI · LIVE</div>
     </div>
   </div>
-
-  <!-- Bottom text row -->
   <div class="footer-bottom">
     <div class="fl"><span>NIFTY INDIAN MARKETS HUB</span> // CYBER_NEON v2.2 // 9_NODES_ACTIVE</div>
     <div class="fr">SELECT_NODE → OPEN // BACK → RETURN_TO_HUB</div>
   </div>
 </footer>
 
-</div><!-- /#app -->
+</div>
 
-<!-- ══ FLOATING CORNER VISITOR BADGE ══ -->
+<!-- ══ FLOATING CORNER BADGE ══ -->
 <div id="vc-corner">
   <div class="vc-corner-title">👁 Hub Visitors</div>
   <div class="vc-corner-main">
@@ -1108,33 +1089,31 @@ footer{
 </div>
 
 <script>
-/* ══════════════════════════════════════════════════════════
-   IST Clock
-══════════════════════════════════════════════════════════ */
+/* ══ IST Clock ══ */
 function tick(){
   var t=new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());
   document.getElementById('ct').textContent=t;
 }
 tick();setInterval(tick,1000);
 
-/* ══════════════════════════════════════════════════════════
-   WORLD CLOCKS
-══════════════════════════════════════════════════════════ */
+/* ══ WORLD CLOCKS — Option C ══ */
 var ZONES=[
-  {id:'ist',timeId:'wt-ist',zoneId:null,tz:'Asia/Kolkata',label:'IST',marketOpen:{h:9,m:15},marketClose:{h:15,m:30}},
-  {id:'sgt',timeId:'wt-sgt',zoneId:null,tz:'Asia/Singapore',label:'SGT',marketOpen:{h:6,m:30},marketClose:{h:23,m:30}},
-  {id:'hkt',timeId:'wt-hkt',zoneId:null,tz:'Asia/Hong_Kong',label:'HKT',marketOpen:{h:9,m:30},marketClose:{h:16,m:0}},
-  {id:'gmt',timeId:'wt-gmt',zoneId:'wz-gmt',tz:'Europe/London',label:'GMT',marketOpen:{h:8,m:0},marketClose:{h:16,m:30}},
-  {id:'cet',timeId:'wt-cet',zoneId:'wz-cet',tz:'Europe/Berlin',label:'CET',marketOpen:{h:9,m:0},marketClose:{h:17,m:30}},
-  {id:'est',timeId:'wt-est',zoneId:'wz-est',tz:'America/New_York',label:'EST',marketOpen:{h:9,m:30},marketClose:{h:16,m:0}},
-  {id:'jst',timeId:'wt-jst',zoneId:null,tz:'Asia/Tokyo',label:'JST',marketOpen:{h:9,m:0},marketClose:{h:15,m:30}}
+  {id:'ist', timeId:'wt-ist', zoneId:null,     tz:'Asia/Kolkata',    marketOpen:{h:9,m:15}, marketClose:{h:15,m:30}},
+  {id:'sgt', timeId:'wt-sgt', zoneId:null,     tz:'Asia/Singapore',  marketOpen:{h:6,m:30}, marketClose:{h:23,m:30}},
+  {id:'hkt', timeId:'wt-hkt', zoneId:null,     tz:'Asia/Hong_Kong',  marketOpen:{h:9,m:30}, marketClose:{h:16,m:0}},
+  {id:'gmt', timeId:'wt-gmt', zoneId:'wz-gmt', tz:'Europe/London',   marketOpen:{h:8,m:0},  marketClose:{h:16,m:30}},
+  {id:'cet', timeId:'wt-cet', zoneId:'wz-cet', tz:'Europe/Berlin',   marketOpen:{h:9,m:0},  marketClose:{h:17,m:30}},
+  {id:'est', timeId:'wt-est', zoneId:'wz-est', tz:'America/New_York',marketOpen:{h:9,m:30}, marketClose:{h:16,m:0}},
+  {id:'jst', timeId:'wt-jst', zoneId:null,     tz:'Asia/Tokyo',      marketOpen:{h:9,m:0},  marketClose:{h:15,m:30}}
 ];
+
 function isMarketOpen(zone){
   var d=new Date(new Date().toLocaleString('en-US',{timeZone:zone.tz}));
   var day=d.getDay();if(day===0||day===6)return false;
   var mins=d.getHours()*60+d.getMinutes();
   return mins>=zone.marketOpen.h*60+zone.marketOpen.m&&mins<zone.marketClose.h*60+zone.marketClose.m;
 }
+
 function tickWorldClocks(){
   var now=new Date();
   ZONES.forEach(function(zone){
@@ -1144,21 +1123,21 @@ function tickWorldClocks(){
     if(!el||!te)return;
     var timeStr=new Intl.DateTimeFormat('en-GB',{timeZone:zone.tz,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);
     te.textContent=timeStr;
+    /* update timezone label for DST-aware zones */
     if(ze){
-      if(zone.id==='gmt'){var lh=parseInt(timeStr.split(':')[0]);ze.textContent=(lh===new Date().getUTCHours())?'GMT':'BST';}
-      else if(zone.id==='cet'){ze.textContent=new Intl.DateTimeFormat('en',{timeZone:zone.tz,timeZoneName:'short'}).format(now).split(', ')[1]||zone.label;}
-      else if(zone.id==='est'){var nyH=parseInt(new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',hour:'numeric',hour12:false}).format(now));var utcHr=new Date().getUTCHours();ze.textContent=((utcHr-nyH+24)%24===5)?'EST':'EDT';}
+      if(zone.id==='gmt'){ze.textContent=new Date().toLocaleString('en-US',{timeZone:'Europe/London',timeZoneName:'short'}).split(' ').pop();}
+      else if(zone.id==='cet'){ze.textContent=new Intl.DateTimeFormat('en',{timeZone:zone.tz,timeZoneName:'short'}).format(now).split(', ')[1]||'CET';}
+      else if(zone.id==='est'){ze.textContent=new Date().toLocaleString('en-US',{timeZone:'America/New_York',timeZoneName:'short'}).split(' ').pop();}
     }
+    /* apply open/closed classes */
     var open=isMarketOpen(zone);
-    el.classList.remove('active-market','closed-market','neutral-market');
+    el.classList.remove('active-market','closed-market');
     el.classList.add(open?'active-market':'closed-market');
   });
 }
 tickWorldClocks();setInterval(tickWorldClocks,1000);
 
-/* ══════════════════════════════════════════════════════════
-   MARKET DATA
-══════════════════════════════════════════════════════════ */
+/* ══ MARKET DATA ══ */
 var FINNHUB_KEY='d6dmrfhr01qm89pk6ta0d6dmrfhr01qm89pk6tag';
 var MB_MAP=[
   {id:'n50',valId:'mv-n50',chgId:'mc-n50',srcId:'ms-n50',yfSym:'^NSEI',fhSym:null,nseKey:'NIFTY 50',prefix:'',isVix:false},
@@ -1250,227 +1229,59 @@ refreshMarketBar();setInterval(refreshMarketBar,60000);
 var l=sessionStorage.getItem('lo');
 if(l)document.getElementById('lc').textContent=l;
 
-/* ══════════════════════════════════════════════════════════
-   VISITOR COUNTER SYSTEM
-   Uses CountAPI.xyz (free, no signup) for total & today hits
-   Uses localStorage heartbeat for estimated live viewers
-══════════════════════════════════════════════════════════ */
+/* ══ VISITOR COUNTER ══ */
 (function(){
-  /* ── config: change this namespace to your own unique name ── */
-  var NS = 'nifty-indian-markets-hub-v1';
-  var TODAY_KEY = NS + '-today-' + new Date().toISOString().slice(0,10); /* resets daily */
-
-  var liveCount  = 1;
-  var todayCount = 0;
-  var totalCount = 0;
-  var peakToday  = 1;
-
-  /* ── helper: flash number update ── */
-  function setNum(id, val, fmt) {
-    var el = document.getElementById(id);
-    if (!el) return;
-    var str = fmt ? val.toLocaleString('en-IN') : String(val);
-    if (el.textContent !== str) {
-      el.textContent = str;
-      el.classList.remove('num-updated');
-      void el.offsetWidth;
-      el.classList.add('num-updated');
-    }
-  }
-
-  /* ── update all display elements ── */
-  function render() {
-    setNum('vc-live',  liveCount,  true);
-    setNum('vc-today', todayCount, true);
-    setNum('vc-total', totalCount, true);
-    setNum('vc-peak',  peakToday,  true);
-    setNum('vcc-live',  liveCount,  true);
-    setNum('vcc-today', todayCount, true);
-    setNum('vcc-total', totalCount, true);
-    var now = new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
-    var ts = document.getElementById('vc-ts');
-    if (ts) ts.textContent = now;
-  }
-
-  /* ══ 1. TOTAL VISITS — CountAPI hit (increments on every page load) ══ */
-  function hitTotal() {
-    fetch('https://api.countapi.xyz/hit/' + NS + '/total', {cache:'no-store'})
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(j){
-        if (j && j.value) {
-          totalCount = j.value;
-          render();
-        }
-      })
-      .catch(function(){});
-  }
-
-  /* ══ 2. TODAY VISITS — CountAPI, key changes daily ══ */
-  function hitToday() {
-    fetch('https://api.countapi.xyz/hit/' + NS + '/' + TODAY_KEY, {cache:'no-store'})
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(j){
-        if (j && j.value) {
-          todayCount = j.value;
-          render();
-        }
-      })
-      .catch(function(){});
-  }
-
-  /* ══ 3. LIVE VIEWERS — localStorage heartbeat system
-     Each tab writes a timestamp every 30s under a unique key.
-     On read, we count keys updated within the last 90s.
-     Works across all tabs on the same origin (same GitHub Pages domain).
-  ══ */
-  var SESSION_KEY = 'vc_sess_' + Math.random().toString(36).slice(2);
-  var LS_PREFIX   = 'vc_hb_';
-  var HB_INTERVAL = 30000;   /* write heartbeat every 30s */
-  var HB_EXPIRE   = 90000;   /* consider alive if seen within 90s */
-
-  function writeHeartbeat() {
-    try {
-      var exp = Date.now() + HB_EXPIRE;
-      localStorage.setItem(LS_PREFIX + SESSION_KEY, exp.toString());
-    } catch(e) {}
-  }
-
-  function countLive() {
-    var now = Date.now();
-    var alive = 0;
-    try {
-      for (var i = 0; i < localStorage.length; i++) {
-        var k = localStorage.key(i);
-        if (k && k.indexOf(LS_PREFIX) === 0) {
-          var exp = parseInt(localStorage.getItem(k), 10);
-          if (!isNaN(exp) && exp > now) {
-            alive++;
-          } else {
-            /* clean up expired */
-            localStorage.removeItem(k);
-          }
-        }
-      }
-    } catch(e) { alive = 1; }
-    return Math.max(1, alive);
-  }
-
-  function updateLive() {
-    writeHeartbeat();
-    liveCount = countLive();
-    if (liveCount > peakToday) peakToday = liveCount;
-    render();
-  }
-
-  /* ══ 4. PEAK TODAY — store in localStorage, reset daily ══ */
-  var PEAK_KEY = 'vc_peak_' + new Date().toISOString().slice(0,10);
-  function loadPeak() {
-    try {
-      var stored = parseInt(localStorage.getItem(PEAK_KEY), 10);
-      if (!isNaN(stored) && stored > peakToday) peakToday = stored;
-    } catch(e) {}
-  }
-  function savePeak() {
-    try {
-      var stored = parseInt(localStorage.getItem(PEAK_KEY), 10);
-      if (isNaN(stored) || peakToday > stored) {
-        localStorage.setItem(PEAK_KEY, peakToday.toString());
-      }
-    } catch(e) {}
-  }
-
-  /* ══ Remove our heartbeat on page unload ══ */
-  window.addEventListener('beforeunload', function() {
-    try { localStorage.removeItem(LS_PREFIX + SESSION_KEY); } catch(e) {}
-  });
-
-  /* ══ INIT ══ */
-  loadPeak();
-  hitTotal();
-  hitToday();
-  updateLive();
-
-  /* Heartbeat: every 30s */
-  setInterval(function() {
-    updateLive();
-    savePeak();
-  }, HB_INTERVAL);
-
-  /* Refresh today/total every 5 min (read-only, no extra hit) */
-  setInterval(function() {
-    fetch('https://api.countapi.xyz/get/' + NS + '/total', {cache:'no-store'})
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(j){ if (j && j.value) { totalCount = j.value; render(); } })
-      .catch(function(){});
-    fetch('https://api.countapi.xyz/get/' + NS + '/' + TODAY_KEY, {cache:'no-store'})
-      .then(function(r){ return r.ok ? r.json() : null; })
-      .then(function(j){ if (j && j.value) { todayCount = j.value; render(); } })
-      .catch(function(){});
-  }, 5 * 60 * 1000);
-
-  /* ══ Hide corner badge when footer visible (no overlap) ══ */
-  var cornerBadge = document.getElementById('vc-corner');
-  var footer = document.querySelector('footer');
-  function checkFooterVisible() {
-    if (!footer || !cornerBadge) return;
-    var rect = footer.getBoundingClientRect();
-    var inView = rect.top < window.innerHeight;
-    cornerBadge.classList.toggle('hidden-badge', inView);
-  }
-  window.addEventListener('scroll', checkFooterVisible, {passive:true});
+  var NS='nifty-indian-markets-hub-v1';
+  var TODAY_KEY=NS+'-today-'+new Date().toISOString().slice(0,10);
+  var liveCount=1,todayCount=0,totalCount=0,peakToday=1;
+  function setNum(id,val,fmt){var el=document.getElementById(id);if(!el)return;var str=fmt?val.toLocaleString('en-IN'):String(val);if(el.textContent!==str){el.textContent=str;el.classList.remove('num-updated');void el.offsetWidth;el.classList.add('num-updated');}}
+  function render(){setNum('vc-live',liveCount,true);setNum('vc-today',todayCount,true);setNum('vc-total',totalCount,true);setNum('vc-peak',peakToday,true);setNum('vcc-live',liveCount,true);setNum('vcc-today',todayCount,true);setNum('vcc-total',totalCount,true);var now=new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());var ts=document.getElementById('vc-ts');if(ts)ts.textContent=now;}
+  function hitTotal(){fetch('https://api.countapi.xyz/hit/'+NS+'/total',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){if(j&&j.value){totalCount=j.value;render();}}).catch(function(){});}
+  function hitToday(){fetch('https://api.countapi.xyz/hit/'+NS+'/'+TODAY_KEY,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){if(j&&j.value){todayCount=j.value;render();}}).catch(function(){});}
+  var SESSION_KEY='vc_sess_'+Math.random().toString(36).slice(2);
+  var LS_PREFIX='vc_hb_';
+  function writeHeartbeat(){try{localStorage.setItem(LS_PREFIX+SESSION_KEY,(Date.now()+90000).toString());}catch(e){}}
+  function countLive(){var now=Date.now(),alive=0;try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(LS_PREFIX)===0){var exp=parseInt(localStorage.getItem(k),10);if(!isNaN(exp)&&exp>now)alive++;else localStorage.removeItem(k);}}}catch(e){alive=1;}return Math.max(1,alive);}
+  function updateLive(){writeHeartbeat();liveCount=countLive();if(liveCount>peakToday)peakToday=liveCount;render();}
+  var PEAK_KEY='vc_peak_'+new Date().toISOString().slice(0,10);
+  function loadPeak(){try{var s=parseInt(localStorage.getItem(PEAK_KEY),10);if(!isNaN(s)&&s>peakToday)peakToday=s;}catch(e){}}
+  function savePeak(){try{var s=parseInt(localStorage.getItem(PEAK_KEY),10);if(isNaN(s)||peakToday>s)localStorage.setItem(PEAK_KEY,peakToday.toString());}catch(e){}}
+  window.addEventListener('beforeunload',function(){try{localStorage.removeItem(LS_PREFIX+SESSION_KEY);}catch(e){}});
+  loadPeak();hitTotal();hitToday();updateLive();
+  setInterval(function(){updateLive();savePeak();},30000);
+  setInterval(function(){
+    fetch('https://api.countapi.xyz/get/'+NS+'/total',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){if(j&&j.value){totalCount=j.value;render();}}).catch(function(){});
+    fetch('https://api.countapi.xyz/get/'+NS+'/'+TODAY_KEY,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){if(j&&j.value){todayCount=j.value;render();}}).catch(function(){});
+  },5*60*1000);
+  var cornerBadge=document.getElementById('vc-corner');
+  var footer=document.querySelector('footer');
+  function checkFooterVisible(){if(!footer||!cornerBadge)return;var rect=footer.getBoundingClientRect();cornerBadge.classList.toggle('hidden-badge',rect.top<window.innerHeight);}
+  window.addEventListener('scroll',checkFooterVisible,{passive:true});
   checkFooterVisible();
-
 })();
 
-/* ══════════════════════════════════════════════════════════
-   IFRAME VIEWER
-══════════════════════════════════════════════════════════ */
+/* ══ IFRAME VIEWER ══ */
 var currentUrl='';
 var viewer=document.getElementById('viewer');
 var vwrap=document.getElementById('vframe-wrap');
 var vtitle=document.getElementById('vtitle');
 var vload=document.getElementById('vload');
 var _vframe=null;
-
-function spawnFrame(){
-  if(_vframe){_vframe.src='about:blank';vwrap.removeChild(_vframe);_vframe=null;}
-  var f=document.createElement('iframe');
-  f.style.cssText='width:100%;height:100%;border:none;background:#000;position:absolute;inset:0;';
-  f.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox');
-  f.setAttribute('referrerpolicy','no-referrer');
-  vwrap.appendChild(f);_vframe=f;return f;
-}
-function openViewer(url,name){
-  currentUrl=url;vtitle.textContent='▶ '+name.toUpperCase();
-  viewer.classList.add('open');document.body.style.overflow='hidden';
-  document.getElementById('floatback').classList.add('visible');
-  history.pushState({viewer:true,url:url,name:name},'','#node');
-  vload.classList.remove('hidden');
-  var f=spawnFrame();f.onload=function(){vload.classList.add('hidden');};f.src=currentUrl;
-}
-function closeViewer(fromPopState){
-  viewer.classList.remove('open');document.body.style.overflow='';
-  document.getElementById('floatback').classList.remove('visible');
-  if(_vframe){_vframe.src='about:blank';vwrap.removeChild(_vframe);_vframe=null;}
-  currentUrl='';
-  if(!fromPopState&&location.hash==='#node'){history.replaceState(null,'',location.pathname);}
-}
+function spawnFrame(){if(_vframe){_vframe.src='about:blank';vwrap.removeChild(_vframe);_vframe=null;}var f=document.createElement('iframe');f.style.cssText='width:100%;height:100%;border:none;background:#000;position:absolute;inset:0;';f.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox');f.setAttribute('referrerpolicy','no-referrer');vwrap.appendChild(f);_vframe=f;return f;}
+function openViewer(url,name){currentUrl=url;vtitle.textContent='▶ '+name.toUpperCase();viewer.classList.add('open');document.body.style.overflow='hidden';document.getElementById('floatback').classList.add('visible');history.pushState({viewer:true,url:url,name:name},'','#node');vload.classList.remove('hidden');var f=spawnFrame();f.onload=function(){vload.classList.add('hidden');};f.src=currentUrl;}
+function closeViewer(fromPopState){viewer.classList.remove('open');document.body.style.overflow='';document.getElementById('floatback').classList.remove('visible');if(_vframe){_vframe.src='about:blank';vwrap.removeChild(_vframe);_vframe=null;}currentUrl='';if(!fromPopState&&location.hash==='#node'){history.replaceState(null,'',location.pathname);}}
 function openExternal(){if(currentUrl)window.open(currentUrl,'_blank');}
 window.addEventListener('popstate',function(){if(viewer.classList.contains('open'))closeViewer(true);});
 if(location.hash==='#node'){history.replaceState(null,'',location.pathname);}
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&viewer.classList.contains('open'))closeViewer(false);});
-
 function go(e,name){
   e.preventDefault();var card=e.currentTarget,url=card.href;
   sessionStorage.setItem('lo',name);document.getElementById('lc').textContent=name;
-  var r=document.createElement('div');r.className='rpl';
-  var b=card.getBoundingClientRect();
+  var r=document.createElement('div');r.className='rpl';var b=card.getBoundingClientRect();
   r.style.left=(e.clientX-b.left-30)+'px';r.style.top=(e.clientY-b.top-30)+'px';
   card.appendChild(r);setTimeout(function(){r.remove();},600);
   setTimeout(function(){openViewer(url,name);},200);
 }
-
-/* Card entrance animation */
 document.querySelectorAll('.sc-card[href]').forEach(function(c,i){
   c.style.opacity='0';c.style.transform='translateY(14px)';
   c.style.transition='opacity .4s ease '+i*.07+'s,transform .4s ease '+i*.07+'s';
