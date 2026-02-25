@@ -261,8 +261,6 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 
 /* ══ CARDS — default 3-col ══ */
 .sc-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
-
-/* Group 01 override — 4-col single row */
 .sc-cards-4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;}
 
 .sc-card{padding:14px;border-right:1px solid rgba(0,245,255,.07);cursor:pointer;position:relative;overflow:hidden;transition:background .2s;text-decoration:none;color:inherit;display:block;}
@@ -308,12 +306,113 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .rpl{position:absolute;width:60px;height:60px;border-radius:50%;background:rgba(0,245,255,.15);pointer-events:none;animation:rpl .55s ease-out forwards;transform-origin:center;z-index:5;}
 
 /* ══ FOOTER ══ */
-footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14px;
-  display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;font-family:'Orbitron',sans-serif;
-  box-shadow:0 0 20px rgba(0,245,255,.06);}
+footer{
+  background:rgba(0,0,0,.85);border-top:1px solid var(--bc);
+  padding:0;
+  display:flex;flex-direction:column;
+  font-family:'Orbitron',sans-serif;
+  box-shadow:0 0 20px rgba(0,245,255,.06);
+}
+
+/* ── Visitor counter bar inside footer ── */
+.vc-bar{
+  display:flex;align-items:stretch;
+  border-bottom:1px solid rgba(0,245,255,.1);
+  background:rgba(0,0,0,.6);
+  overflow-x:auto;
+  scrollbar-width:none;
+  position:relative;
+}
+.vc-bar::-webkit-scrollbar{display:none;}
+.vc-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--grn),var(--cyan),var(--pink),var(--cyan),var(--grn),transparent);opacity:.5;}
+
+.vc-label-cell{
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;
+  padding:6px 10px;flex-shrink:0;
+  background:linear-gradient(180deg,rgba(0,255,136,.06),rgba(0,255,136,.01));
+  border-right:1px solid rgba(0,255,136,.15);
+  min-width:52px;
+}
+.vc-label-icon{font-size:14px;line-height:1;}
+.vc-label-txt{font-family:'Orbitron',monospace;font-size:5px;letter-spacing:2px;color:rgba(0,255,136,.6);text-transform:uppercase;white-space:nowrap;}
+
+.vc-cell{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:8px 18px;gap:2px;
+  border-right:1px solid rgba(0,245,255,.07);
+  flex-shrink:0;min-width:100px;
+  position:relative;
+  transition:background .2s;
+}
+.vc-cell:last-child{border-right:none;}
+.vc-cell:hover{background:rgba(0,245,255,.03);}
+.vc-cell::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:var(--vc,var(--cyan));box-shadow:0 0 6px var(--vc,var(--cyan));opacity:.5;}
+.vc-cell-lbl{font-family:'Orbitron',monospace;font-size:5.5px;letter-spacing:2px;color:var(--t3);text-transform:uppercase;white-space:nowrap;}
+.vc-cell-val{font-family:'Share Tech Mono',monospace;font-size:18px;font-weight:700;
+  color:var(--vc,var(--cyan));text-shadow:0 0 12px currentColor;line-height:1;
+  transition:all .4s;white-space:nowrap;}
+.vc-cell-sub{font-family:'Orbitron',monospace;font-size:5px;letter-spacing:1.5px;color:var(--t3);white-space:nowrap;}
+
+/* live pulse dot */
+.vc-pulse{display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--grn);box-shadow:0 0 8px var(--grn);
+  animation:blink 1.2s ease-in-out infinite;
+  margin-right:3px;vertical-align:middle;flex-shrink:0;}
+
+/* right side: update time + source */
+.vc-right{
+  margin-left:auto;flex-shrink:0;
+  display:flex;flex-direction:column;align-items:flex-end;justify-content:center;
+  padding:6px 12px;gap:3px;
+  border-left:1px solid rgba(0,245,255,.07);
+}
+.vc-upd{font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1.5px;color:var(--t3);}
+.vc-upd span{color:var(--t2);}
+.vc-src{font-family:'Orbitron',monospace;font-size:5px;letter-spacing:1px;color:rgba(0,245,255,.2);}
+
+/* number update flash */
+@keyframes num-flash{0%{opacity:.3;transform:translateY(-4px)}100%{opacity:1;transform:translateY(0)}}
+.num-updated{animation:num-flash .35s ease;}
+
+/* ── Footer bottom row ── */
+.footer-bottom{
+  padding:7px 14px;
+  display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;
+}
 .fl{font-size:7px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase}
 .fl span{color:var(--cyan);text-shadow:0 0 8px rgba(0,245,255,.4)}
 .fr{font-size:7px;color:rgba(0,245,255,.45);letter-spacing:1px}
+
+/* ══ FLOATING CORNER BADGE (bottom-left) ══ */
+#vc-corner{
+  position:fixed;bottom:20px;left:16px;z-index:9990;
+  background:rgba(0,0,0,.92);
+  border:1px solid rgba(0,245,255,.22);
+  padding:9px 14px 8px;
+  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
+  box-shadow:0 0 24px rgba(0,245,255,.1),inset 0 0 14px rgba(0,245,255,.02);
+  min-width:148px;
+  cursor:default;
+  transition:opacity .3s,transform .3s;
+}
+#vc-corner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,var(--grn),var(--cyan),var(--pink));opacity:.55;}
+#vc-corner.hidden-badge{opacity:0;pointer-events:none;transform:translateY(10px);}
+.vc-corner-title{font-family:'Orbitron',monospace;font-size:5.5px;letter-spacing:2px;color:var(--t3);margin-bottom:5px;text-transform:uppercase;}
+.vc-corner-main{display:flex;align-items:center;gap:8px;margin-bottom:3px;}
+.vc-corner-ico{font-size:16px;}
+.vc-corner-nums{display:flex;flex-direction:column;gap:1px;}
+.vc-corner-big{font-family:'Share Tech Mono',monospace;font-size:20px;font-weight:700;line-height:1;color:var(--grn);text-shadow:0 0 12px rgba(0,255,136,.5);}
+.vc-corner-lbl{font-family:'Orbitron',monospace;font-size:5px;letter-spacing:1.5px;color:rgba(0,255,136,.55);}
+.vc-corner-divider{width:100%;height:1px;background:rgba(0,245,255,.08);margin:5px 0;}
+.vc-corner-row2{display:flex;align-items:center;justify-content:space-between;width:100%;}
+.vc-stat{font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1px;color:var(--t3);display:flex;align-items:center;gap:3px;}
+.vc-stat .n{font-family:'Share Tech Mono',monospace;font-size:12px;font-weight:700;}
+.vc-corner-foot{display:flex;align-items:center;gap:4px;margin-top:5px;}
+.vc-corner-pulse-dot{width:5px;height:5px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.2s ease-in-out infinite;flex-shrink:0;}
+.vc-corner-status{font-family:'Orbitron',monospace;font-size:5.5px;color:rgba(0,255,136,.65);letter-spacing:1.5px;}
 
 /* ══ FLOATING BACK BUTTON ══ */
 #floatback{position:fixed;bottom:20px;right:16px;z-index:9999;display:none;align-items:center;gap:6px;padding:9px 14px;
@@ -351,8 +450,6 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
 /* ═══════════════════════════════════════════════
    RESPONSIVE BREAKPOINTS
    ═══════════════════════════════════════════════ */
-
-/* ── Desktop large (1280px+) ── */
 @media(min-width:1280px){
   .wc{min-width:72px;padding:5px 10px;}
   .wc-time{font-size:13px;}
@@ -368,35 +465,29 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .sc-card-desc{font-size:12px;}
   .groups{margin:14px 18px 18px;}
   .sec{padding:11px 18px 9px;}
-  footer{padding:9px 18px;}
+  .footer-bottom{padding:9px 18px;}
+  .vc-cell{min-width:110px;padding:9px 20px;}
+  .vc-cell-val{font-size:20px;}
 }
-
-/* ── Tablet landscape (960–1279px) ── */
 @media(max-width:1279px) and (min-width:960px){
   .wc.hide-lg{display:none;}
   .wc-sep.hide-lg{display:none;}
   .wc-time{font-size:12px;}
   .mbar-item{min-width:95px;}
-  /* Group 01 4-col still fits fine at 960+ */
 }
-
-/* ── Tablet portrait (600–959px) ── */
 @media(max-width:959px){
   .stats{grid-template-columns:repeat(2,1fr);}
-  /* 3-col groups → 2-col */
   .sc-cards{grid-template-columns:repeat(2,1fr);}
   .sc-card:nth-child(2n){border-right:none;}
   .sc-card:nth-child(n+3){border-top:1px solid rgba(0,245,255,.07);}
-  /* Group 01 4-col → 2-col */
   .sc-cards-4{grid-template-columns:repeat(2,1fr);}
   .sc-cards-4 .sc-card:nth-child(2n){border-right:none;}
   .sc-cards-4 .sc-card:nth-child(n+3){border-top:1px solid rgba(0,245,255,.07);}
-  /* hide less important clocks */
   .wc#wc-hkt,.wc#wc-jst{display:none;}
   .wc-sep.hide-md{display:none;}
+  .vc-cell{min-width:90px;padding:7px 12px;}
+  .vc-cell-val{font-size:16px;}
 }
-
-/* ── Mobile landscape / small tablet (600–767px) ── */
 @media(max-width:767px){
   header{flex-wrap:wrap;padding:8px 12px 6px;gap:6px;}
   .brand{order:1;flex:1;}
@@ -406,14 +497,12 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .sc-cards-4{grid-template-columns:repeat(2,1fr);}
   .sc-card:nth-child(2n),.sc-cards-4 .sc-card:nth-child(2n){border-right:none;}
   .sc-card:nth-child(n+3),.sc-cards-4 .sc-card:nth-child(n+3){border-top:1px solid rgba(0,245,255,.07);}
+  #vc-corner{bottom:14px;left:10px;}
 }
-
-/* ── Mobile (up to 599px) ── */
 @media(max-width:599px){
   .tb{padding:3px 10px;font-size:7.5px;}
   .tb-l{font-size:7px;letter-spacing:1px;}
   .tb-r{gap:8px;font-size:7px;}
-
   header{padding:8px 10px 6px;gap:6px;}
   .brand{gap:8px;}
   .logo{width:34px;height:34px;font-size:15px;}
@@ -422,7 +511,6 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .hright{gap:4px;}
   .pill.p{display:none;}
   .pill{padding:3px 6px;font-size:6.5px;}
-
   .wclocks{gap:2px;padding:4px 0 2px;flex-wrap:nowrap;overflow-x:auto;}
   .wc#wc-hkt,.wc#wc-jst{display:none;}
   .wc{min-width:54px;padding:3px 6px;}
@@ -432,7 +520,6 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .wc-label{display:none;}
   .wc-status-dot{width:3px;height:3px;top:3px;right:3px;}
   .wc-sep{height:18px;}
-
   .mbar-label{width:28px;padding:5px 4px;}
   .mbar-label-flag{font-size:10px;}
   .mbar-label-txt{font-size:4.5px;}
@@ -440,30 +527,23 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .mbar-val{font-size:12px;}
   .mbar-chg{font-size:8px;}
   .mbar-name{font-size:6px;letter-spacing:1px;}
-
   .tkr{display:none;}
-
   .stats{grid-template-columns:repeat(2,1fr);}
   .sb{padding:8px 10px;}
   .sb .l{font-size:6.5px;letter-spacing:1.5px;}
   .sb .v{font-size:12px;}
   .sb .s{font-size:8px;}
-
   .sec{padding:8px 10px;}
   .sec-txt{font-size:7px;letter-spacing:1.5px;}
   .sec-bdg{font-size:6.5px;padding:2px 6px;}
-
   .groups{margin:8px 8px 12px;}
   .sc-group{margin-bottom:10px;}
-
   .sc-head{padding:8px 10px;gap:8px;}
   .sc-head-hex{width:30px;height:30px;font-size:13px;}
   .sc-head-tag{display:none;}
   .sc-head-name{font-size:10px;letter-spacing:1px;}
   .sc-head-status{font-size:7px;}
   .sc-head-nodes{font-size:7.5px;}
-
-  /* Single column on mobile — all grids */
   .sc-cards,.sc-cards-4{grid-template-columns:1fr;}
   .sc-card{border-right:none;border-bottom:1px solid rgba(0,245,255,.07);padding:12px;}
   .sc-card:last-child{border-bottom:none;}
@@ -478,21 +558,23 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .sc-card-btn{font-size:7.5px;}
   .sc-card-ico{font-size:16px;}
   .sc-card-ico-wrap{width:30px;height:30px;}
-
-  footer{padding:7px 10px;flex-direction:column;gap:3px;}
+  .footer-bottom{padding:7px 10px;flex-direction:column;gap:3px;}
   .fl,.fr{font-size:6.5px;letter-spacing:1px;}
   .fr{display:none;}
-
   #floatback{bottom:14px;right:12px;padding:8px 12px;font-size:8px;}
   #floatback .kbhint{display:none;}
-
   #vbar{padding:5px 10px;gap:8px;}
   #vtitle{font-size:8.5px;}
   #vopen{font-size:7px;padding:4px 8px;}
   #vclose{font-size:7px;padding:4px 10px;}
+  .vc-cell{min-width:78px;padding:6px 10px;}
+  .vc-cell-val{font-size:14px;}
+  .vc-cell-lbl{font-size:5px;}
+  .vc-cell-sub{display:none;}
+  .vc-label-cell{min-width:40px;padding:5px 6px;}
+  #vc-corner{bottom:12px;left:8px;min-width:130px;padding:7px 12px 7px;}
+  .vc-corner-big{font-size:17px;}
 }
-
-/* ── Extra small (up to 380px) ── */
 @media(max-width:380px){
   .bname{font-size:10px;}
   .wc{min-width:48px;}
@@ -505,8 +587,6 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .logo{width:30px;height:30px;font-size:13px;}
   .pill.g .dot{display:none;}
 }
-
-/* ── Hover states: disable on touch ── */
 @media(hover:none){
   .sc-card:hover{background:transparent;}
   .sc-card:hover .sc-card-topbar{opacity:.5;}
@@ -516,11 +596,10 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
   .sc-card:active{background:rgba(0,245,255,.04);}
   .wc:hover{background:rgba(0,245,255,.03);}
 }
-
-/* Safe areas for notched phones */
 @supports(padding-bottom:env(safe-area-inset-bottom)){
-  footer{padding-bottom:calc(8px + env(safe-area-inset-bottom));}
+  footer{padding-bottom:env(safe-area-inset-bottom);}
   #floatback{bottom:calc(20px + env(safe-area-inset-bottom));}
+  #vc-corner{bottom:calc(20px + env(safe-area-inset-bottom));}
 }
 </style>
 </head>
@@ -741,9 +820,7 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
 <!-- ══ GROUPED PODS ══ -->
 <div class="groups">
 
-  <!-- ══════════════════════════════════════════════════
-       GROUP 1: NIFTY INTELLIGENCE — 4 cards, single row
-       ══════════════════════════════════════════════════ -->
+  <!-- GROUP 1: NIFTY INTELLIGENCE -->
   <div class="sc-group" style="--ga:rgba(0,245,255,.22);--gb:rgba(0,245,255,.04);--gc:var(--cyan);">
     <div class="sc-inner">
       <div class="sc-head">
@@ -757,11 +834,7 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
           <div class="sc-head-nodes">NSE · INDIA MARKETS</div>
         </div>
       </div>
-
-      <!-- sc-cards-4 = 4-col single row on desktop -->
       <div class="sc-cards-4">
-
-        <!-- 01: Nifty 50 Analyzer -->
         <a class="sc-card" href="https://krishnateja08.github.io/Nifty_50_Stock_Analyzer/" onclick="go(event,'Nifty 50 Analyzer')" style="--cc:var(--cyan);">
           <div class="brk"></div>
           <div class="sc-card-inner">
@@ -775,8 +848,6 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
             <div class="sc-card-footer"><span class="sc-card-tag">NSE · NIFTY 50</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
           </div>
         </a>
-
-        <!-- 02: Nifty Indices Scanner -->
         <a class="sc-card" href="https://krishnateja08.github.io/Nifty_Indices_scanner/" onclick="go(event,'Nifty Indices Scanner')" style="--cc:var(--cyan);">
           <div class="brk"></div>
           <div class="sc-card-inner">
@@ -790,8 +861,6 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
             <div class="sc-card-footer"><span class="sc-card-tag">NSE · INDICES</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
           </div>
         </a>
-
-        <!-- 03: AlphaScreener — NEW -->
         <a class="sc-card" href="https://krishnateja08.github.io/Alphascreener/" onclick="go(event,'AlphaScreener')" style="--cc:var(--cyan);">
           <div class="new-badge">NEW</div>
           <div class="brk"></div>
@@ -806,8 +875,6 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
             <div class="sc-card-footer"><span class="sc-card-tag">NSE · USA · MULTI-TF</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
           </div>
         </a>
-
-        <!-- 04: FII/DII Pulse -->
         <a class="sc-card" href="https://krishnateja08.github.io/FII-DII_Pulse/" onclick="go(event,'FII/DII Pulse')" style="--cc:var(--cyan);">
           <div class="brk"></div>
           <div class="sc-card-inner">
@@ -821,14 +888,11 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
             <div class="sc-card-footer"><span class="sc-card-tag">NSE · BULK DEALS</span><div class="sc-card-btn"><div class="sc-card-btn-line"></div>LAUNCH</div></div>
           </div>
         </a>
-
-      </div><!-- /sc-cards-4 -->
+      </div>
     </div>
   </div>
 
-  <!-- ══════════════════════════
-       GROUP 2: OPTIONS COMMAND
-       ══════════════════════════ -->
+  <!-- GROUP 2: OPTIONS COMMAND -->
   <div class="sc-group" style="--ga:rgba(255,0,144,.22);--gb:rgba(255,0,144,.04);--gc:var(--pink);">
     <div class="sc-inner">
       <div class="sc-head" style="background:linear-gradient(90deg,rgba(6,4,15,.99),rgba(6,4,15,.85));">
@@ -898,9 +962,7 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
     </div>
   </div>
 
-  <!-- ════════════════════════════
-       GROUP 3: GLOBAL INTELLIGENCE
-       ════════════════════════════ -->
+  <!-- GROUP 3: GLOBAL INTELLIGENCE -->
   <div class="sc-group" style="--ga:rgba(255,224,0,.2);--gb:rgba(255,224,0,.04);--gc:var(--yel);">
     <div class="sc-inner">
       <div class="sc-head" style="background:linear-gradient(90deg,rgba(6,4,15,.99),rgba(6,4,15,.85));">
@@ -959,12 +1021,79 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
 
 </div><!-- /groups -->
 
-<!-- ══ FOOTER ══ -->
+<!-- ══ FOOTER WITH VISITOR COUNTER ══ -->
 <footer>
-  <div class="fl"><span>NIFTY INDIAN MARKETS HUB</span> // CYBER_NEON v2.2 // 9_NODES_ACTIVE</div>
-  <div class="fr">SELECT_NODE → OPEN // BACK → RETURN_TO_HUB</div>
+  <!-- Visitor Counter Bar -->
+  <div class="vc-bar">
+    <div class="vc-label-cell">
+      <div class="vc-label-icon">👁️</div>
+      <div class="vc-label-txt">HUB<br>STATS</div>
+    </div>
+
+    <!-- Live Now -->
+    <div class="vc-cell" style="--vc:var(--grn);">
+      <div class="vc-cell-lbl"><span class="vc-pulse"></span>Live Now</div>
+      <div class="vc-cell-val" id="vc-live">—</div>
+      <div class="vc-cell-sub">ACTIVE SESSIONS</div>
+    </div>
+
+    <!-- Today -->
+    <div class="vc-cell" style="--vc:var(--cyan);">
+      <div class="vc-cell-lbl">Today</div>
+      <div class="vc-cell-val" id="vc-today">—</div>
+      <div class="vc-cell-sub">VISITS TODAY</div>
+    </div>
+
+    <!-- Total -->
+    <div class="vc-cell" style="--vc:var(--pink);">
+      <div class="vc-cell-lbl">Total</div>
+      <div class="vc-cell-val" id="vc-total">—</div>
+      <div class="vc-cell-sub">ALL TIME</div>
+    </div>
+
+    <!-- Peak -->
+    <div class="vc-cell" style="--vc:var(--yel);">
+      <div class="vc-cell-lbl">Peak Today</div>
+      <div class="vc-cell-val" id="vc-peak">—</div>
+      <div class="vc-cell-sub">MAX CONCURRENT</div>
+    </div>
+
+    <!-- Right meta -->
+    <div class="vc-right">
+      <div class="vc-upd">UPD <span id="vc-ts">--:--</span> IST</div>
+      <div class="vc-src">COUNTAPI · LIVE</div>
+    </div>
+  </div>
+
+  <!-- Bottom text row -->
+  <div class="footer-bottom">
+    <div class="fl"><span>NIFTY INDIAN MARKETS HUB</span> // CYBER_NEON v2.2 // 9_NODES_ACTIVE</div>
+    <div class="fr">SELECT_NODE → OPEN // BACK → RETURN_TO_HUB</div>
+  </div>
 </footer>
+
 </div><!-- /#app -->
+
+<!-- ══ FLOATING CORNER VISITOR BADGE ══ -->
+<div id="vc-corner">
+  <div class="vc-corner-title">👁 Hub Visitors</div>
+  <div class="vc-corner-main">
+    <div class="vc-corner-ico">🟢</div>
+    <div class="vc-corner-nums">
+      <div class="vc-corner-big" id="vcc-live">—</div>
+      <div class="vc-corner-lbl">LIVE NOW</div>
+    </div>
+  </div>
+  <div class="vc-corner-divider"></div>
+  <div class="vc-corner-row2">
+    <div class="vc-stat">TODAY <span class="n" style="color:var(--cyan);" id="vcc-today">—</span></div>
+    <div class="vc-stat">TOTAL <span class="n" style="color:var(--pink);" id="vcc-total">—</span></div>
+  </div>
+  <div class="vc-corner-foot">
+    <div class="vc-corner-pulse-dot"></div>
+    <div class="vc-corner-status">TRACKING ACTIVE</div>
+  </div>
+</div>
 
 <button id="floatback" onclick="closeViewer(false)">← HUB <span class="kbhint">ESC</span></button>
 
@@ -979,14 +1108,18 @@ footer{background:rgba(0,0,0,.85);border-top:1px solid var(--bc);padding:8px 14p
 </div>
 
 <script>
-/* ══ IST Clock ══ */
+/* ══════════════════════════════════════════════════════════
+   IST Clock
+══════════════════════════════════════════════════════════ */
 function tick(){
   var t=new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());
   document.getElementById('ct').textContent=t;
 }
 tick();setInterval(tick,1000);
 
-/* ══ WORLD CLOCKS ══ */
+/* ══════════════════════════════════════════════════════════
+   WORLD CLOCKS
+══════════════════════════════════════════════════════════ */
 var ZONES=[
   {id:'ist',timeId:'wt-ist',zoneId:null,tz:'Asia/Kolkata',label:'IST',marketOpen:{h:9,m:15},marketClose:{h:15,m:30}},
   {id:'sgt',timeId:'wt-sgt',zoneId:null,tz:'Asia/Singapore',label:'SGT',marketOpen:{h:6,m:30},marketClose:{h:23,m:30}},
@@ -1023,7 +1156,9 @@ function tickWorldClocks(){
 }
 tickWorldClocks();setInterval(tickWorldClocks,1000);
 
-/* ══ MARKET DATA ══ */
+/* ══════════════════════════════════════════════════════════
+   MARKET DATA
+══════════════════════════════════════════════════════════ */
 var FINNHUB_KEY='d6dmrfhr01qm89pk6ta0d6dmrfhr01qm89pk6tag';
 var MB_MAP=[
   {id:'n50',valId:'mv-n50',chgId:'mc-n50',srcId:'ms-n50',yfSym:'^NSEI',fhSym:null,nseKey:'NIFTY 50',prefix:'',isVix:false},
@@ -1107,7 +1242,6 @@ function buildTicker(top10){
   var tkr=document.getElementById('tkr');var all=items.concat(items).concat(items);
   tkr.innerHTML=all.map(function(t){return'<span class="ti"><span class="s">'+t.s+'</span><span class="tv">'+t.v+'</span><span class="'+(t.u?'up':'dn')+'">'+(t.u?'▲ ':'▼ ')+t.c+'</span></span>';}).join('');
 }
-
 var _top10Cache=[];
 function refreshTicker(){fetchNiftyTop10().then(function(res){_top10Cache=res||[];buildTicker(_top10Cache);});}
 refreshTicker();setInterval(refreshTicker,5*60*1000);
@@ -1116,7 +1250,181 @@ refreshMarketBar();setInterval(refreshMarketBar,60000);
 var l=sessionStorage.getItem('lo');
 if(l)document.getElementById('lc').textContent=l;
 
-/* ══ Iframe Viewer ══ */
+/* ══════════════════════════════════════════════════════════
+   VISITOR COUNTER SYSTEM
+   Uses CountAPI.xyz (free, no signup) for total & today hits
+   Uses localStorage heartbeat for estimated live viewers
+══════════════════════════════════════════════════════════ */
+(function(){
+  /* ── config: change this namespace to your own unique name ── */
+  var NS = 'nifty-indian-markets-hub-v1';
+  var TODAY_KEY = NS + '-today-' + new Date().toISOString().slice(0,10); /* resets daily */
+
+  var liveCount  = 1;
+  var todayCount = 0;
+  var totalCount = 0;
+  var peakToday  = 1;
+
+  /* ── helper: flash number update ── */
+  function setNum(id, val, fmt) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var str = fmt ? val.toLocaleString('en-IN') : String(val);
+    if (el.textContent !== str) {
+      el.textContent = str;
+      el.classList.remove('num-updated');
+      void el.offsetWidth;
+      el.classList.add('num-updated');
+    }
+  }
+
+  /* ── update all display elements ── */
+  function render() {
+    setNum('vc-live',  liveCount,  true);
+    setNum('vc-today', todayCount, true);
+    setNum('vc-total', totalCount, true);
+    setNum('vc-peak',  peakToday,  true);
+    setNum('vcc-live',  liveCount,  true);
+    setNum('vcc-today', todayCount, true);
+    setNum('vcc-total', totalCount, true);
+    var now = new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
+    var ts = document.getElementById('vc-ts');
+    if (ts) ts.textContent = now;
+  }
+
+  /* ══ 1. TOTAL VISITS — CountAPI hit (increments on every page load) ══ */
+  function hitTotal() {
+    fetch('https://api.countapi.xyz/hit/' + NS + '/total', {cache:'no-store'})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){
+        if (j && j.value) {
+          totalCount = j.value;
+          render();
+        }
+      })
+      .catch(function(){});
+  }
+
+  /* ══ 2. TODAY VISITS — CountAPI, key changes daily ══ */
+  function hitToday() {
+    fetch('https://api.countapi.xyz/hit/' + NS + '/' + TODAY_KEY, {cache:'no-store'})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){
+        if (j && j.value) {
+          todayCount = j.value;
+          render();
+        }
+      })
+      .catch(function(){});
+  }
+
+  /* ══ 3. LIVE VIEWERS — localStorage heartbeat system
+     Each tab writes a timestamp every 30s under a unique key.
+     On read, we count keys updated within the last 90s.
+     Works across all tabs on the same origin (same GitHub Pages domain).
+  ══ */
+  var SESSION_KEY = 'vc_sess_' + Math.random().toString(36).slice(2);
+  var LS_PREFIX   = 'vc_hb_';
+  var HB_INTERVAL = 30000;   /* write heartbeat every 30s */
+  var HB_EXPIRE   = 90000;   /* consider alive if seen within 90s */
+
+  function writeHeartbeat() {
+    try {
+      var exp = Date.now() + HB_EXPIRE;
+      localStorage.setItem(LS_PREFIX + SESSION_KEY, exp.toString());
+    } catch(e) {}
+  }
+
+  function countLive() {
+    var now = Date.now();
+    var alive = 0;
+    try {
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && k.indexOf(LS_PREFIX) === 0) {
+          var exp = parseInt(localStorage.getItem(k), 10);
+          if (!isNaN(exp) && exp > now) {
+            alive++;
+          } else {
+            /* clean up expired */
+            localStorage.removeItem(k);
+          }
+        }
+      }
+    } catch(e) { alive = 1; }
+    return Math.max(1, alive);
+  }
+
+  function updateLive() {
+    writeHeartbeat();
+    liveCount = countLive();
+    if (liveCount > peakToday) peakToday = liveCount;
+    render();
+  }
+
+  /* ══ 4. PEAK TODAY — store in localStorage, reset daily ══ */
+  var PEAK_KEY = 'vc_peak_' + new Date().toISOString().slice(0,10);
+  function loadPeak() {
+    try {
+      var stored = parseInt(localStorage.getItem(PEAK_KEY), 10);
+      if (!isNaN(stored) && stored > peakToday) peakToday = stored;
+    } catch(e) {}
+  }
+  function savePeak() {
+    try {
+      var stored = parseInt(localStorage.getItem(PEAK_KEY), 10);
+      if (isNaN(stored) || peakToday > stored) {
+        localStorage.setItem(PEAK_KEY, peakToday.toString());
+      }
+    } catch(e) {}
+  }
+
+  /* ══ Remove our heartbeat on page unload ══ */
+  window.addEventListener('beforeunload', function() {
+    try { localStorage.removeItem(LS_PREFIX + SESSION_KEY); } catch(e) {}
+  });
+
+  /* ══ INIT ══ */
+  loadPeak();
+  hitTotal();
+  hitToday();
+  updateLive();
+
+  /* Heartbeat: every 30s */
+  setInterval(function() {
+    updateLive();
+    savePeak();
+  }, HB_INTERVAL);
+
+  /* Refresh today/total every 5 min (read-only, no extra hit) */
+  setInterval(function() {
+    fetch('https://api.countapi.xyz/get/' + NS + '/total', {cache:'no-store'})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){ if (j && j.value) { totalCount = j.value; render(); } })
+      .catch(function(){});
+    fetch('https://api.countapi.xyz/get/' + NS + '/' + TODAY_KEY, {cache:'no-store'})
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(j){ if (j && j.value) { todayCount = j.value; render(); } })
+      .catch(function(){});
+  }, 5 * 60 * 1000);
+
+  /* ══ Hide corner badge when footer visible (no overlap) ══ */
+  var cornerBadge = document.getElementById('vc-corner');
+  var footer = document.querySelector('footer');
+  function checkFooterVisible() {
+    if (!footer || !cornerBadge) return;
+    var rect = footer.getBoundingClientRect();
+    var inView = rect.top < window.innerHeight;
+    cornerBadge.classList.toggle('hidden-badge', inView);
+  }
+  window.addEventListener('scroll', checkFooterVisible, {passive:true});
+  checkFooterVisible();
+
+})();
+
+/* ══════════════════════════════════════════════════════════
+   IFRAME VIEWER
+══════════════════════════════════════════════════════════ */
 var currentUrl='';
 var viewer=document.getElementById('viewer');
 var vwrap=document.getElementById('vframe-wrap');
@@ -1161,6 +1469,8 @@ function go(e,name){
   card.appendChild(r);setTimeout(function(){r.remove();},600);
   setTimeout(function(){openViewer(url,name);},200);
 }
+
+/* Card entrance animation */
 document.querySelectorAll('.sc-card[href]').forEach(function(c,i){
   c.style.opacity='0';c.style.transform='translateY(14px)';
   c.style.transition='opacity .4s ease '+i*.07+'s,transform .4s ease '+i*.07+'s';
