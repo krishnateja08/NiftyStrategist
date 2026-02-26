@@ -99,7 +99,7 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 /* ══ WORLD CLOCK — OPTION C (Table Grid) ══ */
 .wclocks{
   flex:1;
-  display:flex;align-items:stretch;
+  display:flex;align-items:stretch;justify-content:center;
   overflow-x:auto;
   overflow-y:hidden;
   scrollbar-width:none;
@@ -203,7 +203,8 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   position:relative;z-index:5;
   overflow:hidden;
   display:flex;
-  flex-direction:column;
+  flex-direction:row;
+  align-items:stretch;
 }
 .mbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,var(--cyan),var(--pink),var(--yel),var(--pur),var(--cyan));opacity:.35;}
@@ -211,14 +212,23 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .mbar-row{
   display:flex;
   align-items:stretch;
-  border-bottom:1px solid rgba(255,153,0,.06);
+  flex:1;
+  min-width:0;
 }
 .mbar-row:last-child{border-bottom:none;}
 
+.mbar-divider{
+  width:1px;
+  background:linear-gradient(180deg,transparent,rgba(255,153,0,.3),transparent);
+  flex-shrink:0;
+  align-self:stretch;
+  margin:4px 0;
+}
+
 .mbar-label{
   display:flex;align-items:center;justify-content:center;flex-direction:column;
-  gap:3px;padding:6px 6px;flex-shrink:0;
-  width:36px;
+  gap:3px;padding:6px 8px;flex-shrink:0;
+  width:38px;
 }
 .mbar-label.india{
   background:linear-gradient(180deg,rgba(255,153,0,.06),rgba(255,153,0,.02));
@@ -228,7 +238,7 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   background:linear-gradient(180deg,rgba(19,136,8,.05),rgba(19,136,8,.01));
   border-right:1px solid rgba(19,136,8,.12);
 }
-.mbar-label-flag{font-size:11px;line-height:1;}
+.mbar-label-flag{font-size:12px;line-height:1;}
 .mbar-label-txt{
   writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);
   font-family:'Orbitron',monospace;font-size:5px;letter-spacing:2px;
@@ -725,6 +735,7 @@ footer{
       </div>
     </div>
   </div>
+  <div class="mbar-divider"></div>
   <div class="mbar-row">
     <div class="mbar-label global">
       <div class="mbar-label-flag">🌐</div>
