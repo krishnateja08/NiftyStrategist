@@ -96,170 +96,59 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .bname span{color:var(--pink);text-shadow:0 0 20px rgba(19,136,8,.5)}
 .bsub{font-size:8px;color:var(--t3);letter-spacing:2px;margin-top:2px;font-family:'Orbitron',sans-serif}
 
-/* ══ WORLD CLOCK — OPTION C (Table Grid) ══ */
+/* ══ WORLD CLOCK ══ */
 .wclocks{
   flex:1;
   display:flex;align-items:stretch;justify-content:center;
-  overflow-x:auto;
-  overflow-y:hidden;
-  scrollbar-width:none;
-  min-width:0;
+  overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:none;min-width:0;
   background:rgba(0,0,0,.45);
   border:1px solid rgba(255,153,0,.15);
 }
 .wclocks::-webkit-scrollbar{display:none;}
-
-/* each city column */
-.wc{
-  display:flex;flex-direction:column;
-  min-width:90px;flex-shrink:0;
-  border-right:1px solid rgba(255,153,0,.08);
-  cursor:default;
-  transition:background .2s;
-  position:relative;
-}
+.wc{display:flex;flex-direction:column;min-width:90px;flex-shrink:0;border-right:1px solid rgba(255,153,0,.08);cursor:default;transition:background .2s;position:relative;}
 .wc:last-child{border-right:none;}
 .wc:hover{background:rgba(255,153,0,.04);}
-
-/* active market highlight */
 .wc.active-market{background:rgba(0,255,136,.04);}
 .wc.active-market .wc-top{border-bottom-color:rgba(0,255,136,.25);}
 .wc.active-market .wc-country{color:var(--grn);}
-.wc.active-market .wc-top::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:var(--grn);box-shadow:0 0 8px var(--grn);
-}
+.wc.active-market .wc-top::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grn);box-shadow:0 0 8px var(--grn);}
 .wc.closed-market .wc-country{color:rgba(255,230,180,.55);}
-
-/* top row: flag + country + status dot */
-.wc-top{
-  display:flex;align-items:center;gap:6px;
-  padding:7px 10px 5px;
-  border-bottom:1px solid rgba(255,153,0,.08);
-  position:relative;
-  flex:0 0 auto;
-}
-/* country name — clear, readable */
-.wc-country{
-  font-family:'Rajdhani',sans-serif;
-  font-size:12px;
-  font-weight:700;
-  color:#fff0d8;
-  letter-spacing:.3px;
-  white-space:nowrap;
-  flex:1;
-  line-height:1;
-}
+.wc-top{display:flex;align-items:center;gap:6px;padding:7px 10px 5px;border-bottom:1px solid rgba(255,153,0,.08);position:relative;flex:0 0 auto;}
+.wc-country{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;color:#fff0d8;letter-spacing:.3px;white-space:nowrap;flex:1;line-height:1;}
 .wc-flag{font-size:13px;flex-shrink:0;line-height:1;}
-
-/* status dot */
-.wc-status-dot{
-  width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-left:auto;
-}
-.wc.active-market .wc-status-dot{
-  background:var(--grn);box-shadow:0 0 6px var(--grn);
-  animation:blink 1.4s ease-in-out infinite;
-}
-.wc.closed-market .wc-status-dot{
-  background:rgba(255,34,85,.4);
-}
-
-/* bottom row: time + timezone */
-.wc-bot{
-  display:flex;align-items:baseline;justify-content:space-between;
-  padding:5px 10px 7px;gap:6px;
-}
-.wc-time{
-  font-family:'Share Tech Mono',monospace;
-  font-size:14px;
-  color:var(--cyan);
-  text-shadow:0 0 8px rgba(255,153,0,.3);
-  line-height:1;
-  white-space:nowrap;
-}
-.wc-zone{
-  font-family:'Orbitron',monospace;
-  font-size:6px;
-  letter-spacing:1.5px;
-  color:rgba(255,153,0,.45);
-  white-space:nowrap;
-}
+.wc-status-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-left:auto;}
+.wc.active-market .wc-status-dot{background:var(--grn);box-shadow:0 0 6px var(--grn);animation:blink 1.4s ease-in-out infinite;}
+.wc.closed-market .wc-status-dot{background:rgba(255,34,85,.4);}
+.wc-bot{display:flex;align-items:baseline;justify-content:space-between;padding:5px 10px 7px;gap:6px;}
+.wc-time{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--cyan);text-shadow:0 0 8px rgba(255,153,0,.3);line-height:1;white-space:nowrap;}
+.wc-zone{font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1.5px;color:rgba(255,153,0,.45);white-space:nowrap;}
 
 /* ══ HEADER RIGHT PILLS ══ */
 .hright{display:flex;gap:5px;flex-shrink:0;align-items:center;}
-.pill{
-  padding:4px 8px;font-size:7px;letter-spacing:1.5px;font-family:'Orbitron',sans-serif;
-  text-transform:uppercase;border:1px solid var(--bc);color:var(--t2);background:rgba(255,153,0,.03);
-  clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);
-  white-space:nowrap;
-}
+.pill{padding:4px 8px;font-size:7px;letter-spacing:1.5px;font-family:'Orbitron',sans-serif;text-transform:uppercase;border:1px solid var(--bc);color:var(--t2);background:rgba(255,153,0,.03);clip-path:polygon(5px 0%,100% 0%,calc(100% - 5px) 100%,0% 100%);white-space:nowrap;}
 .pill.g{border-color:rgba(0,255,136,.3);color:var(--grn);background:rgba(0,255,136,.04)}
 .pill.p{border-color:rgba(19,136,8,.3);color:#22cc22;background:rgba(19,136,8,.04)}
 
 /* ══ MARKET BAR ══ */
-.mbar{
-  background:rgba(0,0,0,.82);
-  border-bottom:1px solid rgba(255,153,0,.12);
-  position:relative;z-index:5;
-  overflow:hidden;
-  display:flex;
-  flex-direction:row;
-  align-items:stretch;
-}
-.mbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,var(--cyan),var(--pink),var(--yel),var(--pur),var(--cyan));opacity:.35;}
-
-.mbar-row{
-  display:flex;
-  align-items:stretch;
-  flex:1;
-  min-width:0;
-}
+.mbar{background:rgba(0,0,0,.82);border-bottom:1px solid rgba(255,153,0,.12);position:relative;z-index:5;overflow:hidden;display:flex;flex-direction:row;align-items:stretch;}
+.mbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--cyan),var(--pink),var(--yel),var(--pur),var(--cyan));opacity:.35;}
+.mbar-row{display:flex;align-items:stretch;flex:1;min-width:0;}
 .mbar-row:last-child{border-bottom:none;}
-
-.mbar-divider{
-  width:1px;
-  background:linear-gradient(180deg,transparent,rgba(255,153,0,.3),transparent);
-  flex-shrink:0;
-  align-self:stretch;
-  margin:4px 0;
-}
-
-.mbar-label{
-  display:flex;align-items:center;justify-content:center;flex-direction:column;
-  gap:3px;padding:6px 8px;flex-shrink:0;
-  width:38px;
-}
-.mbar-label.india{
-  background:linear-gradient(180deg,rgba(255,153,0,.06),rgba(255,153,0,.02));
-  border-right:1px solid rgba(255,153,0,.12);
-}
-.mbar-label.global{
-  background:linear-gradient(180deg,rgba(19,136,8,.05),rgba(19,136,8,.01));
-  border-right:1px solid rgba(19,136,8,.12);
-}
+.mbar-divider{width:1px;background:linear-gradient(180deg,transparent,rgba(255,153,0,.3),transparent);flex-shrink:0;align-self:stretch;margin:4px 0;}
+.mbar-label{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;padding:6px 8px;flex-shrink:0;width:38px;}
+.mbar-label.india{background:linear-gradient(180deg,rgba(255,153,0,.06),rgba(255,153,0,.02));border-right:1px solid rgba(255,153,0,.12);}
+.mbar-label.global{background:linear-gradient(180deg,rgba(19,136,8,.05),rgba(19,136,8,.01));border-right:1px solid rgba(19,136,8,.12);}
 .mbar-label-flag{font-size:12px;line-height:1;}
-.mbar-label-txt{
-  writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);
-  font-family:'Orbitron',monospace;font-size:5px;letter-spacing:2px;
-}
+.mbar-label-txt{writing-mode:vertical-rl;text-orientation:mixed;transform:rotate(180deg);font-family:'Orbitron',monospace;font-size:5px;letter-spacing:2px;}
 .mbar-label.india .mbar-label-txt{color:var(--cyan);}
 .mbar-label.global .mbar-label-txt{color:#22cc22;}
-
 .mbar-items{display:flex;overflow-x:auto;scrollbar-width:none;align-items:stretch;flex:1;}
 .mbar-items::-webkit-scrollbar{display:none;}
-
-.mbar-item{
-  display:flex;flex-direction:column;justify-content:center;
-  padding:7px 14px 6px;
-  border-right:1px solid rgba(255,153,0,.06);
-  flex-shrink:0;min-width:100px;position:relative;
-  transition:background .2s;
-}
+.mbar-item{display:flex;flex-direction:column;justify-content:center;padding:7px 14px 6px;border-right:1px solid rgba(255,153,0,.06);flex-shrink:0;min-width:100px;position:relative;transition:background .2s;}
 .mbar-item:hover{background:rgba(255,153,0,.03);}
 .mbar-item:last-child{border-right:none;}
 .mbar-item::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--ic,rgba(255,153,0,.3));opacity:.4;}
-
 .mbar-name{font-family:'Orbitron',monospace;font-size:6.5px;letter-spacing:1.5px;color:rgba(255,200,120,.9);margin-bottom:3px;white-space:nowrap;}
 .mbar-val{font-family:'Share Tech Mono',monospace;font-size:14px;font-weight:700;color:var(--ic,var(--tx));text-shadow:0 0 10px var(--is,rgba(255,153,0,.5));line-height:1;white-space:nowrap;transition:color .3s;}
 .mbar-chg{font-family:'Share Tech Mono',monospace;font-size:9px;margin-top:2px;white-space:nowrap;display:flex;align-items:center;gap:3px;}
@@ -267,16 +156,13 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .mbar-chg.dn{color:var(--red);}
 .mbar-chg.vix{color:var(--yel);}
 .mbar-item.is-vix .mbar-val{color:var(--yel);text-shadow:0 0 8px rgba(255,208,128,.35);}
-
 @keyframes val-flash{0%{opacity:.4}50%{opacity:1}100%{opacity:1}}
 .val-updated{animation:val-flash .5s ease;}
-
 .mbar-src{position:absolute;bottom:2px;left:6px;font-family:'Orbitron',monospace;font-size:4.5px;letter-spacing:1px;opacity:.25;}
 .mbar-updated{position:absolute;top:3px;right:6px;font-family:'Orbitron',monospace;font-size:5.5px;letter-spacing:1px;color:rgba(255,153,0,.2);z-index:2;}
 
 /* ══ TICKER ══ */
-.tkr{background:rgba(4,3,12,.92);border-top:1px solid rgba(255,153,0,.3);border-bottom:1px solid rgba(255,153,0,.3);
-  padding:5px 0;overflow:hidden;white-space:nowrap;position:relative;box-shadow:0 0 20px rgba(255,153,0,.08);}
+.tkr{background:rgba(4,3,12,.92);border-top:1px solid rgba(255,153,0,.3);border-bottom:1px solid rgba(255,153,0,.3);padding:5px 0;overflow:hidden;white-space:nowrap;position:relative;box-shadow:0 0 20px rgba(255,153,0,.08);}
 .tkr::before,.tkr::after{content:'';position:absolute;top:0;bottom:0;width:50px;z-index:2;pointer-events:none;}
 .tkr::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
 .tkr::after{right:0;background:linear-gradient(-90deg,var(--bg),transparent)}
@@ -322,7 +208,6 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 /* ══ CARDS ══ */
 .sc-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:0;}
 .sc-cards-4{display:grid;grid-template-columns:repeat(4,1fr);gap:0;}
-
 .sc-card{padding:14px;border-right:1px solid rgba(255,153,0,.15);cursor:pointer;position:relative;overflow:hidden;transition:background .2s;text-decoration:none;color:inherit;display:block;background:rgba(18,14,30,.97);}
 .sc-card:last-child{border-right:none;}
 .sc-card:hover{background:rgba(255,153,0,.07);}
@@ -350,17 +235,8 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .sc-card-btn-line{width:16px;height:1px;background:var(--cc,var(--cyan));box-shadow:0 0 6px currentColor;transition:width .18s;}
 .sc-card:hover .sc-card-btn{gap:8px;}
 .sc-card:hover .sc-card-btn-line{width:24px;}
-
-.new-badge{
-  position:absolute;top:8px;right:8px;z-index:10;
-  font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1.5px;
-  color:var(--bg);background:var(--grn);padding:2px 6px;
-  box-shadow:0 0 10px rgba(0,255,136,.6);
-  clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);
-  animation:newbadge 2s ease-in-out infinite;
-}
+.new-badge{position:absolute;top:8px;right:8px;z-index:10;font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1.5px;color:var(--bg);background:var(--grn);padding:2px 6px;box-shadow:0 0 10px rgba(0,255,136,.6);clip-path:polygon(4px 0%,100% 0%,calc(100% - 4px) 100%,0% 100%);animation:newbadge 2s ease-in-out infinite;}
 @keyframes newbadge{0%,100%{box-shadow:0 0 10px rgba(0,255,136,.6)}50%{box-shadow:0 0 20px rgba(0,255,136,.9),0 0 35px rgba(0,255,136,.4)}}
-
 @keyframes rpl{0%{transform:scale(0);opacity:.35}100%{transform:scale(4);opacity:0}}
 .rpl{position:absolute;width:60px;height:60px;border-radius:50%;background:rgba(255,153,0,.15);pointer-events:none;animation:rpl .55s ease-out forwards;transform-origin:center;z-index:5;}
 
@@ -368,69 +244,9 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 footer{
   background:rgba(0,0,0,.85);border-top:1px solid var(--bc);
   padding:0;
-  display:flex;flex-direction:column;
   font-family:'Orbitron',sans-serif;
   box-shadow:0 0 20px rgba(255,153,0,.06);
 }
-
-.vc-bar{
-  display:flex;align-items:stretch;
-  border-bottom:1px solid rgba(255,153,0,.1);
-  background:rgba(0,0,0,.6);
-  overflow-x:auto;
-  scrollbar-width:none;
-  position:relative;
-}
-.vc-bar::-webkit-scrollbar{display:none;}
-.vc-bar::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--grn),var(--cyan),#22cc22,var(--cyan),var(--grn),transparent);opacity:.5;}
-
-.vc-label-cell{
-  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:2px;
-  padding:6px 10px;flex-shrink:0;
-  background:linear-gradient(180deg,rgba(0,255,136,.06),rgba(0,255,136,.01));
-  border-right:1px solid rgba(0,255,136,.15);
-  min-width:52px;
-}
-.vc-label-icon{font-size:14px;line-height:1;}
-.vc-label-txt{font-family:'Orbitron',monospace;font-size:5px;letter-spacing:2px;color:rgba(0,255,136,.6);text-transform:uppercase;white-space:nowrap;}
-
-.vc-cell{
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  padding:8px 18px;gap:2px;
-  border-right:1px solid rgba(255,153,0,.07);
-  flex-shrink:0;min-width:100px;
-  position:relative;
-  transition:background .2s;
-}
-.vc-cell:last-child{border-right:none;}
-.vc-cell:hover{background:rgba(255,153,0,.03);}
-.vc-cell::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:var(--vc,var(--cyan));box-shadow:0 0 6px var(--vc,var(--cyan));opacity:.5;}
-.vc-cell-lbl{font-family:'Orbitron',monospace;font-size:5.5px;letter-spacing:2px;color:var(--t3);text-transform:uppercase;white-space:nowrap;}
-.vc-cell-val{font-family:'Share Tech Mono',monospace;font-size:18px;font-weight:700;
-  color:var(--vc,var(--cyan));text-shadow:0 0 12px currentColor;line-height:1;
-  transition:all .4s;white-space:nowrap;}
-.vc-cell-sub{font-family:'Orbitron',monospace;font-size:5px;letter-spacing:1.5px;color:var(--t3);white-space:nowrap;}
-
-.vc-pulse{display:inline-block;width:6px;height:6px;border-radius:50%;
-  background:var(--grn);box-shadow:0 0 8px var(--grn);
-  animation:blink 1.2s ease-in-out infinite;
-  margin-right:3px;vertical-align:middle;flex-shrink:0;}
-
-.vc-right{
-  margin-left:auto;flex-shrink:0;
-  display:flex;flex-direction:column;align-items:flex-end;justify-content:center;
-  padding:6px 12px;gap:3px;
-  border-left:1px solid rgba(255,153,0,.07);
-}
-.vc-upd{font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1.5px;color:var(--t3);}
-.vc-upd span{color:var(--t2);}
-.vc-src{font-family:'Orbitron',monospace;font-size:5px;letter-spacing:1px;color:rgba(255,153,0,.2);}
-
-@keyframes num-flash{0%{opacity:.3;transform:translateY(-4px)}100%{opacity:1;transform:translateY(0)}}
-.num-updated{animation:num-flash .35s ease;}
-
 .footer-bottom{
   padding:7px 14px;
   display:flex;justify-content:space-between;flex-wrap:wrap;gap:5px;
@@ -438,35 +254,6 @@ footer{
 .fl{font-size:7px;color:var(--t3);letter-spacing:1.5px;text-transform:uppercase}
 .fl span{color:var(--cyan);text-shadow:0 0 8px rgba(255,153,0,.4)}
 .fr{font-size:7px;color:rgba(255,153,0,.45);letter-spacing:1px}
-
-/* ══ FLOATING CORNER BADGE ══ */
-#vc-corner{
-  position:fixed;bottom:20px;left:16px;z-index:9990;
-  background:rgba(0,0,0,.92);
-  border:1px solid rgba(255,153,0,.22);
-  padding:9px 14px 8px;
-  clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);
-  box-shadow:0 0 24px rgba(255,153,0,.1),inset 0 0 14px rgba(255,153,0,.02);
-  min-width:148px;
-  cursor:default;
-  transition:opacity .3s,transform .3s;
-}
-#vc-corner::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,var(--grn),var(--cyan),#22cc22);opacity:.55;}
-#vc-corner.hidden-badge{opacity:0;pointer-events:none;transform:translateY(10px);}
-.vc-corner-title{font-family:'Orbitron',monospace;font-size:5.5px;letter-spacing:2px;color:var(--t3);margin-bottom:5px;text-transform:uppercase;}
-.vc-corner-main{display:flex;align-items:center;gap:8px;margin-bottom:3px;}
-.vc-corner-ico{font-size:16px;}
-.vc-corner-nums{display:flex;flex-direction:column;gap:1px;}
-.vc-corner-big{font-family:'Share Tech Mono',monospace;font-size:20px;font-weight:700;line-height:1;color:var(--grn);text-shadow:0 0 12px rgba(0,255,136,.5);}
-.vc-corner-lbl{font-family:'Orbitron',monospace;font-size:5px;letter-spacing:1.5px;color:rgba(0,255,136,.55);}
-.vc-corner-divider{width:100%;height:1px;background:rgba(255,153,0,.08);margin:5px 0;}
-.vc-corner-row2{display:flex;align-items:center;justify-content:space-between;width:100%;}
-.vc-stat{font-family:'Orbitron',monospace;font-size:6px;letter-spacing:1px;color:var(--t3);display:flex;align-items:center;gap:3px;}
-.vc-stat .n{font-family:'Share Tech Mono',monospace;font-size:12px;font-weight:700;}
-.vc-corner-foot{display:flex;align-items:center;gap:4px;margin-top:5px;}
-.vc-corner-pulse-dot{width:5px;height:5px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.2s ease-in-out infinite;flex-shrink:0;}
-.vc-corner-status{font-family:'Orbitron',monospace;font-size:5.5px;color:rgba(0,255,136,.65);letter-spacing:1.5px;}
 
 /* ══ FLOATING BACK BUTTON ══ */
 #floatback{position:fixed;bottom:20px;right:16px;z-index:9999;display:none;align-items:center;gap:6px;padding:9px 14px;
@@ -486,9 +273,7 @@ footer{
 /* ══ IFRAME VIEWER ══ */
 #viewer{position:fixed;inset:0;z-index:500;display:none;flex-direction:column;background:var(--bg);}
 #viewer.open{display:flex}
-#vbar{background:rgba(0,0,0,.92);border-bottom:1px solid var(--cyan);padding:6px 12px;
-  display:flex;align-items:center;gap:10px;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;
-  flex-shrink:0;box-shadow:0 0 20px rgba(255,153,0,.15);position:relative;z-index:501;}
+#vbar{background:rgba(0,0,0,.92);border-bottom:1px solid var(--cyan);padding:6px 12px;display:flex;align-items:center;gap:10px;font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;flex-shrink:0;box-shadow:0 0 20px rgba(255,153,0,.15);position:relative;z-index:501;}
 #vtitle{color:var(--cyan);font-weight:700;font-size:10px;text-shadow:0 0 12px rgba(255,153,0,.5);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 #vopen{padding:5px 10px;font-size:7.5px;letter-spacing:2px;font-family:'Orbitron',sans-serif;text-transform:uppercase;border:1px solid rgba(255,153,0,.3);color:var(--cyan);background:rgba(255,153,0,.05);cursor:pointer;transition:background .15s;touch-action:manipulation;}
 #vopen:hover{background:rgba(255,153,0,.12)}
@@ -505,22 +290,12 @@ footer{
    RESPONSIVE
    ═══════════════════════════════════════════════ */
 @media(min-width:1280px){
-  .wc{min-width:100px;}
-  .wc-time{font-size:15px;}
-  .wc-country{font-size:13px;}
-  .bname{font-size:15px;}
-  .logo{width:46px;height:46px;font-size:20px;}
-  .mbar-item{min-width:110px;}
-  .mbar-val{font-size:15px;}
-  .mbar-chg{font-size:10px;}
-  .sb .v{font-size:16px;}
-  .sc-card-name{font-size:12px;}
-  .sc-card-desc{font-size:12px;}
-  .groups{margin:14px 18px 18px;}
-  .sec{padding:11px 18px 9px;}
+  .wc{min-width:100px;}.wc-time{font-size:15px;}.wc-country{font-size:13px;}
+  .bname{font-size:15px;}.logo{width:46px;height:46px;font-size:20px;}
+  .mbar-item{min-width:110px;}.mbar-val{font-size:15px;}.mbar-chg{font-size:10px;}
+  .sb .v{font-size:16px;}.sc-card-name{font-size:12px;}.sc-card-desc{font-size:12px;}
+  .groups{margin:14px 18px 18px;}.sec{padding:11px 18px 9px;}
   .footer-bottom{padding:9px 18px;}
-  .vc-cell{min-width:110px;padding:9px 20px;}
-  .vc-cell-val{font-size:20px;}
 }
 @media(max-width:959px){
   .stats{grid-template-columns:repeat(2,1fr);}
@@ -531,56 +306,33 @@ footer{
   .sc-cards-4 .sc-card:nth-child(2n){border-right:none;}
   .sc-cards-4 .sc-card:nth-child(n+3){border-top:1px solid rgba(255,153,0,.07);}
   .wc#wc-hkt,.wc#wc-jst{display:none;}
-  .vc-cell{min-width:90px;padding:7px 12px;}
-  .vc-cell-val{font-size:16px;}
 }
 @media(max-width:767px){
   header{flex-wrap:wrap;padding:8px 12px 6px;gap:6px;}
-  .brand{order:1;flex:1;}
-  .hright{order:2;}
-  .wclocks{order:3;width:100%;}
+  .brand{order:1;flex:1;}.hright{order:2;}.wclocks{order:3;width:100%;}
   .sc-cards{grid-template-columns:repeat(2,1fr);}
   .sc-cards-4{grid-template-columns:repeat(2,1fr);}
   .sc-card:nth-child(2n),.sc-cards-4 .sc-card:nth-child(2n){border-right:none;}
   .sc-card:nth-child(n+3),.sc-cards-4 .sc-card:nth-child(n+3){border-top:1px solid rgba(255,153,0,.07);}
-  #vc-corner{bottom:14px;left:10px;}
 }
 @media(max-width:599px){
-  .tb{padding:3px 10px;}
-  header{padding:8px 10px 6px;}
-  .brand{gap:8px;}
-  .logo{width:34px;height:34px;font-size:15px;}
-  .bname{font-size:11px;letter-spacing:1px;}
-  .bsub{display:none;}
-  .pill.p{display:none;}
-  .wc{min-width:72px;}
-  .wc-time{font-size:12px;}
-  .wc-country{font-size:10px;}
-  .wc-flag{font-size:11px;}
+  .tb{padding:3px 10px;}header{padding:8px 10px 6px;}.brand{gap:8px;}
+  .logo{width:34px;height:34px;font-size:15px;}.bname{font-size:11px;letter-spacing:1px;}
+  .bsub{display:none;}.pill.p{display:none;}
+  .wc{min-width:72px;}.wc-time{font-size:12px;}.wc-country{font-size:10px;}.wc-flag{font-size:11px;}
   .wc#wc-hkt,.wc#wc-jst{display:none;}
-  .mbar-item{min-width:84px;padding:5px 10px;}
-  .mbar-val{font-size:12px;}
-  .tkr{display:none;}
-  .stats{grid-template-columns:repeat(2,1fr);}
+  .mbar-item{min-width:84px;padding:5px 10px;}.mbar-val{font-size:12px;}
+  .tkr{display:none;}.stats{grid-template-columns:repeat(2,1fr);}
   .groups{margin:8px 8px 12px;}
   .sc-cards,.sc-cards-4{grid-template-columns:1fr;}
   .sc-card{border-right:none;border-bottom:1px solid rgba(255,153,0,.07);padding:12px;}
   .footer-bottom{padding:7px 10px;flex-direction:column;}
-  #vc-corner{bottom:12px;left:8px;min-width:130px;}
 }
-@media(max-width:380px){
-  .bname{font-size:10px;}
-  .wc-time{font-size:11px;}
-  .wc-country{font-size:9px;}
-}
-@media(hover:none){
-  .sc-card:hover{background:transparent;}
-  .sc-card:active{background:rgba(0,245,255,.04);}
-}
+@media(max-width:380px){.bname{font-size:10px;}.wc-time{font-size:11px;}.wc-country{font-size:9px;}}
+@media(hover:none){.sc-card:hover{background:transparent;}.sc-card:active{background:rgba(0,245,255,.04);}}
 @supports(padding-bottom:env(safe-area-inset-bottom)){
   footer{padding-bottom:env(safe-area-inset-bottom);}
   #floatback{bottom:calc(20px + env(safe-area-inset-bottom));}
-  #vc-corner{bottom:calc(20px + env(safe-area-inset-bottom));}
 }
 </style>
 </head>
@@ -607,84 +359,34 @@ footer{
     </div>
   </div>
 
-  <!-- ══ WORLD CLOCK — OPTION C ══ -->
   <div class="wclocks" id="wclocks">
     <div class="wc" id="wc-ist">
-      <div class="wc-top">
-        <div class="wc-flag">🇮🇳</div>
-        <div class="wc-country">INDIA</div>
-        <div class="wc-status-dot"></div>
-      </div>
-      <div class="wc-bot">
-        <div class="wc-time" id="wt-ist">--:--:--</div>
-        <div class="wc-zone">IST</div>
-      </div>
+      <div class="wc-top"><div class="wc-flag">🇮🇳</div><div class="wc-country">INDIA</div><div class="wc-status-dot"></div></div>
+      <div class="wc-bot"><div class="wc-time" id="wt-ist">--:--:--</div><div class="wc-zone">IST</div></div>
     </div>
     <div class="wc" id="wc-sgt">
-      <div class="wc-top">
-        <div class="wc-flag">🇸🇬</div>
-        <div class="wc-country">SINGAPORE</div>
-        <div class="wc-status-dot"></div>
-      </div>
-      <div class="wc-bot">
-        <div class="wc-time" id="wt-sgt">--:--:--</div>
-        <div class="wc-zone">SGT</div>
-      </div>
+      <div class="wc-top"><div class="wc-flag">🇸🇬</div><div class="wc-country">SINGAPORE</div><div class="wc-status-dot"></div></div>
+      <div class="wc-bot"><div class="wc-time" id="wt-sgt">--:--:--</div><div class="wc-zone">SGT</div></div>
     </div>
     <div class="wc" id="wc-hkt">
-      <div class="wc-top">
-        <div class="wc-flag">🇭🇰</div>
-        <div class="wc-country">HONG KONG</div>
-        <div class="wc-status-dot"></div>
-      </div>
-      <div class="wc-bot">
-        <div class="wc-time" id="wt-hkt">--:--:--</div>
-        <div class="wc-zone">HKT</div>
-      </div>
+      <div class="wc-top"><div class="wc-flag">🇭🇰</div><div class="wc-country">HONG KONG</div><div class="wc-status-dot"></div></div>
+      <div class="wc-bot"><div class="wc-time" id="wt-hkt">--:--:--</div><div class="wc-zone">HKT</div></div>
     </div>
     <div class="wc" id="wc-gmt">
-      <div class="wc-top">
-        <div class="wc-flag">🇬🇧</div>
-        <div class="wc-country">LONDON</div>
-        <div class="wc-status-dot"></div>
-      </div>
-      <div class="wc-bot">
-        <div class="wc-time" id="wt-gmt">--:--:--</div>
-        <div class="wc-zone" id="wz-gmt">GMT</div>
-      </div>
+      <div class="wc-top"><div class="wc-flag">🇬🇧</div><div class="wc-country">LONDON</div><div class="wc-status-dot"></div></div>
+      <div class="wc-bot"><div class="wc-time" id="wt-gmt">--:--:--</div><div class="wc-zone" id="wz-gmt">GMT</div></div>
     </div>
     <div class="wc" id="wc-cet">
-      <div class="wc-top">
-        <div class="wc-flag">🇪🇺</div>
-        <div class="wc-country">FRANKFURT</div>
-        <div class="wc-status-dot"></div>
-      </div>
-      <div class="wc-bot">
-        <div class="wc-time" id="wt-cet">--:--:--</div>
-        <div class="wc-zone" id="wz-cet">CET</div>
-      </div>
+      <div class="wc-top"><div class="wc-flag">🇪🇺</div><div class="wc-country">FRANKFURT</div><div class="wc-status-dot"></div></div>
+      <div class="wc-bot"><div class="wc-time" id="wt-cet">--:--:--</div><div class="wc-zone" id="wz-cet">CET</div></div>
     </div>
     <div class="wc" id="wc-est">
-      <div class="wc-top">
-        <div class="wc-flag">🇺🇸</div>
-        <div class="wc-country">NEW YORK</div>
-        <div class="wc-status-dot"></div>
-      </div>
-      <div class="wc-bot">
-        <div class="wc-time" id="wt-est">--:--:--</div>
-        <div class="wc-zone" id="wz-est">EST</div>
-      </div>
+      <div class="wc-top"><div class="wc-flag">🇺🇸</div><div class="wc-country">NEW YORK</div><div class="wc-status-dot"></div></div>
+      <div class="wc-bot"><div class="wc-time" id="wt-est">--:--:--</div><div class="wc-zone" id="wz-est">EST</div></div>
     </div>
     <div class="wc" id="wc-jst">
-      <div class="wc-top">
-        <div class="wc-flag">🇯🇵</div>
-        <div class="wc-country">TOKYO</div>
-        <div class="wc-status-dot"></div>
-      </div>
-      <div class="wc-bot">
-        <div class="wc-time" id="wt-jst">--:--:--</div>
-        <div class="wc-zone">JST</div>
-      </div>
+      <div class="wc-top"><div class="wc-flag">🇯🇵</div><div class="wc-country">TOKYO</div><div class="wc-status-dot"></div></div>
+      <div class="wc-bot"><div class="wc-time" id="wt-jst">--:--:--</div><div class="wc-zone">JST</div></div>
     </div>
   </div>
 
@@ -704,34 +406,24 @@ footer{
     </div>
     <div class="mbar-items" id="mbar-india">
       <div class="mbar-item" id="mi-n50" style="--ic:#ff9900;--is:rgba(255,153,0,.3);">
-        <div class="mbar-name">NIFTY 50</div>
-        <div class="mbar-val" id="mv-n50">···</div>
-        <div class="mbar-chg" id="mc-n50">···</div>
-        <div class="mbar-src" id="ms-n50"></div>
+        <div class="mbar-name">NIFTY 50</div><div class="mbar-val" id="mv-n50">···</div>
+        <div class="mbar-chg" id="mc-n50">···</div><div class="mbar-src" id="ms-n50"></div>
       </div>
       <div class="mbar-item" id="mi-bn" style="--ic:#138808;--is:rgba(19,136,8,.3);">
-        <div class="mbar-name">BANK NIFTY</div>
-        <div class="mbar-val" id="mv-bn">···</div>
-        <div class="mbar-chg" id="mc-bn">···</div>
-        <div class="mbar-src" id="ms-bn"></div>
+        <div class="mbar-name">BANK NIFTY</div><div class="mbar-val" id="mv-bn">···</div>
+        <div class="mbar-chg" id="mc-bn">···</div><div class="mbar-src" id="ms-bn"></div>
       </div>
       <div class="mbar-item is-vix" id="mi-vix" style="--ic:#ffd080;--is:rgba(255,208,128,.3);">
-        <div class="mbar-name">INDIA VIX</div>
-        <div class="mbar-val" id="mv-vix">···</div>
-        <div class="mbar-chg vix" id="mc-vix">···</div>
-        <div class="mbar-src" id="ms-vix"></div>
+        <div class="mbar-name">INDIA VIX</div><div class="mbar-val" id="mv-vix">···</div>
+        <div class="mbar-chg vix" id="mc-vix">···</div><div class="mbar-src" id="ms-vix"></div>
       </div>
       <div class="mbar-item" id="mi-fn" style="--ic:var(--grn);--is:rgba(0,255,136,.3);">
-        <div class="mbar-name">FINNIFTY</div>
-        <div class="mbar-val" id="mv-fn">···</div>
-        <div class="mbar-chg" id="mc-fn">···</div>
-        <div class="mbar-src" id="ms-fn"></div>
+        <div class="mbar-name">FINNIFTY</div><div class="mbar-val" id="mv-fn">···</div>
+        <div class="mbar-chg" id="mc-fn">···</div><div class="mbar-src" id="ms-fn"></div>
       </div>
       <div class="mbar-item" id="mi-sx" style="--ic:rgba(255,153,0,.8);--is:rgba(255,153,0,.2);">
-        <div class="mbar-name">SENSEX</div>
-        <div class="mbar-val" id="mv-sx">···</div>
-        <div class="mbar-chg" id="mc-sx">···</div>
-        <div class="mbar-src" id="ms-sx"></div>
+        <div class="mbar-name">SENSEX</div><div class="mbar-val" id="mv-sx">···</div>
+        <div class="mbar-chg" id="mc-sx">···</div><div class="mbar-src" id="ms-sx"></div>
       </div>
     </div>
   </div>
@@ -743,46 +435,32 @@ footer{
     </div>
     <div class="mbar-items" id="mbar-global">
       <div class="mbar-item" id="mi-sp" style="--ic:#3344cc;--is:rgba(51,68,204,.3);">
-        <div class="mbar-name">S&amp;P 500</div>
-        <div class="mbar-val" id="mv-sp">···</div>
-        <div class="mbar-chg" id="mc-sp">···</div>
-        <div class="mbar-src" id="ms-sp"></div>
+        <div class="mbar-name">S&amp;P 500</div><div class="mbar-val" id="mv-sp">···</div>
+        <div class="mbar-chg" id="mc-sp">···</div><div class="mbar-src" id="ms-sp"></div>
       </div>
       <div class="mbar-item" id="mi-ndq" style="--ic:#6688ff;--is:rgba(102,136,255,.35);">
-        <div class="mbar-name">NASDAQ</div>
-        <div class="mbar-val" id="mv-ndq">···</div>
-        <div class="mbar-chg" id="mc-ndq">···</div>
-        <div class="mbar-src" id="ms-ndq"></div>
+        <div class="mbar-name">NASDAQ</div><div class="mbar-val" id="mv-ndq">···</div>
+        <div class="mbar-chg" id="mc-ndq">···</div><div class="mbar-src" id="ms-ndq"></div>
       </div>
       <div class="mbar-item" id="mi-dji" style="--ic:#8899ff;--is:rgba(136,153,255,.2);">
-        <div class="mbar-name">DOW JONES</div>
-        <div class="mbar-val" id="mv-dji">···</div>
-        <div class="mbar-chg" id="mc-dji">···</div>
-        <div class="mbar-src" id="ms-dji"></div>
+        <div class="mbar-name">DOW JONES</div><div class="mbar-val" id="mv-dji">···</div>
+        <div class="mbar-chg" id="mc-dji">···</div><div class="mbar-src" id="ms-dji"></div>
       </div>
       <div class="mbar-item" id="mi-inr" style="--ic:#ffd080;--is:rgba(255,208,128,.25);">
-        <div class="mbar-name">USD/INR</div>
-        <div class="mbar-val" id="mv-inr">···</div>
-        <div class="mbar-chg" id="mc-inr">···</div>
-        <div class="mbar-src" id="ms-inr"></div>
+        <div class="mbar-name">USD/INR</div><div class="mbar-val" id="mv-inr">···</div>
+        <div class="mbar-chg" id="mc-inr">···</div><div class="mbar-src" id="ms-inr"></div>
       </div>
       <div class="mbar-item" id="mi-crude" style="--ic:rgba(255,160,0,.9);--is:rgba(255,160,0,.25);">
-        <div class="mbar-name">CRUDE OIL</div>
-        <div class="mbar-val" id="mv-crude">···</div>
-        <div class="mbar-chg" id="mc-crude">···</div>
-        <div class="mbar-src" id="ms-crude"></div>
+        <div class="mbar-name">CRUDE OIL</div><div class="mbar-val" id="mv-crude">···</div>
+        <div class="mbar-chg" id="mc-crude">···</div><div class="mbar-src" id="ms-crude"></div>
       </div>
       <div class="mbar-item" id="mi-gold" style="--ic:#ffd700;--is:rgba(255,215,0,.35);">
-        <div class="mbar-name">GOLD</div>
-        <div class="mbar-val" id="mv-gold">···</div>
-        <div class="mbar-chg" id="mc-gold">···</div>
-        <div class="mbar-src" id="ms-gold"></div>
+        <div class="mbar-name">GOLD</div><div class="mbar-val" id="mv-gold">···</div>
+        <div class="mbar-chg" id="mc-gold">···</div><div class="mbar-src" id="ms-gold"></div>
       </div>
       <div class="mbar-item" id="mi-silver" style="--ic:#c0c0c0;--is:rgba(192,192,192,.3);">
-        <div class="mbar-name">SILVER</div>
-        <div class="mbar-val" id="mv-silver">···</div>
-        <div class="mbar-chg" id="mc-silver">···</div>
-        <div class="mbar-src" id="ms-silver"></div>
+        <div class="mbar-name">SILVER</div><div class="mbar-val" id="mv-silver">···</div>
+        <div class="mbar-chg" id="mc-silver">···</div><div class="mbar-src" id="ms-silver"></div>
       </div>
     </div>
   </div>
@@ -794,18 +472,15 @@ footer{
 <!-- ══ STATS ══ -->
 <div class="stats">
   <div class="sb" style="--sc:#ff9900;--sg:'09'">
-    <div class="l">Nodes Online</div>
-    <div class="v">09</div>
+    <div class="l">Nodes Online</div><div class="v">09</div>
     <div class="s">All dashboards active</div>
   </div>
   <div class="sb" style="--sc:#00ff88;--sg:'IN'">
-    <div class="l">Indian Markets</div>
-    <div class="v">NSE · BSE</div>
+    <div class="l">Indian Markets</div><div class="v">NSE · BSE</div>
     <div class="s">Nifty · Sensex · OPT</div>
   </div>
   <div class="sb" style="--sc:#138808;--sg:'US'">
-    <div class="l">US Markets</div>
-    <div class="v">S&amp;P 500</div>
+    <div class="l">US Markets</div><div class="v">S&amp;P 500</div>
     <div class="s">500 stocks tracked</div>
   </div>
   <div class="sb" style="--sc:#3344cc;--sg:'◈'">
@@ -1026,65 +701,14 @@ footer{
 
 </div>
 
-<!-- ══ FOOTER ══ -->
+<!-- ══ FOOTER — simple text only, no stats bar ══ -->
 <footer>
-  <div class="vc-bar">
-    <div class="vc-label-cell">
-      <div class="vc-label-icon">👁️</div>
-      <div class="vc-label-txt">HUB<br>STATS</div>
-    </div>
-    <div class="vc-cell" style="--vc:var(--grn);">
-      <div class="vc-cell-lbl"><span class="vc-pulse"></span>Live Now</div>
-      <div class="vc-cell-val" id="vc-live">—</div>
-      <div class="vc-cell-sub">ACTIVE SESSIONS</div>
-    </div>
-    <div class="vc-cell" style="--vc:#ff9900;">
-      <div class="vc-cell-lbl">Today</div>
-      <div class="vc-cell-val" id="vc-today">—</div>
-      <div class="vc-cell-sub">VISITS TODAY</div>
-    </div>
-    <div class="vc-cell" style="--vc:#138808;">
-      <div class="vc-cell-lbl">Total</div>
-      <div class="vc-cell-val" id="vc-total">—</div>
-      <div class="vc-cell-sub">ALL TIME</div>
-    </div>
-    <div class="vc-cell" style="--vc:#ffd080;">
-      <div class="vc-cell-lbl">Peak Today</div>
-      <div class="vc-cell-val" id="vc-peak">—</div>
-      <div class="vc-cell-sub">MAX CONCURRENT</div>
-    </div>
-    <div class="vc-right">
-      <div class="vc-upd">UPD <span id="vc-ts">--:--</span> IST</div>
-      <div class="vc-src">COUNTAPI · LIVE</div>
-    </div>
-  </div>
   <div class="footer-bottom">
     <div class="fl"><span>NIFTY INDIAN MARKETS HUB</span> // CYBER_NEON v2.2 // 9_NODES_ACTIVE</div>
     <div class="fr">SELECT_NODE → OPEN // BACK → RETURN_TO_HUB</div>
   </div>
 </footer>
 
-</div>
-
-<!-- ══ FLOATING CORNER BADGE ══ -->
-<div id="vc-corner">
-  <div class="vc-corner-title">👁 Hub Visitors</div>
-  <div class="vc-corner-main">
-    <div class="vc-corner-ico">🟢</div>
-    <div class="vc-corner-nums">
-      <div class="vc-corner-big" id="vcc-live">—</div>
-      <div class="vc-corner-lbl">LIVE NOW</div>
-    </div>
-  </div>
-  <div class="vc-corner-divider"></div>
-  <div class="vc-corner-row2">
-    <div class="vc-stat">TODAY <span class="n" style="color:#ff9900;" id="vcc-today">—</span></div>
-    <div class="vc-stat">TOTAL <span class="n" style="color:#138808;" id="vcc-total">—</span></div>
-  </div>
-  <div class="vc-corner-foot">
-    <div class="vc-corner-pulse-dot"></div>
-    <div class="vc-corner-status">TRACKING ACTIVE</div>
-  </div>
 </div>
 
 <button id="floatback" onclick="closeViewer(false)">← HUB <span class="kbhint">ESC</span></button>
@@ -1107,24 +731,22 @@ function tick(){
 }
 tick();setInterval(tick,1000);
 
-/* ══ WORLD CLOCKS — Option C ══ */
+/* ══ WORLD CLOCKS ══ */
 var ZONES=[
-  {id:'ist', timeId:'wt-ist', zoneId:null,     tz:'Asia/Kolkata',    marketOpen:{h:9,m:15}, marketClose:{h:15,m:30}},
-  {id:'sgt', timeId:'wt-sgt', zoneId:null,     tz:'Asia/Singapore',  marketOpen:{h:6,m:30}, marketClose:{h:23,m:30}},
-  {id:'hkt', timeId:'wt-hkt', zoneId:null,     tz:'Asia/Hong_Kong',  marketOpen:{h:9,m:30}, marketClose:{h:16,m:0}},
-  {id:'gmt', timeId:'wt-gmt', zoneId:'wz-gmt', tz:'Europe/London',   marketOpen:{h:8,m:0},  marketClose:{h:16,m:30}},
-  {id:'cet', timeId:'wt-cet', zoneId:'wz-cet', tz:'Europe/Berlin',   marketOpen:{h:9,m:0},  marketClose:{h:17,m:30}},
-  {id:'est', timeId:'wt-est', zoneId:'wz-est', tz:'America/New_York',marketOpen:{h:9,m:30}, marketClose:{h:16,m:0}},
-  {id:'jst', timeId:'wt-jst', zoneId:null,     tz:'Asia/Tokyo',      marketOpen:{h:9,m:0},  marketClose:{h:15,m:30}}
+  {id:'ist',timeId:'wt-ist',zoneId:null,tz:'Asia/Kolkata',marketOpen:{h:9,m:15},marketClose:{h:15,m:30}},
+  {id:'sgt',timeId:'wt-sgt',zoneId:null,tz:'Asia/Singapore',marketOpen:{h:6,m:30},marketClose:{h:23,m:30}},
+  {id:'hkt',timeId:'wt-hkt',zoneId:null,tz:'Asia/Hong_Kong',marketOpen:{h:9,m:30},marketClose:{h:16,m:0}},
+  {id:'gmt',timeId:'wt-gmt',zoneId:'wz-gmt',tz:'Europe/London',marketOpen:{h:8,m:0},marketClose:{h:16,m:30}},
+  {id:'cet',timeId:'wt-cet',zoneId:'wz-cet',tz:'Europe/Berlin',marketOpen:{h:9,m:0},marketClose:{h:17,m:30}},
+  {id:'est',timeId:'wt-est',zoneId:'wz-est',tz:'America/New_York',marketOpen:{h:9,m:30},marketClose:{h:16,m:0}},
+  {id:'jst',timeId:'wt-jst',zoneId:null,tz:'Asia/Tokyo',marketOpen:{h:9,m:0},marketClose:{h:15,m:30}}
 ];
-
 function isMarketOpen(zone){
   var d=new Date(new Date().toLocaleString('en-US',{timeZone:zone.tz}));
   var day=d.getDay();if(day===0||day===6)return false;
   var mins=d.getHours()*60+d.getMinutes();
   return mins>=zone.marketOpen.h*60+zone.marketOpen.m&&mins<zone.marketClose.h*60+zone.marketClose.m;
 }
-
 function tickWorldClocks(){
   var now=new Date();
   ZONES.forEach(function(zone){
@@ -1134,13 +756,11 @@ function tickWorldClocks(){
     if(!el||!te)return;
     var timeStr=new Intl.DateTimeFormat('en-GB',{timeZone:zone.tz,hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(now);
     te.textContent=timeStr;
-    /* update timezone label for DST-aware zones */
     if(ze){
       if(zone.id==='gmt'){ze.textContent=new Date().toLocaleString('en-US',{timeZone:'Europe/London',timeZoneName:'short'}).split(' ').pop();}
       else if(zone.id==='cet'){ze.textContent=new Intl.DateTimeFormat('en',{timeZone:zone.tz,timeZoneName:'short'}).format(now).split(', ')[1]||'CET';}
       else if(zone.id==='est'){ze.textContent=new Date().toLocaleString('en-US',{timeZone:'America/New_York',timeZoneName:'short'}).split(' ').pop();}
     }
-    /* apply open/closed classes */
     var open=isMarketOpen(zone);
     el.classList.remove('active-market','closed-market');
     el.classList.add(open?'active-market':'closed-market');
@@ -1164,7 +784,6 @@ var MB_MAP=[
   {id:'gold',valId:'mv-gold',chgId:'mc-gold',srcId:'ms-gold',yfSym:'GC=F',fhSym:'OANDA:XAU_USD',nseKey:null,prefix:'$',isVix:false},
   {id:'silver',valId:'mv-silver',chgId:'mc-silver',srcId:'ms-silver',yfSym:'SI=F',fhSym:'OANDA:XAG_USD',nseKey:null,prefix:'$',isVix:false},
 ];
-
 function fmtV(n,d){d=d||2;if(n==null||isNaN(n))return'—';return n>=1000?n.toLocaleString('en-IN',{minimumFractionDigits:d,maximumFractionDigits:d}):n.toFixed(d);}
 function silentUpdate(item,price,chgPct,source){
   var valEl=document.getElementById(item.valId);var chgEl=document.getElementById(item.chgId);var srcEl=document.getElementById(item.srcId);
@@ -1204,7 +823,6 @@ function refreshMarketBar(){
     buildTicker(_top10Cache);
   });
 }
-
 var STOCK_KEYS=[
   {key:'t_RELIANCE',name:'RELIANCE',prefix:'₹'},{key:'t_HDFCBANK',name:'HDFC BANK',prefix:'₹'},
   {key:'t_ICICIBANK',name:'ICICI BANK',prefix:'₹'},{key:'t_INFY',name:'INFOSYS',prefix:'₹'},
@@ -1239,37 +857,6 @@ refreshMarketBar();setInterval(refreshMarketBar,60000);
 
 var l=sessionStorage.getItem('lo');
 if(l)document.getElementById('lc').textContent=l;
-
-/* ══ VISITOR COUNTER ══ */
-(function(){
-  var NS='nifty-indian-markets-hub-v1';
-  var TODAY_KEY=NS+'-today-'+new Date().toISOString().slice(0,10);
-  var liveCount=1,todayCount=0,totalCount=0,peakToday=1;
-  function setNum(id,val,fmt){var el=document.getElementById(id);if(!el)return;var str=fmt?val.toLocaleString('en-IN'):String(val);if(el.textContent!==str){el.textContent=str;el.classList.remove('num-updated');void el.offsetWidth;el.classList.add('num-updated');}}
-  function render(){setNum('vc-live',liveCount,true);setNum('vc-today',todayCount,true);setNum('vc-total',totalCount,true);setNum('vc-peak',peakToday,true);setNum('vcc-live',liveCount,true);setNum('vcc-today',todayCount,true);setNum('vcc-total',totalCount,true);var now=new Intl.DateTimeFormat('en-IN',{timeZone:'Asia/Kolkata',hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());var ts=document.getElementById('vc-ts');if(ts)ts.textContent=now;}
-  function hitTotal(){fetch('https://api.countapi.xyz/hit/'+NS+'/total',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){if(j&&j.value){totalCount=j.value;render();}}).catch(function(){});}
-  function hitToday(){fetch('https://api.countapi.xyz/hit/'+NS+'/'+TODAY_KEY,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){if(j&&j.value){todayCount=j.value;render();}}).catch(function(){});}
-  var SESSION_KEY='vc_sess_'+Math.random().toString(36).slice(2);
-  var LS_PREFIX='vc_hb_';
-  function writeHeartbeat(){try{localStorage.setItem(LS_PREFIX+SESSION_KEY,(Date.now()+90000).toString());}catch(e){}}
-  function countLive(){var now=Date.now(),alive=0;try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.indexOf(LS_PREFIX)===0){var exp=parseInt(localStorage.getItem(k),10);if(!isNaN(exp)&&exp>now)alive++;else localStorage.removeItem(k);}}}catch(e){alive=1;}return Math.max(1,alive);}
-  function updateLive(){writeHeartbeat();liveCount=countLive();if(liveCount>peakToday)peakToday=liveCount;render();}
-  var PEAK_KEY='vc_peak_'+new Date().toISOString().slice(0,10);
-  function loadPeak(){try{var s=parseInt(localStorage.getItem(PEAK_KEY),10);if(!isNaN(s)&&s>peakToday)peakToday=s;}catch(e){}}
-  function savePeak(){try{var s=parseInt(localStorage.getItem(PEAK_KEY),10);if(isNaN(s)||peakToday>s)localStorage.setItem(PEAK_KEY,peakToday.toString());}catch(e){}}
-  window.addEventListener('beforeunload',function(){try{localStorage.removeItem(LS_PREFIX+SESSION_KEY);}catch(e){}});
-  loadPeak();hitTotal();hitToday();updateLive();
-  setInterval(function(){updateLive();savePeak();},30000);
-  setInterval(function(){
-    fetch('https://api.countapi.xyz/get/'+NS+'/total',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){if(j&&j.value){totalCount=j.value;render();}}).catch(function(){});
-    fetch('https://api.countapi.xyz/get/'+NS+'/'+TODAY_KEY,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){if(j&&j.value){todayCount=j.value;render();}}).catch(function(){});
-  },5*60*1000);
-  var cornerBadge=document.getElementById('vc-corner');
-  var footer=document.querySelector('footer');
-  function checkFooterVisible(){if(!footer||!cornerBadge)return;var rect=footer.getBoundingClientRect();cornerBadge.classList.toggle('hidden-badge',rect.top<window.innerHeight);}
-  window.addEventListener('scroll',checkFooterVisible,{passive:true});
-  checkFooterVisible();
-})();
 
 /* ══ IFRAME VIEWER ══ */
 var currentUrl='';
