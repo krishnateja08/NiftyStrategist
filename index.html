@@ -162,18 +162,33 @@ header::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
 .mbar-src{position:absolute;bottom:2px;left:6px;font-family:'Space Mono',monospace;font-size:7px;letter-spacing:1px;opacity:.25;}
 .mbar-updated{position:absolute;top:3px;right:6px;font-family:'Space Mono',monospace;font-size:8px;letter-spacing:1px;color:rgba(77,159,255,.2);z-index:2;}
 
-/* ══ TICKER ══ */
-.tkr{background:rgba(2,5,14,.95);border-top:1px solid rgba(255,200,50,.25);border-bottom:1px solid rgba(255,200,50,.25);padding:6px 0;overflow:hidden;white-space:nowrap;position:relative;box-shadow:0 0 20px rgba(255,200,50,.08);}
-.tkr::before,.tkr::after{content:'';position:absolute;top:0;bottom:0;width:50px;z-index:2;pointer-events:none;}
-.tkr::before{left:0;background:linear-gradient(90deg,var(--bg),transparent)}
-.tkr::after{right:0;background:linear-gradient(-90deg,var(--bg),transparent)}
-.tkr-t{display:inline-flex;animation:tscroll 150s linear infinite}
+/* ══ TICKER — Style 1: Bloomberg Dark Pills ══ */
+.tkr{
+  background:#03060f;
+  border-top:1px solid rgba(56,189,248,.25);
+  border-bottom:1px solid rgba(56,189,248,.25);
+  padding:6px 0;overflow:hidden;white-space:nowrap;position:relative;
+}
+.tkr::before,.tkr::after{content:'';position:absolute;top:0;bottom:0;width:60px;z-index:2;pointer-events:none;}
+.tkr::before{left:0;background:linear-gradient(90deg,#03060f,transparent)}
+.tkr::after{right:0;background:linear-gradient(-90deg,#03060f,transparent)}
+.tkr-t{display:inline-flex;align-items:center;animation:tscroll 150s linear infinite}
 @keyframes tscroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-.ti{display:inline-flex;align-items:center;gap:8px;padding:0 22px;font-size:13px;font-family:'Space Mono',monospace;border-right:1px solid rgba(255,200,50,.15);}
-.ti .s{color:#ffd700;font-size:11px;letter-spacing:1.5px;font-weight:700;text-shadow:0 0 10px rgba(255,215,0,.8),0 0 20px rgba(255,215,0,.4);}
-.ti .tv{color:#ffffff;font-weight:600;text-shadow:0 0 6px rgba(255,255,255,.3);}
-.up{color:#10b981;text-shadow:0 0 8px #10b981;font-weight:700;}
-.dn{color:#f43f5e;text-shadow:0 0 8px #f43f5e;font-weight:700;}
+.ti{
+  display:inline-flex;align-items:center;
+  padding:0 6px;font-family:'Space Mono',monospace;
+}
+.ti-inner{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:4px;
+  padding:4px 11px;
+}
+.ti .s{color:#7dd3fc;font-size:10px;letter-spacing:1.5px;font-weight:700;}
+.ti .tv{color:#f0f9ff;font-size:13px;font-weight:700;letter-spacing:.3px;}
+.up{color:#00e5a0;font-size:11px;font-weight:700;}
+.dn{color:#ff4d6d;font-size:11px;font-weight:700;}
 
 /* ══ STATS BAR ══ */
 .stats{display:grid;grid-template-columns:repeat(4,1fr);background:rgba(77,159,255,.05);gap:1px;border-bottom:1px solid var(--bc);}
@@ -929,7 +944,7 @@ function buildTicker(top10){
   if(items.length<3){var TICKER_LABELS={n50:'NIFTY 50',bn:'BANK NIFTY',vix:'INDIA VIX',fn:'FINNIFTY',sx:'SENSEX',sp:'S&P 500',ndq:'NASDAQ',dji:'DOW JONES',inr:'USD/INR',crude:'CRUDE OIL',gold:'GOLD',silver:'SILVER'};MB_MAP.forEach(function(item){var valEl=document.getElementById(item.valId);var chgEl=document.getElementById(item.chgId);if(!valEl||valEl.textContent==='···'||valEl.textContent==='—')return;var up=chgEl.classList.contains('up')||chgEl.classList.contains('vix');items.push({s:TICKER_LABELS[item.id],v:valEl.textContent,c:chgEl.textContent.replace('▲ ','').replace('▼ ','-'),u:up});});}
   if(items.length<3)return;
   var tkr=document.getElementById('tkr');var all=items.concat(items).concat(items);
-  tkr.innerHTML=all.map(function(t){return'<span class="ti"><span class="s">'+t.s+'</span><span class="tv">'+t.v+'</span><span class="'+(t.u?'up':'dn')+'">'+(t.u?'▲ ':'▼ ')+t.c+'</span></span>';}).join('');
+  tkr.innerHTML=all.map(function(t){return'<span class="ti"><span class="ti-inner"><span class="s">'+t.s+'</span><span class="tv">'+t.v+'</span><span class="'+(t.u?'up':'dn')+'">'+(t.u?'▲':'▼')+t.c+'</span></span></span>';}).join('');
 }
 var _top10Cache=[];
 function refreshTicker(){fetchNiftyTop10().then(function(res){_top10Cache=res||[];buildTicker(_top10Cache);});}
