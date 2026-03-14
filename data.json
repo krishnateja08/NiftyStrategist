@@ -1,5 +1,5 @@
 {
-  "updated": "2026-03-14T00:01:54Z",
+  "updated": "2026-03-14T03:08:08Z",
   "data": {
     "sp": {
       "price": 6632.19,
@@ -49,6 +49,11 @@
     "sx": {
       "price": 74563.92,
       "chgPct": -1.93,
+      "src": "GHA"
+    },
+    "fn": {
+      "price": 25138.65,
+      "chgPct": -2.07,
       "src": "GHA"
     },
     "vix": {
@@ -157,7 +162,5 @@
       "src": "GHA"
     }
   },
-  "errors": [
-    "fn: 'chart'"
-  ]
+  "errors": []
 }
