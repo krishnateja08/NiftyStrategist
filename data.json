@@ -1,5 +1,5 @@
 {
-  "updated": "2026-07-27T05:34:55Z",
+  "updated": "2026-07-27T09:20:22Z",
   "data": {
     "sp": {
       "price": 7411.98,
@@ -17,148 +17,148 @@
       "src": "GHA"
     },
     "inr": {
-      "price": 96.23,
-      "chgPct": -0.33,
+      "price": 95.87,
+      "chgPct": -0.71,
       "src": "GHA"
     },
     "crude": {
-      "price": 84.61,
-      "chgPct": -0.67,
+      "price": 83.18,
+      "chgPct": -2.38,
       "src": "GHA"
     },
     "gold": {
-      "price": 4090.5,
-      "chgPct": -0.39,
+      "price": 4096.7,
+      "chgPct": 0.1,
       "src": "GHA"
     },
     "silver": {
-      "price": 59.6,
-      "chgPct": -0.77,
+      "price": 59.67,
+      "chgPct": 0.12,
       "src": "GHA"
     },
     "n50": {
-      "price": 23930.7,
-      "chgPct": 0.6,
+      "price": 23995.9,
+      "chgPct": 0.88,
       "src": "GHA"
     },
     "bn": {
-      "price": 57073.55,
-      "chgPct": 0.56,
+      "price": 57107.6,
+      "chgPct": 0.62,
       "src": "GHA"
     },
     "sx": {
-      "price": 76593.67,
-      "chgPct": 0.7,
+      "price": 76864.28,
+      "chgPct": 1.06,
       "src": "GHA"
     },
     "fn": {
-      "price": 26021.35,
-      "chgPct": 0.34,
+      "price": 26120.35,
+      "chgPct": 0.73,
       "src": "GHA"
     },
     "vix": {
-      "price": 13.33,
-      "chgPct": -4.1,
+      "price": 12.84,
+      "chgPct": -7.66,
       "src": "GHA"
     },
     "t_RELIANCE": {
-      "price": 1281.5,
-      "chgPct": 0.09,
+      "price": 1279.8,
+      "chgPct": -0.04,
       "src": "GHA"
     },
     "t_HDFCBANK": {
-      "price": 741.5,
-      "chgPct": -0.3,
+      "price": 741.3,
+      "chgPct": -0.32,
       "src": "GHA"
     },
     "t_ICICIBANK": {
-      "price": 1435.0,
-      "chgPct": 0.15,
+      "price": 1445.0,
+      "chgPct": 0.84,
       "src": "GHA"
     },
     "t_INFY": {
-      "price": 1079.5,
-      "chgPct": 3.82,
+      "price": 1077.9,
+      "chgPct": 3.66,
       "src": "GHA"
     },
     "t_TCS": {
-      "price": 2301.1,
-      "chgPct": 2.18,
+      "price": 2294.7,
+      "chgPct": 1.9,
       "src": "GHA"
     },
     "t_AIRTEL": {
-      "price": 1899.6,
-      "chgPct": -0.02,
+      "price": 1904.1,
+      "chgPct": 0.22,
       "src": "GHA"
     },
     "t_ITC": {
-      "price": 286.7,
-      "chgPct": 0.95,
+      "price": 285.95,
+      "chgPct": 0.69,
       "src": "GHA"
     },
     "t_SBI": {
-      "price": 1020.1,
-      "chgPct": 0.86,
+      "price": 1020.6,
+      "chgPct": 0.91,
       "src": "GHA"
     },
     "t_KOTAK": {
-      "price": 384.55,
-      "chgPct": 0.18,
+      "price": 384.75,
+      "chgPct": 0.23,
       "src": "GHA"
     },
     "t_LT": {
-      "price": 3818.1,
-      "chgPct": 0.75,
+      "price": 3826.6,
+      "chgPct": 0.97,
       "src": "GHA"
     },
     "u_AAPL": {
       "price": 333.02,
-      "chgPct": 3.71,
+      "chgPct": -0.23,
       "src": "GHA"
     },
     "u_MSFT": {
       "price": 381.7,
-      "chgPct": -0.19,
+      "chgPct": 0.08,
       "src": "GHA"
     },
     "u_NVDA": {
       "price": 206.84,
-      "chgPct": -0.55,
+      "chgPct": 0.02,
       "src": "GHA"
     },
     "u_AMZN": {
       "price": 232.11,
-      "chgPct": -0.95,
+      "chgPct": 0.22,
       "src": "GHA"
     },
     "u_GOOGL": {
       "price": 319.74,
-      "chgPct": 0.16,
+      "chgPct": 0.28,
       "src": "GHA"
     },
     "u_META": {
       "price": 595.19,
-      "chgPct": -1.92,
+      "chgPct": 0.18,
       "src": "GHA"
     },
     "u_TSLA": {
       "price": 313.03,
-      "chgPct": -3.39,
+      "chgPct": 0.53,
       "src": "GHA"
     },
     "u_BRK": {
       "price": 494.93,
-      "chgPct": 1.1,
+      "chgPct": -0.01,
       "src": "GHA"
     },
     "u_JPM": {
       "price": 353.21,
-      "chgPct": 1.05,
+      "chgPct": -0.01,
       "src": "GHA"
     },
     "u_UNH": {
       "price": 420.74,
-      "chgPct": -0.68,
+      "chgPct": 0.1,
       "src": "GHA"
     }
   },
