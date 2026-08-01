@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Fakeout Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080B12;
+    --panel:#0F1520;
+    --panel-2:#131B29;
+    --line:#233046;
+    --cyan:#3EC6FF;
+    --amber:#FFB020;
+    --up:#3DDC84;
+    --down:#FF5C5C;
+    --text:#DCE6F2;
+    --muted:#5E7189;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--bg);
+    background-image:
+      radial-gradient(ellipse at top, rgba(62,198,255,0.06), transparent 60%);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+  }
+  .wrap{max-width:1040px;margin:0 auto;padding:0 24px 100px;}
+  .hero{max-width:1040px;margin:0 auto;padding:48px 24px 28px;}
+
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    margin-bottom:14px;
+  }
+  h1{
+    font-family:'Orbitron',sans-serif;
+    font-weight:900;
+    font-size:clamp(28px,4.6vw,46px);
+    line-height:1.1;
+    margin:0 0 16px;
+    letter-spacing:0.01em;
+  }
+  h1 span{color:var(--cyan);}
+  .lede{color:var(--muted);font-size:15.5px;line-height:1.65;max-width:620px;margin-bottom:0;}
+
+  /* ---------- Tab bar ---------- */
+  .tabbar{
+    position:sticky;
+    top:0;
+    z-index:20;
+    display:flex;
+    gap:2px;
+    background:rgba(8,11,18,0.92);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    padding:0 24px;
+    max-width:1040px;
+    margin:24px auto 0;
+    overflow-x:auto;
+    scrollbar-width:none;
+  }
+  .tabbar::-webkit-scrollbar{display:none;}
+  .tab-btn{
+    flex:0 0 auto;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    background:transparent;
+    border:none;
+    border-bottom:2px solid transparent;
+    color:var(--muted);
+    padding:16px 18px;
+    cursor:pointer;
+    transition:color .15s, border-color .15s;
+    white-space:nowrap;
+  }
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn.active{color:var(--cyan);border-bottom-color:var(--cyan);}
+  .tab-btn .tab-count{color:var(--muted);font-size:10.5px;margin-left:5px;}
+  .tab-btn.active .tab-count{color:var(--cyan);opacity:0.7;}
+
+  .tab-content{display:none;padding-top:36px;}
+  .tab-content.active{display:block;}
+
+  .part-lede{color:var(--muted);font-size:14.5px;line-height:1.65;max-width:640px;margin:-8px 0 26px;}
+
+  /* ---------- Accordion ---------- */
+  .acc-header{
+    width:100%;
+    display:flex;
+    align-items:center;
+    gap:16px;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:16px 20px;
+    margin-bottom:2px;
+    cursor:pointer;
+    text-align:left;
+    color:var(--text);
+    font-family:inherit;
+  }
+  .acc-header:hover{border-color:var(--cyan);}
+  .acc-header.open{
+    border-radius:4px 4px 0 0;
+    border-bottom:none;
+    background:var(--panel-2);
+  }
+  .acc-num{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--cyan);
+    letter-spacing:0.08em;
+    flex:0 0 auto;
+  }
+  .acc-titles{display:flex;flex-direction:column;gap:3px;flex:1;min-width:0;}
+  .acc-title{
+    font-family:'Orbitron',sans-serif;
+    font-size:15.5px;
+    color:var(--text);
+  }
+  .acc-tag{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    color:var(--muted);
+    letter-spacing:0.06em;
+  }
+  .acc-icon{
+    flex:0 0 auto;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:18px;
+    color:var(--muted);
+    width:20px;
+    text-align:center;
+    transition:transform .15s;
+  }
+  .acc-header.open .acc-icon{transform:rotate(45deg);color:var(--cyan);}
+
+  .acc-body{display:none;margin-bottom:16px;}
+  .acc-body.open{display:grid;}
+
+  .pattern{
+    grid-template-columns:1fr 1fr;
+    gap:0;
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-top:none;
+    border-radius:0 0 4px 4px;
+    overflow:hidden;
+  }
+  .pattern-text{padding:28px 32px 32px;}
+  .pattern-chart{
+    padding:28px 32px 32px;
+    background:var(--panel-2);
+    border-left:1px solid var(--line);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+  }
+  .pattern-text h2{display:none;}
+  .pattern-text .pnum{display:none;}
+  .pattern-text p{font-size:14.5px;line-height:1.7;color:#B7C4D6;margin:0 0 14px;}
+  .spot-it{
+    background:rgba(62,198,255,0.07);
+    border-left:2px solid var(--cyan);
+    padding:12px 16px;
+    font-size:13px;
+    line-height:1.6;
+    color:#A9D8F0;
+  }
+  .spot-it b{color:var(--cyan);}
+
+  svg{width:100%;height:auto;display:block;}
+  .chart-caption{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--muted);
+    text-align:center;
+    margin-top:10px;
+    letter-spacing:0.04em;
+  }
+
+  @media (max-width:760px){
+    .acc-body.open{display:block;}
+    .pattern{display:block;}
+    .pattern-chart{border-left:none;border-top:1px solid var(--line);}
+  }
+
+  /* Before/After chart toggle */
+  .chart-toggle{
+    display:flex;
+    gap:6px;
+    justify-content:center;
+    margin-top:14px;
+  }
+  .toggle-btn{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.05em;
+    text-transform:uppercase;
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--muted);
+    padding:6px 10px;
+    border-radius:3px;
+    cursor:pointer;
+    transition:all .15s;
+  }
+  .toggle-btn:hover{border-color:var(--cyan);color:var(--text);}
+  .toggle-btn.active{
+    border-color:var(--cyan);
+    color:var(--cyan);
+    background:rgba(62,198,255,0.08);
+  }
+
+  /* Quiz section */
+  .quiz-header{margin:0 0 30px;}
+  .quiz-header h2{
+    font-family:'Orbitron',sans-serif;
+    font-size:26px;
+    margin:0 0 10px;
+  }
+  .quiz-header p{color:var(--muted);font-size:14px;line-height:1.6;max-width:600px;margin:0 0 14px;}
+  .score-track{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .score-track b{color:var(--up);}
+
+  .qcard{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:4px;
+    padding:26px 28px;
+    margin-bottom:20px;
+  }
+  .qnum{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;
+    color:var(--amber);
+    letter-spacing:0.1em;
+    margin-bottom:10px;
+  }
+  .qtext{font-size:16px;font-weight:500;margin-bottom:18px;line-height:1.5;}
+  .options{display:grid;gap:10px;}
+  .opt{
+    text-align:left;
+    background:var(--panel-2);
+    border:1px solid var(--line);
+    color:var(--text);
+    padding:13px 16px;
+    border-radius:3px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    cursor:pointer;
+    transition:border-color .15s;
+  }
+  .opt:hover{border-color:var(--cyan);}
+  .opt.correct{border-color:var(--up);background:rgba(61,220,132,0.08);}
+  .opt.wrong{border-color:var(--down);background:rgba(255,92,92,0.08);}
+  .opt:disabled{cursor:default;}
+  .explain{
+    margin-top:16px;
+    padding:14px 16px;
+    background:rgba(255,255,255,0.02);
+    border-left:2px solid var(--cyan);
+    font-size:13.5px;
+    line-height:1.6;
+    color:#B7C4D6;
+    display:none;
+  }
+  .explain.show{display:block;}
+
+  footer{
+    margin-top:60px;
+    font-size:12px;
+    color:var(--muted);
+    border-top:1px solid var(--line);
+    padding-top:20px;
+    line-height:1.7;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="eyebrow">Institutional Price Action · Reference + Self-Test</div>
+  <h1>Why price drops <span>before</span> it rallies</h1>
+  <p class="lede">Thirteen reasons a chart moves the way it does before the "real" move starts. Pick a tab, expand a pattern, then test yourself in the Quiz tab.</p>
+</div>
+
+<div class="tabbar" id="tabbar">
+  <button class="tab-btn active" data-tab="part1">Part 1 · Dips Before Rallies <span class="tab-count">04</span></button>
+  <button class="tab-btn" data-tab="part2">Part 2 · Structure &amp; Mechanics <span class="tab-count">06</span></button>
+  <button class="tab-btn" data-tab="part3">Part 3 · Volume &amp; Order Flow <span class="tab-count">03</span></button>
+  <button class="tab-btn" data-tab="quiz">Quiz <span class="tab-count">10</span></button>
+</div>
+
+<div class="wrap">
+
+  <div class="tab-content active" id="tab-part1">
+    <p class="part-lede">Four ways a stock dips right before it actually rallies — some engineered, some just noise clearing out.</p>
+
+  <button class="acc-header open" data-target="acc1" aria-expanded="true">
+    <span class="acc-num">01</span>
+    <span class="acc-titles">
+      <span class="acc-title">The Shakeout</span>
+      <span class="acc-tag">01 / STOP-LOSS HUNTING</span>
+    </span>
+    <span class="acc-icon">+</span>
+  </button>
+  <div class="pattern acc-body open" id="acc1">
+    <div class="pattern-text">
+      <div class="pnum">01 / STOP-LOSS HUNTING</div>
+      <h2>The Shakeout</h2>
+      <p>Retail stop-losses cluster just below obvious support — a round number, yesterday's low, a visible trendline. A sharp, fast poke below that level triggers all of them at once, forcing weak-handed sellers out at the worst possible price.</p>
+      <p>The same move that stops out retail supplies the exact liquidity a larger buyer needs to fill a big order without pushing price up first.</p>
+      <div class="spot-it"><b>Spot it:</b> a quick spike below support on a single candle, followed by an immediate, sharp reclaim — not a slow grind down.</div>
+    </div>
+    <div class="pattern-chart">
+      <svg id="chart1" viewBox="0 0 300 160"></svg>
+      <div class="chart-caption" id="caption1">SUPPORT SWEPT → IMMEDIATE RECLAIM</div>
+      <div class="chart-toggle">
+        <button class="toggle-btn" data-chart="chart1" data-phase="0">1 . The Trap</button>
+        <button class="toggle-btn active" data-chart="chart1" data-phase="1">2 . Real Move</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="acc-header" data-target="acc2" aria-expanded="false">
+    <span class="acc-num">02</span>
+    <span class="acc-titles">
+      <span class="acc-title">The Spring</span>
+      <span class="acc-tag">02 / WYCKOFF ACCUMULATION</span>
+    </span>
+    <span class="acc-icon">+</span>
+  </button>
+  <div class="pattern acc-body" id="acc2">
+    <div class="pattern-text">
+      <div class="pnum">02 / WYCKOFF ACCUMULATION</div>
+      <h2>The Spring</h2>
+      <p>After a stock trades sideways in a range for a while, smart money often pushes price briefly below the range low — a "spring" — to test whether any real supply remains. If sellers don't show up in size, the range is exhausted and markup can begin.</p>
+      <p>This differs from a random shakeout because it happens <i>after</i> a visible base, not out of nowhere — the sideways range is the tell.</p>
+      <div class="spot-it"><b>Spot it:</b> weeks of sideways chop, then one dip below the range on lower volume than the range itself, followed by a strong push back above the range.</div>
+    </div>
+    <div class="pattern-chart">
+      <svg id="chart2" viewBox="0 0 300 160"></svg>
+      <div class="chart-caption" id="caption2">RANGE → SPRING BELOW LOW → MARKUP</div>
+      <div class="chart-toggle">
+        <button class="toggle-btn" data-chart="chart2" data-phase="0">1 . The Trap</button>
+        <button class="toggle-btn active" data-chart="chart2" data-phase="1">2 . Real Move</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="acc-header" data-target="acc3" aria-expanded="false">
+    <span class="acc-num">03</span>
+    <span class="acc-titles">
+      <span class="acc-title">The Overreaction</span>
+      <span class="acc-tag">03 / PANIC & MEAN REVERSION</span>
+    </span>
+    <span class="acc-icon">+</span>
+  </button>
+  <div class="pattern acc-body" id="acc3">
+    <div class="pattern-text">
+      <div class="pnum">03 / PANIC & MEAN REVERSION</div>
+      <h2>The Overreaction</h2>
+      <p>Not every dip is engineered. News, a broad market wobble, or index-linked selling can push a stock down sharply with no one "hunting" anything — it's just short-term fear outrunning the fundamentals.</p>
+      <p>Once the panic sellers are done, price often snaps back toward where it was, simply because nothing about the business actually changed.</p>
+      <div class="spot-it"><b>Spot it:</b> a V-shaped drop and recovery tied to a news headline or broad index move, with no prior range or support level involved.</div>
+    </div>
+    <div class="pattern-chart">
+      <svg id="chart3" viewBox="0 0 300 160"></svg>
+      <div class="chart-caption" id="caption3">SHARP V-DROP → FAST MEAN REVERSION</div>
+      <div class="chart-toggle">
+        <button class="toggle-btn" data-chart="chart3" data-phase="0">1 . The Trap</button>
+        <button class="toggle-btn active" data-chart="chart3" data-phase="1">2 . Real Move</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="acc-header" data-target="acc4" aria-expanded="false">
+    <span class="acc-num">04</span>
+    <span class="acc-titles">
+      <span class="acc-title">The Iceberg Push</span>
+      <span class="acc-tag">04 / LIQUIDITY MECHANICS</span>
+    </span>
+    <span class="acc-icon">+</span>
+  </button>
+  <div class="pattern acc-body" id="acc4">
+    <div class="pattern-text">
+      <div class="pnum">04 / LIQUIDITY MECHANICS</div>
+      <h2>The Iceberg Push</h2>
+      <p>A large buyer can't fill their whole order at the current price without moving the market against themselves. So they sell small size into the bids first, nudging price down slightly, then absorb everything offered at that lower price before marking it back up.</p>
+      <p>It's less a "trap" and more just how a big position gets built quietly — a few small red candles doing the work of a discount.</p>
+      <div class="spot-it"><b>Spot it:</b> a shallow, gradual dip on unremarkable volume, no clear news trigger, followed by steady absorption and a slow grind higher.</div>
+    </div>
+    <div class="pattern-chart">
+      <svg id="chart4" viewBox="0 0 300 160"></svg>
+      <div class="chart-caption" id="caption4">SHALLOW DIP → QUIET ABSORPTION → GRIND UP</div>
+      <div class="chart-toggle">
+        <button class="toggle-btn" data-chart="chart4" data-phase="0">1 . The Trap</button>
+        <button class="toggle-btn active" data-chart="chart4" data-phase="1">2 . Real Move</button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="tab-content" id="tab-part2">
+    <p class="part-lede">Related structures and mechanics — distribution, gaps, VWAP, sessions, options positioning, and momentum divergence.</p>
+
+  <button class="acc-header open" data-target="acc5" aria-expanded="true">
+    <span class="acc-num">05</span>
+    <span class="acc-titles">
+      <span class="acc-title">The Upthrust</span>
+      <span class="acc-tag">05 / DISTRIBUTION AT HIGHS</span>
+    </span>
+    <span class="acc-icon">+</span>
+  </button>
+  <div class="pattern acc-body open" id="acc5">
+    <div class="pattern-text">
+      <div class="pnum">05 / DISTRIBUTION AT HIGHS</div>
+      <h2>The Upthrust</h2>
+      <p>The mirror image of a spring, but at resistance instead of support. Price spikes <i>above</i> an obvious high, triggering breakout buyers and forcing short-sellers to cover — then reverses hard back into the range instead of continuing.</p>
+      <p>This is Wyckoff's distribution-phase pattern: smart money using the breakout excitement to sell into strength before marking price back down.</p>
+      <div class="spot-it"><b>Spot it:</b> a sharp poke above a well-tested resistance level on a breakout-volume candle, followed by an immediate reversal back inside the range — the inverse of the spring.</div>
+    </div>
+    <div class="pattern-chart">
+      <svg id="chart5" viewBox="0 0 300 160"></svg>
+      <div class="chart-caption" id="caption5">RANGE → SPIKE ABOVE HIGH → REVERSAL</div>
+      <div class="chart-toggle">
+        <button class="toggle-btn" data-chart="chart5" data-phase="0">1 . The Trap</button>
+        <button class="toggle-btn active" data-chart="chart5" data-phase="1">2 . Real Move</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="acc-header" data-target="acc6" aria-expanded="false">
+    <span class="acc-num">06</span>
+    <span class="acc-titles">
+      <span class="acc-title">Fair Value Gap Fill</span>
+      <span class="acc-tag">06 / IMBALANCE</span>
+    </span>
+    <span class="acc-icon">+</span>
+  </button>
+  <div class="pattern acc-body" id="acc6">
+    <div class="pattern-text">
+      <div class="pnum">06 / IMBALANCE</div>
+      <h2>Fair Value Gap Fill</h2>
+      <p>A fast, one-directional move — a gap-up on news, for example — leaves a price zone where almost no real two-sided trading happened. That zone is an "imbalance."</p>
+      <p>Price frequently returns to fill that gap later, not because anyone is manipulating it, but because that zone has no real trading history yet and acts like a magnet before the original move continues.</p>
+      <div class="spot-it"><b>Spot it:</b> a candle (or gap) that leaves a visible empty space on the chart between two candle wicks, followed later by a pullback that trades right through that empty zone.</div>
+    </div>
+    <div class="pattern-chart">
+      <svg id="chart6" viewBox="0 0 300 160"></svg>
+      <div class="chart-caption" id="caption6">GAP UP → LATER PULLBACK FILLS GAP</div>
+      <div class="chart-toggle">
+        <button class="toggle-btn" data-chart="chart6" data-phase="0">1 . The Trap</button>
+        <button class="toggle-btn active" data-chart="chart6" data-phase="1">2 . Real Move</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="acc-header" data-target="acc7" aria-expanded="false">
+    <span class="acc-num">07</span>
+    <span class="acc-titles">
+      <span class="acc-title">VWAP Reversion</span>
+      <span class="acc-tag">07 / EXECUTION BENCHMARK</span>
+    </span>
+    <span class="acc-icon">+</span>
+  </button>
+  <div class="pattern acc-body" id="acc7">
+    <div class="pattern-text">
+      <div class="pnum">07 / EXECUTION BENCHMARK</div>
+      <h2>VWAP Reversion</h2>
+      <p>A lot of institutional execution algorithms are benchmarked against VWAP (volume-weighted average price) — their job is to trade at or better than it, not to chase extremes.</p>
+      <p>When price stretches far from VWAP intraday, especially in a range-bound session, that stretch tends to pull back toward VWAP simply because so much of the day's volume is anchored to trading around it.</p>
+      <div class="spot-it"><b>Spot it:</b> price runs well away from the VWAP line intraday without strong trend conviction, then drifts back toward it later in the session.</div>
+    </div>
+    <div class="pattern-chart">
+      <svg id="chart7" viewBox="0 0 300 160"></svg>
+      <div class="chart-caption" id="caption7">STRETCH FROM VWAP → DRIFT BACK</div>
+      <div class="chart-toggle">
+        <button class="toggle-btn" data-chart="chart7" data-phase="0">1 . The Trap</button>
+        <button class="toggle-btn active" data-chart="chart7" data-phase="1">2 . Real Move</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="acc-header" data-target="acc8" aria-expanded="false">
+    <span class="acc-num">08</span>
+    <span class="acc-titles">
+      <span class="acc-title">The ORB Fakeout</span>
+      <span class="acc-tag">08 / OPENING RANGE</span>
+    </span>
+    <span class="acc-icon">+</span>
+  </button>
+  <div class="pattern acc-body" id="acc8">
+    <div class="pattern-text">
+      <div class="pnum">08 / OPENING RANGE</div>
+      <h2>The ORB Fakeout</h2>
+      <p>The first 15–30 minutes of a session often gets tested and rejected before the real move of the day. Price breaks the opening range high or low, draws in breakout entries, then fails and reverses through the range.</p>
+      <p>This is exactly what "chase guards" in an ORB engine are built to filter — entering on the first break without confirmation means entering right into this fakeout.</p>
+      <div class="spot-it"><b>Spot it:</b> a break of the opening 15–30 minute high/low that reverses back inside the range within a few candles, before the real directional move develops later.</div>
+    </div>
+    <div class="pattern-chart">
+      <svg id="chart8" viewBox="0 0 300 160"></svg>
+      <div class="chart-caption" id="caption8">OR BREAK → FAILS → REAL MOVE OPPOSITE</div>
+      <div class="chart-toggle">
+        <button class="toggle-btn" data-chart="chart8" data-phase="0">1 . The Trap</button>
+        <button class="toggle-btn active" data-chart="chart8" data-phase="1">2 . Real Move</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="acc-header" data-target="acc9" aria-expanded="false">
+    <span class="acc-num">09</span>
+    <span class="acc-titles">
+      <span class="acc-title">OI Wall Magnetism</span>
+      <span class="acc-tag">09 / OPTIONS POSITIONING</span>
+    </span>
+    <span class="acc-icon">+</span>
+  </button>
+  <div class="pattern acc-body" id="acc9">
+    <div class="pattern-text">
+      <div class="pnum">09 / OPTIONS POSITIONING</div>
+      <h2>OI Wall Magnetism</h2>
+      <p>Near expiry, price tends to gravitate toward strikes carrying the heaviest open interest. Option writers hedge their exposure to minimize total payout, and that hedging activity itself pushes price toward those "max pain" strikes.</p>
+      <p>This isn't a chart shape so much as a price-magnet effect — the OI walls you already compute in your Nifty/BankNifty report are the direct output of this mechanism.</p>
+      <div class="spot-it"><b>Spot it:</b> price chop that repeatedly stalls at, or drifts toward, one specific strike as expiry approaches, more than pure price action would explain.</div>
+    </div>
+    <div class="pattern-chart">
+      <svg id="chart9" viewBox="0 0 300 160"></svg>
+      <div class="chart-caption" id="caption9">CHOP CONVERGING TOWARD OI-HEAVY STRIKE</div>
+      <div class="chart-toggle">
+        <button class="toggle-btn" data-chart="chart9" data-phase="0">1 . The Trap</button>
+        <button class="toggle-btn active" data-chart="chart9" data-phase="1">2 . Real Move</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="acc-header" data-target="acc10" aria-expanded="false">
+    <span class="acc-num">10</span>
+    <span class="acc-titles">
+      <span class="acc-title">Divergence</span>
+      <span class="acc-tag">10 / EXHAUSTION SIGNAL</span>
+    </span>
+    <span class="acc-icon">+</span>
+  </button>
+  <div class="pattern acc-body" id="acc10">
+    <div class="pattern-text">
+      <div class="pnum">10 / EXHAUSTION SIGNAL</div>
+      <h2>Divergence</h2>
+      <p>Price makes a new high, but momentum (RSI) or volume doesn't confirm it — each fresh high comes with weaker underlying strength than the last. That's a divergence, and it's often the early warning sign that precedes one of the reversal patterns above.</p>
+      <p>Divergence isn't a trigger by itself — it just flags that a move is running out of fuel, which is exactly when a spring, upthrust, or shakeout tends to show up next.</p>
+      <div class="spot-it"><b>Spot it:</b> price prints a higher high while RSI or volume prints a lower high alongside it — the two lines disagreeing is the signal.</div>
+    </div>
+    <div class="pattern-chart">
+      <svg id="chart10" viewBox="0 0 300 160"></svg>
+      <div class="chart-caption" id="caption10">PRICE HIGHER HIGH · RSI LOWER HIGH</div>
+      <div class="chart-toggle">
+        <button class="toggle-btn" data-chart="chart10" data-phase="0">1 . The Trap</button>
+        <button class="toggle-btn active" data-chart="chart10" data-phase="1">2 . Real Move</button>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div class="tab-content" id="tab-part3">
+    <p class="part-lede">Every pattern above can look identical to a real breakdown while it's happening. Volume and order flow are the filter that separates the two — this is where "the shape looks right" becomes "the shape is confirmed."</p>
+
+  <button class="acc-header open" data-target="acc11" aria-expanded="true">
+    <span class="acc-num">11</span>
+    <span class="acc-titles">
+      <span class="acc-title">Volume Delta &amp; CVD</span>
+      <span class="acc-tag">11 / DELTA CONFIRMATION</span>
+    </span>
+    <span class="acc-icon">+</span>
+  </button>
+  <div class="pattern acc-body open" id="acc11">
+    <div class="pattern-text">
+      <div class="pnum">11 / DELTA CONFIRMATION</div>
+      <h2>Volume Delta &amp; CVD</h2>
+      <p>Volume delta is buy volume minus sell volume on each candle. Cumulative Volume Delta (CVD) adds that up over time, giving you a running read on whether buyers or sellers are actually in control — independent of what price itself is doing.</p>
+      <p>Absorption is the tell: price drops toward support, but CVD keeps rising. That divergence means aggressive sellers are hitting the bid, but a large passive buyer is soaking up every share at that price without letting it break — the exact mechanism behind a spring or a shakeout.</p>
+      <div class="spot-it"><b>Spot it:</b> price makes a new low into a support zone while the CVD line makes a higher low alongside it — price and delta disagreeing is the signal.</div>
+    </div>
+    <div class="pattern-chart">
+      <svg viewBox="0 0 300 160">
+        <line x1="20" y1="20" x2="20" y2="140" stroke="var(--line)" stroke-width="1"/>
+        <line x1="20" y1="140" x2="290" y2="140" stroke="var(--line)" stroke-width="1"/>
+        <polyline points="30,60 80,75 130,95 180,100 230,115 280,125" fill="none" stroke="var(--down)" stroke-width="2"/>
+        <polyline points="30,110 80,102 130,90 180,78 230,62 280,48" fill="none" stroke="var(--cyan)" stroke-width="2"/>
+        <line x1="20" y1="100" x2="290" y2="100" stroke="var(--amber)" stroke-width="1" stroke-dasharray="4 3"/>
+        <text x="235" y="132" font-family="IBM Plex Mono" font-size="9" fill="var(--down)">PRICE</text>
+        <text x="235" y="42" font-family="IBM Plex Mono" font-size="9" fill="var(--cyan)">CVD</text>
+        <text x="24" y="96" font-family="IBM Plex Mono" font-size="8" fill="var(--amber)">SUPPORT</text>
+      </svg>
+      <div class="chart-caption">PRICE LOWER LOW · CVD HIGHER LOW = ABSORPTION</div>
+    </div>
+  </div>
+
+  <button class="acc-header" data-target="acc12" aria-expanded="false">
+    <span class="acc-num">12</span>
+    <span class="acc-titles">
+      <span class="acc-title">POC, VAH &amp; VAL</span>
+      <span class="acc-tag">12 / VOLUME PROFILE</span>
+    </span>
+    <span class="acc-icon">+</span>
+  </button>
+  <div class="pattern acc-body" id="acc12">
+    <div class="pattern-text">
+      <div class="pnum">12 / VOLUME PROFILE</div>
+      <h2>POC, VAH &amp; VAL</h2>
+      <p>Volume profile plots how much volume traded at each price level rather than over time. The Point of Control (POC) is the single price with the most volume; the Value Area High and Low (VAH/VAL) bracket the range where roughly 70% of volume traded.</p>
+      <p>High-Volume Nodes (HVN) mark prices the market spent a long time agreeing on — they tend to act as support/resistance because so many participants have a position there. Low-Volume Nodes (LVN) mark prices the market rejected quickly, so price tends to move through them fast when revisited.</p>
+      <div class="spot-it"><b>Spot it:</b> price stalls and chops at an HVN but slices straight through an LVN with almost no hesitation — the profile shape predicts the speed of the move before it happens.</div>
+    </div>
+    <div class="pattern-chart">
+      <svg viewBox="0 0 300 160">
+        <rect x="30" y="20" width="40" height="12" fill="var(--line)"/>
+        <rect x="30" y="34" width="70" height="12" fill="var(--line)"/>
+        <rect x="30" y="48" width="60" height="12" fill="var(--line)"/>
+        <rect x="30" y="62" width="130" height="12" fill="var(--cyan)" opacity="0.85"/>
+        <rect x="30" y="76" width="150" height="12" fill="var(--cyan)"/>
+        <rect x="30" y="90" width="100" height="12" fill="var(--cyan)" opacity="0.85"/>
+        <rect x="30" y="104" width="35" height="12" fill="var(--line)"/>
+        <rect x="30" y="118" width="20" height="12" fill="var(--line)"/>
+        <rect x="30" y="132" width="45" height="12" fill="var(--line)"/>
+        <line x1="30" y1="58" x2="30" y2="102" stroke="var(--amber)" stroke-width="1" stroke-dasharray="3 2"/>
+        <text x="185" y="86" font-family="IBM Plex Mono" font-size="9" fill="var(--cyan)">POC</text>
+        <text x="185" y="72" font-family="IBM Plex Mono" font-size="8" fill="var(--muted)">VAH</text>
+        <text x="185" y="100" font-family="IBM Plex Mono" font-size="8" fill="var(--muted)">VAL</text>
+        <text x="185" y="128" font-family="IBM Plex Mono" font-size="8" fill="var(--down)">LVN — fast move zone</text>
+      </svg>
+      <div class="chart-caption">HORIZONTAL VOLUME BY PRICE, NOT TIME</div>
+    </div>
+  </div>
+
+  <button class="acc-header" data-target="acc13" aria-expanded="false">
+    <span class="acc-num">13</span>
+    <span class="acc-titles">
+      <span class="acc-title">Aggressive vs. Passive Orders</span>
+      <span class="acc-tag">13 / ORDER MECHANICS</span>
+    </span>
+    <span class="acc-icon">+</span>
+  </button>
+  <div class="pattern acc-body" id="acc13">
+    <div class="pattern-text">
+      <div class="pnum">13 / ORDER MECHANICS</div>
+      <h2>Aggressive vs. Passive Orders</h2>
+      <p>Passive orders (limit orders) sit in the book and provide liquidity. Aggressive orders (market orders) cross the spread and consume that liquidity. Every fakeout ultimately comes down to this mechanism: an aggressive push through a level either finds enough passive supply to hold it back, or it doesn't.</p>
+      <p>A spring or shakeout is aggressive selling running into a wall of passive buying that doesn't budge. A real breakdown is aggressive selling finding thin passive support that gives way — same-looking candle, opposite order-book reality underneath it.</p>
+      <div class="spot-it"><b>Spot it:</b> on a level break, does price stall and print small-bodied candles right at the level (passive orders absorbing), or does it slice through with large, low-resistance candles (passive orders thin or absent)?</div>
+    </div>
+    <div class="pattern-chart">
+      <svg viewBox="0 0 300 160">
+        <text x="70" y="24" font-family="IBM Plex Mono" font-size="9" fill="var(--muted)" text-anchor="middle">PASSIVE (BOOK)</text>
+        <rect x="35" y="34" width="70" height="10" fill="var(--up)" opacity="0.9"/>
+        <rect x="35" y="46" width="55" height="10" fill="var(--up)" opacity="0.75"/>
+        <rect x="35" y="58" width="90" height="10" fill="var(--up)" opacity="0.95"/>
+        <rect x="35" y="70" width="40" height="10" fill="var(--up)" opacity="0.6"/>
+        <line x1="150" y1="30" x2="150" y2="120" stroke="var(--line)" stroke-width="1"/>
+        <path d="M155,50 L200,50 L195,44 M200,50 L195,56" fill="none" stroke="var(--amber)" stroke-width="2"/>
+        <text x="230" y="46" font-family="IBM Plex Mono" font-size="9" fill="var(--amber)" text-anchor="middle">AGGRESSIVE</text>
+        <text x="230" y="58" font-family="IBM Plex Mono" font-size="8" fill="var(--muted)" text-anchor="middle">(market order)</text>
+        <rect x="35" y="90" width="90" height="10" fill="var(--down)" opacity="0.6"/>
+        <rect x="35" y="102" width="30" height="10" fill="var(--down)" opacity="0.5"/>
+        <text x="70" y="128" font-family="IBM Plex Mono" font-size="9" fill="var(--muted)" text-anchor="middle">THIN BOOK ↓</text>
+        <text x="70" y="140" font-family="IBM Plex Mono" font-size="8" fill="var(--down)" text-anchor="middle">= real break</text>
+      </svg>
+      <div class="chart-caption">MARKET ORDERS CONSUME LIMIT-ORDER LIQUIDITY</div>
+    </div>
+  </div>
+  </div>
+
+  <div class="tab-content" id="tab-quiz">
+    <div class="quiz-header">
+      <h2>Test yourself</h2>
+      <p>Ten scenarios covering all thirteen patterns. Read each setup, pick the pattern, and check the explanation.</p>
+      <div class="score-track">Score: <b id="scoreVal">0</b> / <span id="scoreTotal">0</span></div>
+    </div>
+    <div id="quizContainer"></div>
+  </div>
+
+  <footer>
+    None of this is a signal to trade on by itself — in real time most of these patterns look identical until after the fact. Volume context, prior structure, and confirmation candles matter more than the shape alone. Treat this as a way to recognize patterns in hindsight and sharpen what your scanners look for, not a standalone entry trigger.
+  </footer>
+
+</div>
+
+<script>
+/* ---------- Tab switching ---------- */
+document.getElementById('tabbar').addEventListener('click', (e) => {
+  const btn = e.target.closest('.tab-btn');
+  if(!btn) return;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  window.scrollTo({top: 0, behavior: 'instant'});
+});
+
+/* ---------- Accordion ---------- */
+document.querySelectorAll('.acc-header').forEach(header => {
+  header.addEventListener('click', () => {
+    const body = document.getElementById(header.dataset.target);
+    const isOpen = header.classList.contains('open');
+    if(isOpen){
+      header.classList.remove('open');
+      body.classList.remove('open');
+      header.setAttribute('aria-expanded','false');
+    } else {
+      header.classList.add('open');
+      body.classList.add('open');
+      header.setAttribute('aria-expanded','true');
+    }
+  });
+});
+
+/* ---------- Candlestick renderer ---------- */
+function drawCandles(svgId, candles){
+  const svg = document.getElementById(svgId);
+  if(!svg) return;
+  const w = 300, h = 160, padTop = 12, padBottom = 12;
+  const plotH = h - padTop - padBottom;
+  const n = candles.length;
+  const slot = w / n;
+  const candleW = slot * 0.5;
+
+  let vmin = Infinity, vmax = -Infinity;
+  candles.forEach(c => { vmin = Math.min(vmin, c.low); vmax = Math.max(vmax, c.high); });
+  const range = (vmax - vmin) || 1;
+
+  function y(val){ return padTop + plotH - ((val - vmin)/range) * plotH; }
+
+  let svgContent = '';
+  candles.forEach((c, i) => {
+    const x = i * slot + slot/2;
+    const up = c.close >= c.open;
+    const color = up ? 'var(--up)' : 'var(--down)';
+    const bodyTop = y(Math.max(c.open, c.close));
+    const bodyBottom = y(Math.min(c.open, c.close));
+    const bodyH = Math.max(2, bodyBottom - bodyTop);
+
+    svgContent += `<line x1="${x}" y1="${y(c.high)}" x2="${x}" y2="${y(c.low)}" stroke="${color}" stroke-width="1.5"/>`;
+    svgContent += `<rect x="${x - candleW/2}" y="${bodyTop}" width="${candleW}" height="${bodyH}" fill="${color}" opacity="0.9"/>`;
+  });
+
+  svg.innerHTML = svgContent;
+}
+
+/* ---------- Pattern candle data (full sequence per chart) ---------- */
+const patternData = {
+  chart1: [
+    {open:60,close:64,high:65,low:58},
+    {open:64,close:61,high:66,low:59},
+    {open:61,close:63,high:64,low:58},
+    {open:63,close:60,high:64,low:57},
+    {open:60,close:40,high:61,low:30},
+    {open:40,close:68,high:70,low:38},
+    {open:68,close:76,high:78,low:66},
+    {open:76,close:85,high:87,low:74},
+  ],
+  chart2: [
+    {open:55,close:60,high:62,low:53},
+    {open:60,close:56,high:63,low:54},
+    {open:56,close:59,high:61,low:53},
+    {open:59,close:55,high:60,low:52},
+    {open:55,close:58,high:60,low:54},
+    {open:58,close:54,high:59,low:52},
+    {open:54,close:44,high:55,low:38},
+    {open:44,close:62,high:64,low:42},
+    {open:62,close:72,high:74,low:60},
+    {open:72,close:84,high:86,low:70},
+  ],
+  chart3: [
+    {open:70,close:72,high:74,low:68},
+    {open:72,close:74,high:76,low:70},
+    {open:74,close:50,high:75,low:35},
+    {open:50,close:40,high:52,low:32},
+    {open:40,close:60,high:62,low:38},
+    {open:60,close:73,high:75,low:58},
+    {open:73,close:78,high:80,low:71},
+  ],
+  chart4: [
+    {open:65,close:63,high:66,low:61},
+    {open:63,close:61,high:64,low:59},
+    {open:61,close:59,high:62,low:57},
+    {open:59,close:58,high:61,low:56},
+    {open:58,close:57,high:60,low:55},
+    {open:57,close:59,high:60,low:56},
+    {open:59,close:62,high:64,low:58},
+    {open:62,close:66,high:68,low:61},
+    {open:66,close:70,high:72,low:65},
+  ],
+  chart5: [
+    {open:45,close:50,high:52,low:43},
+    {open:50,close:46,high:53,low:44},
+    {open:46,close:49,high:51,low:44},
+    {open:49,close:45,high:50,low:43},
+    {open:45,close:48,high:50,low:44},
+    {open:48,close:44,high:49,low:42},
+    {open:44,close:56,high:62,low:43},
+    {open:56,close:38,high:58,low:36},
+    {open:38,close:30,high:40,low:26},
+  ],
+  chart6: [
+    {open:40,close:44,high:46,low:38},
+    {open:44,close:47,high:49,low:42},
+    {open:47,close:62,high:64,low:60},
+    {open:62,close:66,high:68,low:61},
+    {open:66,close:70,high:72,low:65},
+    {open:70,close:58,high:71,low:56},
+    {open:58,close:50,high:59,low:47},
+    {open:50,close:64,high:66,low:49},
+    {open:64,close:72,high:74,low:63},
+  ],
+  chart7: [
+    {open:50,close:52,high:54,low:49},
+    {open:52,close:58,high:60,low:51},
+    {open:58,close:66,high:68,low:57},
+    {open:66,close:70,high:72,low:65},
+    {open:70,close:65,high:71,low:62},
+    {open:65,close:58,high:66,low:56},
+    {open:58,close:53,high:59,low:51},
+    {open:53,close:51,high:55,low:49},
+  ],
+  chart8: [
+    {open:50,close:53,high:54,low:49},
+    {open:53,close:50,high:55,low:48},
+    {open:50,close:59,high:61,low:49},
+    {open:59,close:52,high:60,low:50},
+    {open:52,close:44,high:53,low:40},
+    {open:44,close:36,high:45,low:33},
+  ],
+  chart9: [
+    {open:70,close:62,high:72,low:60},
+    {open:62,close:66,high:68,low:58},
+    {open:66,close:58,high:69,low:56},
+    {open:58,close:62,high:64,low:54},
+    {open:62,close:56,high:65,low:53},
+    {open:56,close:60,high:62,low:53},
+    {open:60,close:57,high:61,low:54},
+    {open:57,close:58,high:60,low:55},
+    {open:58,close:57,high:59,low:56},
+  ],
+  chart10: [
+    {open:40,close:46,high:48,low:38},
+    {open:46,close:52,high:54,low:44},
+    {open:52,close:48,high:55,low:46},
+    {open:48,close:54,high:56,low:46},
+    {open:54,close:60,high:63,low:52},
+    {open:60,close:56,high:64,low:54},
+    {open:56,close:50,high:58,low:44},
+  ],
+};
+
+const trapEnd = {
+  chart1: 5, chart2: 6, chart3: 4, chart4: 6, chart5: 7,
+  chart6: 5, chart7: 4, chart8: 4, chart9: 6, chart10: 5,
+};
+
+const trapCaptions = {
+  chart1: "STOPS SWEPT BELOW SUPPORT — NOT YET RECLAIMED",
+  chart2: "RANGE FORMS, THEN A DIP BELOW THE LOW",
+  chart3: "SHARP NEWS-DRIVEN DROP — NO RECOVERY YET",
+  chart4: "QUIET GRADUAL DIP — ABSORPTION UNDERWAY",
+  chart5: "SPIKE ABOVE RESISTANCE — BREAKOUT BUYERS TRAPPED",
+  chart6: "GAP UP LEAVES AN UNFILLED IMBALANCE",
+  chart7: "PRICE STRETCHES AWAY FROM VWAP",
+  chart8: "OPENING RANGE BROKEN — BUYERS CHASE IN",
+  chart9: "CHOP AROUND THE OI-HEAVY STRIKE BEGINS",
+  chart10: "PRICE PRINTS A NEW HIGH",
+};
+
+const fullCaptions = {
+  chart1: "SUPPORT SWEPT → IMMEDIATE RECLAIM",
+  chart2: "RANGE → SPRING BELOW LOW → MARKUP",
+  chart3: "SHARP V-DROP → FAST MEAN REVERSION",
+  chart4: "SHALLOW DIP → QUIET ABSORPTION → GRIND UP",
+  chart5: "RANGE → SPIKE ABOVE HIGH → REVERSAL",
+  chart6: "GAP UP → LATER PULLBACK FILLS GAP",
+  chart7: "STRETCH FROM VWAP → DRIFT BACK",
+  chart8: "OR BREAK → FAILS → REAL MOVE OPPOSITE",
+  chart9: "CHOP CONVERGING TOWARD OI-HEAVY STRIKE",
+  chart10: "PRICE HIGHER HIGH · RSI LOWER HIGH",
+};
+
+function renderPhase(chartId, phase){
+  const full = patternData[chartId];
+  const candles = phase === 0 ? full.slice(0, trapEnd[chartId]) : full;
+  drawCandles(chartId, candles);
+  const capEl = document.getElementById('caption' + chartId.replace('chart',''));
+  if(capEl) capEl.textContent = phase === 0 ? trapCaptions[chartId] : fullCaptions[chartId];
+}
+
+Object.keys(patternData).forEach(chartId => renderPhase(chartId, 1));
+
+document.querySelectorAll('.chart-toggle').forEach(group => {
+  group.addEventListener('click', (e) => {
+    const btn = e.target.closest('.toggle-btn');
+    if(!btn) return;
+    const chartId = btn.dataset.chart;
+    const phase = parseInt(btn.dataset.phase);
+    group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderPhase(chartId, phase);
+  });
+});
+
+const questions = [
+  {
+    q: "Price grinds sideways for three weeks in a tight range, then briefly pokes below the range low on quiet volume before ripping back above the range. What is this?",
+    options: ["Panic overreaction", "Wyckoff spring", "Random noise", "Iceberg absorption"],
+    correct: 1,
+    explain: "The prior sideways range is the tell — a spring specifically tests supply after a visible base, not out of nowhere."
+  },
+  {
+    q: "A stock gaps down 8% on a surprise sector-wide headline, then recovers most of the move within two days, with no prior support level involved.",
+    options: ["Stop-loss hunt", "Wyckoff spring", "Panic & mean reversion", "Iceberg push"],
+    correct: 2,
+    explain: "No engineered structure here — just fear outrunning fundamentals, followed by a snap-back once sellers are exhausted."
+  },
+  {
+    q: "Price sits flat, then a single candle spikes sharply below an obvious round-number support and instantly reclaims it the same session.",
+    options: ["Stop-loss hunt / shakeout", "Panic & mean reversion", "Iceberg push", "Wyckoff spring"],
+    correct: 0,
+    explain: "The speed and single-candle nature — spike and immediate reclaim — is the signature of stops being swept, not a slow structural test."
+  },
+  {
+    q: "A stock drifts down slowly over two weeks on unremarkable, steady volume with no news, then grinds back up just as slowly. What's most likely happening?",
+    options: ["Panic & mean reversion", "Iceberg push (quiet accumulation)", "Wyckoff spring", "Stop-loss hunt"],
+    correct: 1,
+    explain: "Shallow, gradual, and news-free — this is the shape of a large buyer absorbing supply a little at a time rather than a sharp engineered move."
+  },
+  {
+    q: "Which of these four patterns is hardest to distinguish from a genuine breakdown while it's happening in real time?",
+    options: ["All of them, roughly equally", "Only the panic dip", "Only the spring", "None — they're always obvious live"],
+    correct: 0,
+    explain: "In real time, all four can look identical to a real breakdown. Volume context, prior structure, and confirmation candles matter more than shape alone — that's why this stays a hindsight/recognition tool, not a live signal."
+  },
+  {
+    q: "Price spikes above a well-tested resistance level, triggering breakout buyers, then reverses hard back inside the range. What is this?",
+    options: ["Wyckoff spring", "Upthrust", "Fair value gap", "VWAP reversion"],
+    correct: 1,
+    explain: "The upthrust is the distribution-phase mirror image of the spring — same shakeout logic, but at highs, designed to sell into breakout buyers."
+  },
+  {
+    q: "A stock gaps up sharply on news, leaving an empty price zone on the chart with no real trading. What tends to happen to that zone later?",
+    options: ["It's ignored forever", "Price often revisits and trades through it before continuing", "It always causes a full reversal", "It only matters for options expiry"],
+    correct: 1,
+    explain: "That untraded zone (fair value gap) has no real two-sided trading history yet, so price frequently fills it later before resuming the original direction."
+  },
+  {
+    q: "Price stretches well away from VWAP intraday in a range-bound session with no strong trend. What's the typical tendency?",
+    options: ["It keeps stretching further indefinitely", "It tends to drift back toward VWAP", "VWAP has no effect intraday", "It only matters at options expiry"],
+    correct: 1,
+    explain: "Institutional execution algos are often benchmarked to VWAP, so a lot of volume anchors around it — extreme stretches without trend conviction tend to revert toward that line."
+  },
+  {
+    q: "Price breaks above the first 15-30 minute opening range, draws in breakout buyers, then fails and reverses through the range. What is this designed to be filtered by?",
+    options: ["OI wall magnetism", "ORB chase guards", "Divergence", "Fair value gap logic"],
+    correct: 1,
+    explain: "This is the classic opening range fakeout — exactly what chase guards in an ORB engine exist to avoid entering into."
+  },
+  {
+    q: "Price makes a new high, but RSI or volume prints a lower high alongside it. What does this typically signal?",
+    options: ["A guaranteed reversal right now", "The move may be running out of underlying strength", "Nothing — indicators often disagree with price", "A confirmed breakout continuation"],
+    correct: 1,
+    explain: "Divergence isn't a trigger by itself, but it flags weakening momentum behind a new high — often the setup right before a spring, upthrust, or shakeout appears."
+  }
+];
+
+let score = 0;
+document.getElementById('scoreTotal').textContent = questions.length;
+
+const quizContainer = document.getElementById('quizContainer');
+questions.forEach((item, qi) => {
+  const card = document.createElement('div');
+  card.className = 'qcard';
+  card.innerHTML = `
+    <div class="qnum">QUESTION ${qi+1}</div>
+    <div class="qtext">${item.q}</div>
+    <div class="options">
+      ${item.options.map((opt,oi) => `<button class="opt" data-q="${qi}" data-o="${oi}">${opt}</button>`).join('')}
+    </div>
+    <div class="explain" id="explain-${qi}">${item.explain}</div>
+  `;
+  quizContainer.appendChild(card);
+});
+
+quizContainer.addEventListener('click', (e) => {
+  if(!e.target.classList.contains('opt')) return;
+  const btn = e.target;
+  const qi = parseInt(btn.dataset.q);
+  const oi = parseInt(btn.dataset.o);
+  const card = btn.closest('.qcard');
+  if(card.dataset.answered) return;
+  card.dataset.answered = "true";
+
+  const correctIdx = questions[qi].correct;
+  const allBtns = card.querySelectorAll('.opt');
+  allBtns.forEach(b => b.disabled = true);
+  allBtns[correctIdx].classList.add('correct');
+  if(oi !== correctIdx) btn.classList.add('wrong');
+  else { score++; document.getElementById('scoreVal').textContent = score; }
+
+  document.getElementById(`explain-${qi}`).classList.add('show');
+});
+</script>
+</body>
+</html>
