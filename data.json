@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-02T17:49:02Z",
+  "updated": "2026-08-02T18:47:58Z",
   "data": {
     "sp": {
       "price": 7489.72,
@@ -102,8 +102,8 @@
       "src": "GHA"
     },
     "t_KOTAK": {
-      "price": 390.3,
-      "chgPct": 0.23,
+      "price": 388.85,
+      "chgPct": -0.14,
       "src": "GHA"
     },
     "t_LT": {
