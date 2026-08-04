@@ -4,279 +4,275 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
 <title>NIFTY STRATEGIST — Login</title>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Orbitron:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
-  --bg:#0d1b3e;--panel:#0e1f45;--p2:#0a1628;
-  --cyan:#60a5fa;--pink:#93c5fd;--yel:#fbbf24;
-  --grn:#4ade80;--pur:#818cf8;--red:#f87171;
-  --bc:rgba(96,165,250,.15);--bp:rgba(96,165,250,.08);
-  --tx:#cce0ff;--t2:rgba(96,165,250,.75);--t3:rgba(96,165,250,.45);
+  --void:#05070d;
+  --deep:#0a0f1c;
+  --panel:rgba(15,22,38,.55);
+  --panel-solid:#0d1420;
+  --border:rgba(148,197,255,.14);
+  --border-strong:rgba(148,197,255,.32);
+  --bull:#00e6a8;
+  --bear:#ff5470;
+  --gold:#f2b705;
+  --cyan:#4fd1ff;
+  --text:#eaf1ff;
+  --muted:#8493b8;
+  --muted2:#465071;
 }
-html,body{
-  background:linear-gradient(135deg,#0d1b3e 0%,#0a1628 40%,#0d2040 100%);
-  color:var(--tx);
-  font-family:'Space Grotesk',sans-serif;
-  min-height:100vh;
-  overflow:hidden;
-}
-body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:linear-gradient(rgba(96,165,250,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(96,165,250,.025) 1px,transparent 1px);
-  background-size:50px 50px;}
-body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 80% 50% at 50% -5%,rgba(96,165,250,.1) 0%,transparent 55%),
-    radial-gradient(ellipse 30% 40% at 5% 60%,rgba(96,165,250,.05) 0%,transparent 50%),
-    radial-gradient(ellipse 25% 35% at 95% 40%,rgba(251,191,36,.04) 0%,transparent 50%);}
-
-.scan{position:fixed;inset:0;z-index:998;pointer-events:none;
-  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,20,.04) 3px,rgba(0,0,20,.04) 4px);}
-
-.container{
-  position:relative;z-index:1;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-height:100vh;padding:20px;
+html,body{height:100%;background:var(--void);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden;}
+body{
+  background:
+    radial-gradient(ellipse 60% 45% at 50% 8%,rgba(79,209,255,.09) 0%,transparent 60%),
+    radial-gradient(ellipse 40% 30% at 88% 78%,rgba(242,183,5,.05) 0%,transparent 55%),
+    radial-gradient(ellipse 50% 40% at 8% 85%,rgba(0,230,168,.05) 0%,transparent 55%),
+    linear-gradient(180deg,#05070d 0%,#080c17 55%,#05070d 100%);
 }
 
-/* ══ LOGO AREA ══ */
-.logo-area{text-align:center;margin-bottom:32px;animation:fadeDown .6s ease-out;}
-@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none}}
-
-.logo-hex{
-  width:72px;height:72px;margin:0 auto 16px;
-  border-radius:50%;
-  background:radial-gradient(circle at 35% 35%,rgba(96,165,250,.25),rgba(10,20,50,.8));
-  border:2px solid rgba(96,165,250,.4);
-  display:flex;align-items:center;justify-content:center;font-size:36px;
-  box-shadow:0 0 40px rgba(96,165,250,.25),inset 0 0 24px rgba(96,165,250,.06);
-  animation:hexglow 3s ease-in-out infinite;
+/* ══ 3D FLOOR GRID ══ */
+.floor-wrap{position:fixed;left:0;right:0;bottom:0;height:46vh;perspective:400px;perspective-origin:50% 0%;z-index:0;overflow:hidden;pointer-events:none;}
+.floor{
+  position:absolute;inset:-20% -60% auto -60%;height:220%;
+  transform:rotateX(82deg);
+  background-image:
+    linear-gradient(rgba(79,209,255,.14) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(79,209,255,.14) 1px,transparent 1px);
+  background-size:64px 64px;
+  animation:floorMove 6s linear infinite;
+  mask-image:linear-gradient(to top,rgba(0,0,0,.9),transparent 85%);
+  -webkit-mask-image:linear-gradient(to top,rgba(0,0,0,.9),transparent 85%);
 }
-@keyframes hexglow{
-  0%,100%{box-shadow:0 0 30px rgba(96,165,250,.2),inset 0 0 18px rgba(96,165,250,.04)}
-  50%{box-shadow:0 0 50px rgba(96,165,250,.45),0 0 80px rgba(96,165,250,.12),inset 0 0 28px rgba(96,165,250,.1)}}
+@keyframes floorMove{from{background-position:0 0}to{background-position:0 64px}}
 
-.logo-title{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;letter-spacing:1px;color:#e8f4ff;}
-.logo-title span{color:#60a5fa;text-shadow:0 0 14px rgba(96,165,250,.5)}
-.logo-sub{font-family:'Space Mono',monospace;font-size:13px;color:rgba(148,186,255,.5);letter-spacing:3px;margin-top:4px;}
+/* ══ TICKER DEPTH PLANES ══ */
+.ticker-plane{position:fixed;left:0;width:100%;white-space:nowrap;font-family:'JetBrains Mono',monospace;pointer-events:none;z-index:0;letter-spacing:1px;}
+.ticker-plane span{display:inline-block;padding:0 28px;}
+.tp1{top:12%;font-size:15px;color:rgba(148,197,255,.10);filter:blur(.3px);animation:tick1 55s linear infinite;}
+.tp2{top:78%;font-size:13px;color:rgba(148,197,255,.07);filter:blur(.6px);animation:tick2 70s linear infinite;}
+.tp3{top:45%;font-size:22px;color:rgba(148,197,255,.045);filter:blur(1px);animation:tick1 90s linear infinite reverse;}
+@keyframes tick1{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes tick2{from{transform:translateX(-50%)}to{transform:translateX(0)}}
 
-/* ══ LOGIN CARD ══ */
+/* ══ SCENE / STAGE ══ */
+.scene{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;perspective:1400px;}
+
+/* ══ THE CUBE — signature element ══ */
+.cube-stage{width:130px;height:130px;margin-bottom:8px;animation:fadeDown .7s ease-out;}
+.cube-rig{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .25s ease-out;}
+.cube{width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:cubeSpin 16s linear infinite;}
+@keyframes cubeSpin{from{transform:rotateY(0deg) rotateX(-14deg)}to{transform:rotateY(360deg) rotateX(-14deg)}}
+.face{
+  position:absolute;inset:0;width:130px;height:130px;
+  background:linear-gradient(160deg,rgba(13,20,36,.92),rgba(6,10,20,.96));
+  border:1px solid var(--border-strong);
+  display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
+  padding:8px 6px 10px;gap:5px;
+  box-shadow:inset 0 0 24px rgba(79,209,255,.05);
+}
+.face .idx-name{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;color:var(--muted);position:absolute;top:8px;left:0;right:0;text-align:center;}
+.face .bars{display:flex;align-items:flex-end;gap:3px;height:52px;}
+.face .bars i{width:5px;border-radius:1px;display:block;}
+.face .bars i.up{background:var(--bull);box-shadow:0 0 6px rgba(0,230,168,.5);}
+.face .bars i.dn{background:var(--bear);box-shadow:0 0 6px rgba(255,84,112,.5);}
+.face .chg{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.5px;}
+.face .chg.up{color:var(--bull);}
+.face .chg.dn{color:var(--bear);}
+.f-front{transform:rotateY(0deg) translateZ(65px);}
+.f-back{transform:rotateY(180deg) translateZ(65px);}
+.f-right{transform:rotateY(90deg) translateZ(65px);}
+.f-left{transform:rotateY(-90deg) translateZ(65px);}
+.f-top{transform:rotateX(90deg) translateZ(65px);}
+.f-bottom{transform:rotateX(-90deg) translateZ(65px);}
+.cube-glow{position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(circle,rgba(79,209,255,.18),transparent 70%);z-index:-1;filter:blur(6px);animation:glowPulse 4s ease-in-out infinite;}
+@keyframes glowPulse{0%,100%{opacity:.5}50%{opacity:1}}
+
+/* ══ LOGO ══ */
+.logo-area{text-align:center;margin-bottom:26px;animation:fadeDown .7s ease-out .05s both;}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
+.logo-title{font-family:'Bricolage Grotesque',sans-serif;font-size:27px;font-weight:800;letter-spacing:.3px;color:#f2f6ff;}
+.logo-title span{color:var(--cyan);text-shadow:0 0 18px rgba(79,209,255,.5);}
+.logo-sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);letter-spacing:3.5px;margin-top:6px;}
+
+/* ══ LOGIN CARD — mouse-tilted glass slab ══ */
+.card-holder{transform-style:preserve-3d;transition:transform .15s ease-out;}
 .login-card{
-  width:100%;max-width:420px;
-  background:linear-gradient(135deg,rgba(13,25,56,.97),rgba(8,16,40,.98));
-  border:1px solid rgba(96,165,250,.2);
-  border-radius:8px;
-  overflow:hidden;
-  box-shadow:0 20px 60px rgba(0,0,20,.7),0 0 0 1px rgba(96,165,250,.08);
-  animation:fadeUp .6s ease-out .1s both;
+  width:100%;max-width:400px;
+  background:linear-gradient(150deg,rgba(15,22,38,.85),rgba(7,11,20,.92));
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;
+  box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 0 1px rgba(79,209,255,.05),0 1px 0 rgba(255,255,255,.04) inset;
+  animation:fadeUp .7s ease-out .12s both;
+  transform:translateZ(20px);
 }
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-
-.card-topbar{
-  height:3px;
-  background:linear-gradient(90deg,var(--cyan),var(--pur),var(--cyan));
-  box-shadow:0 0 12px var(--cyan);
-}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+.card-topbar{height:2px;background:linear-gradient(90deg,var(--bull),var(--cyan),var(--gold));background-size:200% 100%;animation:barShift 5s ease infinite;}
+@keyframes barShift{0%,100%{background-position:0% 0}50%{background-position:100% 0}}
 .card-header{
-  padding:20px 28px 0;
-  font-family:'Space Mono',monospace;font-size:12px;letter-spacing:2px;
-  color:rgba(160,200,255,.6);
-  display:flex;justify-content:space-between;align-items:center;
+  padding:18px 26px 0;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;
+  color:var(--muted);display:flex;justify-content:space-between;align-items:center;
 }
-.card-header .status{color:var(--grn);display:flex;align-items:center;gap:5px;}
-.card-header .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--grn);box-shadow:0 0 8px var(--grn);animation:blink 1.4s ease-in-out infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.08}}
+.card-header .status{color:var(--bull);display:flex;align-items:center;gap:5px;}
+.card-header .dot{width:6px;height:6px;border-radius:50%;background:var(--bull);box-shadow:0 0 8px var(--bull);animation:blink 1.4s ease-in-out infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
+.card-body{padding:22px 26px 26px;}
 
-.card-body{padding:24px 28px 28px;}
+.auth-tabs{display:flex;margin-bottom:22px;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.auth-tab{flex:1;padding:10px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;font-weight:700;color:var(--muted);background:rgba(10,15,28,.5);border:none;cursor:pointer;transition:all .2s;}
+.auth-tab:hover{color:var(--text);background:rgba(79,209,255,.06);}
+.auth-tab.active{color:#f2f6ff;background:rgba(79,209,255,.1);box-shadow:inset 0 -2px 0 var(--cyan);}
 
-/* ══ TABS ══ */
-.auth-tabs{display:flex;gap:0;margin-bottom:24px;border:1px solid rgba(96,165,250,.15);border-radius:4px;overflow:hidden;}
-.auth-tab{
-  flex:1;padding:10px;text-align:center;
-  font-family:'Space Mono',monospace;font-size:12px;letter-spacing:2px;font-weight:700;
-  color:rgba(160,200,255,.5);background:rgba(10,20,50,.5);
-  border:none;cursor:pointer;transition:all .2s;
-}
-.auth-tab:hover{color:rgba(160,200,255,.8);background:rgba(96,165,250,.06);}
-.auth-tab.active{color:#e8f4ff;background:rgba(96,165,250,.12);box-shadow:inset 0 -2px 0 var(--cyan);}
-
-/* ══ INPUT FIELDS ══ */
-.field{margin-bottom:16px;}
-.field label{
-  display:block;margin-bottom:6px;
-  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;
-  color:rgba(160,200,255,.6);font-weight:700;
-}
+.field{margin-bottom:15px;}
+.field label{display:block;margin-bottom:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);font-weight:700;}
 .field input{
-  width:100%;padding:12px 14px;
-  font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:500;
-  color:#e8f4ff;
-  background:linear-gradient(135deg,rgba(10,20,50,.8),rgba(5,10,25,.9));
-  border:1px solid rgba(96,165,250,.2);border-radius:4px;
-  outline:none;transition:all .2s;
-  letter-spacing:.3px;
+  width:100%;padding:12px 14px;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;color:#f2f6ff;
+  background:linear-gradient(150deg,rgba(10,15,28,.7),rgba(4,7,15,.85));
+  border:1px solid var(--border);border-radius:6px;outline:none;transition:all .2s;
 }
-.field input::placeholder{color:rgba(96,165,250,.3);}
-.field input:focus{
-  border-color:rgba(96,165,250,.5);
-  box-shadow:0 0 0 3px rgba(96,165,250,.08),0 0 20px rgba(96,165,250,.06);
-}
+.field input::placeholder{color:rgba(148,197,255,.28);}
+.field input:focus{border-color:rgba(79,209,255,.5);box-shadow:0 0 0 3px rgba(79,209,255,.08),0 0 20px rgba(79,209,255,.06);}
 
-/* ══ BUTTONS ══ */
+.forgot-link{display:block;text-align:right;margin-top:-6px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted2);cursor:pointer;transition:color .2s;}
+.forgot-link:hover{color:var(--cyan);}
+
 .btn-primary{
-  width:100%;padding:14px;margin-top:8px;
-  font-family:'Space Mono',monospace;font-size:13px;letter-spacing:2px;font-weight:700;
-  color:#0d1b3e;
-  background:linear-gradient(135deg,#60a5fa,#818cf8);
-  border:none;border-radius:4px;cursor:pointer;
-  transition:all .2s;position:relative;overflow:hidden;
+  width:100%;padding:14px;margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2.5px;font-weight:700;
+  color:#05070d;background:linear-gradient(135deg,var(--bull),var(--cyan));
+  border:none;border-radius:6px;cursor:pointer;transition:all .2s;position:relative;
 }
-.btn-primary:hover{
-  box-shadow:0 0 30px rgba(96,165,250,.4),0 4px 16px rgba(96,165,250,.2);
-  transform:translateY(-1px);
-}
+.btn-primary:hover{box-shadow:0 0 30px rgba(0,230,168,.35),0 6px 18px rgba(0,0,0,.3);transform:translateY(-2px);}
 .btn-primary:active{transform:translateY(0);}
 .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
 
-.divider{
-  display:flex;align-items:center;gap:12px;margin:20px 0;
-  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:2px;
-  color:rgba(96,165,250,.3);
-}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(96,165,250,.15),transparent);}
+.divider{display:flex;align-items:center;gap:12px;margin:18px 0;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted2);}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(148,197,255,.15),transparent);}
 
 .btn-google{
-  width:100%;padding:13px;
-  font-family:'Space Mono',monospace;font-size:12px;letter-spacing:1px;font-weight:700;
-  color:rgba(200,220,255,.9);
-  background:rgba(10,20,50,.6);
-  border:1px solid rgba(96,165,250,.2);border-radius:4px;
-  cursor:pointer;transition:all .2s;
+  width:100%;padding:12px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;font-weight:700;color:rgba(220,230,255,.9);
+  background:rgba(10,15,28,.6);border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:all .2s;
   display:flex;align-items:center;justify-content:center;gap:10px;
 }
-.btn-google:hover{
-  border-color:rgba(96,165,250,.4);
-  background:rgba(96,165,250,.06);
-  box-shadow:0 0 16px rgba(96,165,250,.08);
-}
-.btn-google svg{width:18px;height:18px;}
+.btn-google:hover{border-color:rgba(79,209,255,.35);background:rgba(79,209,255,.06);}
+.btn-google svg{width:17px;height:17px;}
 
-/* ══ ERROR / INFO ══ */
-.msg{
-  margin-top:12px;padding:10px 14px;border-radius:4px;
-  font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.5px;
-  display:none;animation:fadeUp .3s ease-out;
-}
-.msg.error{display:block;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);color:#f87171;}
-.msg.success{display:block;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.25);color:#4ade80;}
-.msg.info{display:block;background:rgba(96,165,250,.08);border:1px solid rgba(96,165,250,.2);color:var(--cyan);}
+.msg{margin-top:12px;padding:10px 14px;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.5px;display:none;animation:fadeUp .3s ease-out;}
+.msg.error{display:block;background:rgba(255,84,112,.08);border:1px solid rgba(255,84,112,.25);color:var(--bear);}
+.msg.success{display:block;background:rgba(0,230,168,.08);border:1px solid rgba(0,230,168,.25);color:var(--bull);}
+.msg.info{display:block;background:rgba(79,209,255,.08);border:1px solid rgba(79,209,255,.2);color:var(--cyan);}
 
-/* ══ FOOTER ══ */
-.login-footer{
-  text-align:center;margin-top:20px;
-  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1.5px;
-  color:rgba(96,165,250,.3);
-  animation:fadeUp .6s ease-out .2s both;
-}
+.login-footer{text-align:center;margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted2);animation:fadeUp .7s ease-out .22s both;}
 
-/* ══ LOADING OVERLAY ══ */
-.loading-overlay{
-  display:none;position:fixed;inset:0;z-index:9999;
-  background:rgba(10,20,50,.95);
-  flex-direction:column;align-items:center;justify-content:center;gap:16px;
-}
+.loading-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(5,7,13,.95);flex-direction:column;align-items:center;justify-content:center;gap:16px;}
 .loading-overlay.active{display:flex;}
-.spinner{
-  width:40px;height:40px;border:3px solid rgba(96,165,250,.15);
-  border-top-color:var(--cyan);border-radius:50%;
-  animation:spin .8s linear infinite;
-}
+.spinner{width:38px;height:38px;border:3px solid rgba(79,209,255,.15);border-top-color:var(--cyan);border-radius:50%;animation:spin .8s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-family:'Space Mono',monospace;font-size:13px;letter-spacing:2px;color:var(--t2);}
-
-/* ══ RESET PASSWORD LINK ══ */
-.forgot-link{
-  display:block;text-align:right;margin-top:-8px;margin-bottom:12px;
-  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;
-  color:rgba(96,165,250,.5);cursor:pointer;
-  text-decoration:none;transition:color .2s;
-}
-.forgot-link:hover{color:var(--cyan);}
+.loading-text{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2px;color:var(--muted);}
 
 @media(max-width:480px){
   .logo-title{font-size:22px;}
-  .card-body{padding:20px 20px 24px;}
-  .login-card{border-radius:6px;}
+  .card-body{padding:18px 18px 22px;}
+  .cube-stage{width:100px;height:100px;}
+  .face{width:100px;height:100px;}
+  .f-front,.f-back,.f-right,.f-left,.f-top,.f-bottom{transform:translateZ(50px);}
+  .f-back{transform:rotateY(180deg) translateZ(50px);}
+  .f-right{transform:rotateY(90deg) translateZ(50px);}
+  .f-left{transform:rotateY(-90deg) translateZ(50px);}
+  .f-top{transform:rotateX(90deg) translateZ(50px);}
+  .f-bottom{transform:rotateX(-90deg) translateZ(50px);}
+}
+@media(prefers-reduced-motion:reduce){
+  .cube,.floor,.card-topbar,.ticker-plane,.cube-glow{animation:none!important;}
+  .card-holder,.cube-rig{transition:none!important;}
 }
 </style>
 </head>
 <body>
-<div class="scan"></div>
+
+<div class="floor-wrap"><div class="floor"></div></div>
+<div class="ticker-plane tp1"><span>NIFTY 50 ▲ 24,812.35 +0.62%</span><span>SENSEX ▲ 81,204.10 +0.58%</span><span>DOW ▼ 42,118.40 −0.14%</span><span>NASDAQ ▲ 19,882.05 +0.91%</span><span>FTSE 100 ▲ 8,204.66 +0.22%</span><span>BTC/USD ▼ 61,204.00 −1.30%</span><span>NIFTY 50 ▲ 24,812.35 +0.62%</span><span>SENSEX ▲ 81,204.10 +0.58%</span><span>DOW ▼ 42,118.40 −0.14%</span><span>NASDAQ ▲ 19,882.05 +0.91%</span></div>
+<div class="ticker-plane tp2"><span>RELIANCE 2,940 +1.1%</span><span>TCS 3,880 −0.4%</span><span>HDFC BANK 1,660 +0.7%</span><span>INFY 1,845 +0.3%</span><span>AAPL 228.10 +0.9%</span><span>TSLA 244.55 −2.1%</span><span>RELIANCE 2,940 +1.1%</span><span>TCS 3,880 −0.4%</span><span>HDFC BANK 1,660 +0.7%</span><span>INFY 1,845 +0.3%</span></div>
+<div class="ticker-plane tp3"><span>◆ MARKET OPEN ◆</span><span>◆ LIVE FEED ◆</span><span>◆ SECURE TERMINAL ◆</span><span>◆ MARKET OPEN ◆</span><span>◆ LIVE FEED ◆</span></div>
 
 <div class="loading-overlay" id="loadingOverlay">
   <div class="spinner"></div>
   <div class="loading-text">AUTHENTICATING...</div>
 </div>
 
-<div class="container">
+<div class="scene" id="scene">
+
+  <div class="cube-stage">
+    <div class="cube-rig" id="cubeRig">
+      <div class="cube-glow"></div>
+      <div class="cube">
+        <div class="face f-front"><span class="idx-name">NIFTY 50</span><div class="bars"><i class="up" style="height:18px"></i><i class="up" style="height:30px"></i><i class="dn" style="height:14px"></i><i class="up" style="height:40px"></i><i class="up" style="height:24px"></i></div><span class="chg up">+0.62%</span></div>
+        <div class="face f-back"><span class="idx-name">SENSEX</span><div class="bars"><i class="up" style="height:22px"></i><i class="dn" style="height:16px"></i><i class="up" style="height:36px"></i><i class="up" style="height:28px"></i><i class="up" style="height:44px"></i></div><span class="chg up">+0.58%</span></div>
+        <div class="face f-right"><span class="idx-name">DOW JONES</span><div class="bars"><i class="dn" style="height:34px"></i><i class="up" style="height:20px"></i><i class="dn" style="height:26px"></i><i class="dn" style="height:12px"></i><i class="up" style="height:18px"></i></div><span class="chg dn">−0.14%</span></div>
+        <div class="face f-left"><span class="idx-name">NASDAQ</span><div class="bars"><i class="up" style="height:16px"></i><i class="up" style="height:32px"></i><i class="up" style="height:46px"></i><i class="dn" style="height:20px"></i><i class="up" style="height:38px"></i></div><span class="chg up">+0.91%</span></div>
+        <div class="face f-top"><span class="idx-name">FTSE 100</span><div class="bars"><i class="up" style="height:24px"></i><i class="up" style="height:18px"></i><i class="dn" style="height:14px"></i><i class="up" style="height:30px"></i><i class="up" style="height:20px"></i></div><span class="chg up">+0.22%</span></div>
+        <div class="face f-bottom"><span class="idx-name">BTC/USD</span><div class="bars"><i class="dn" style="height:40px"></i><i class="dn" style="height:28px"></i><i class="up" style="height:16px"></i><i class="dn" style="height:34px"></i><i class="dn" style="height:22px"></i></div><span class="chg dn">−1.30%</span></div>
+      </div>
+    </div>
+  </div>
+
   <div class="logo-area">
-    <div class="logo-hex">📊</div>
     <div class="logo-title">NIFTY <span>STRATEGIST</span></div>
     <div class="logo-sub">INDIAN STOCK MARKET</div>
   </div>
 
-  <div class="login-card">
-    <div class="card-topbar"></div>
-    <div class="card-header">
-      <span>AUTHENTICATION</span>
-      <span class="status"><span class="dot"></span>SECURE</span>
-    </div>
-    <div class="card-body">
-
-      <!-- Tabs -->
-      <div class="auth-tabs">
-        <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">LOGIN</button>
-        <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">SIGN UP</button>
+  <div class="card-holder" id="cardHolder">
+    <div class="login-card">
+      <div class="card-topbar"></div>
+      <div class="card-header">
+        <span>AUTHENTICATION</span>
+        <span class="status"><span class="dot"></span>SECURE</span>
       </div>
+      <div class="card-body">
 
-      <!-- Login Form -->
-      <div id="formLogin">
-        <div class="field">
-          <label>EMAIL ADDRESS</label>
-          <input type="email" id="loginEmail" placeholder="trader@example.com" autocomplete="email">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">LOGIN</button>
+          <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">SIGN UP</button>
         </div>
-        <div class="field">
-          <label>PASSWORD</label>
-          <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password">
+
+        <div id="formLogin">
+          <div class="field">
+            <label>EMAIL ADDRESS</label>
+            <input type="email" id="loginEmail" placeholder="trader@example.com" autocomplete="email">
+          </div>
+          <div class="field">
+            <label>PASSWORD</label>
+            <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password">
+          </div>
+          <a class="forgot-link" onclick="resetPassword()">FORGOT PASSWORD?</a>
+          <button class="btn-primary" id="btnLogin" onclick="handleLogin()">▶ ENTER TERMINAL</button>
         </div>
-        <a class="forgot-link" onclick="resetPassword()">FORGOT PASSWORD?</a>
-        <button class="btn-primary" id="btnLogin" onclick="handleLogin()">▶ LOGIN</button>
+
+        <div id="formSignup" style="display:none">
+          <div class="field">
+            <label>DISPLAY NAME</label>
+            <input type="text" id="signupName" placeholder="Your name" autocomplete="name">
+          </div>
+          <div class="field">
+            <label>EMAIL ADDRESS</label>
+            <input type="email" id="signupEmail" placeholder="trader@example.com" autocomplete="email">
+          </div>
+          <div class="field">
+            <label>PASSWORD</label>
+            <input type="password" id="signupPassword" placeholder="Min 6 characters" autocomplete="new-password">
+          </div>
+          <button class="btn-primary" id="btnSignup" onclick="handleSignup()">▶ CREATE ACCOUNT</button>
+        </div>
+
+        <div class="divider">OR</div>
+
+        <button class="btn-google" onclick="handleGoogle()">
+          <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.04 10.04 0 001 12c0 1.61.39 3.14 1.07 4.49l3.77-2.4z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          CONTINUE WITH GOOGLE
+        </button>
+
+        <div class="msg" id="authMsg"></div>
       </div>
-
-      <!-- Signup Form (hidden by default) -->
-      <div id="formSignup" style="display:none">
-        <div class="field">
-          <label>DISPLAY NAME</label>
-          <input type="text" id="signupName" placeholder="Your name" autocomplete="name">
-        </div>
-        <div class="field">
-          <label>EMAIL ADDRESS</label>
-          <input type="email" id="signupEmail" placeholder="trader@example.com" autocomplete="email">
-        </div>
-        <div class="field">
-          <label>PASSWORD</label>
-          <input type="password" id="signupPassword" placeholder="Min 6 characters" autocomplete="new-password">
-        </div>
-        <button class="btn-primary" id="btnSignup" onclick="handleSignup()">▶ CREATE ACCOUNT</button>
-      </div>
-
-      <div class="divider">OR</div>
-
-      <button class="btn-google" onclick="handleGoogle()">
-        <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.04 10.04 0 001 12c0 1.61.39 3.14 1.07 4.49l3.77-2.4z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        CONTINUE WITH GOOGLE
-      </button>
-
-      <div class="msg" id="authMsg"></div>
     </div>
   </div>
 
@@ -342,7 +338,7 @@ function handleLogin() {
 
   auth.signInWithEmailAndPassword(email, password)
     .then(function(cred) {
-      showLoading('ACCESS GRANTED — LOADING HUB...');
+      showLoading('ACCESS GRANTED — LOADING TERMINAL...');
       setTimeout(function() { window.location.href = './index.html'; }, 600);
     })
     .catch(function(err) {
@@ -367,11 +363,9 @@ function handleSignup() {
   showLoading('CREATING ACCOUNT...');
 
   auth.createUserWithEmailAndPassword(email, password)
-    .then(function(cred) {
-      return cred.user.updateProfile({ displayName: name });
-    })
+    .then(function(cred) { return cred.user.updateProfile({ displayName: name }); })
     .then(function() {
-      showLoading('ACCOUNT CREATED — LOADING HUB...');
+      showLoading('ACCOUNT CREATED — LOADING TERMINAL...');
       setTimeout(function() { window.location.href = './index.html'; }, 600);
     })
     .catch(function(err) {
@@ -389,10 +383,9 @@ function handleSignup() {
 function handleGoogle() {
   var provider = new firebase.auth.GoogleAuthProvider();
   showLoading('CONNECTING TO GOOGLE...');
-
   auth.signInWithPopup(provider)
     .then(function(result) {
-      showLoading('ACCESS GRANTED — LOADING HUB...');
+      showLoading('ACCESS GRANTED — LOADING TERMINAL...');
       setTimeout(function() { window.location.href = './index.html'; }, 600);
     })
     .catch(function(err) {
@@ -420,6 +413,20 @@ document.addEventListener('keydown', function(e) {
   if (document.getElementById('formLogin').style.display !== 'none') handleLogin();
   else handleSignup();
 });
+
+// ══ 3D mouse-parallax: card tilt + cube tilt ══
+(function(){
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) return;
+  var cardHolder = document.getElementById('cardHolder');
+  var cubeRig = document.getElementById('cubeRig');
+  window.addEventListener('mousemove', function(e){
+    var nx = (e.clientX / window.innerWidth) - 0.5;
+    var ny = (e.clientY / window.innerHeight) - 0.5;
+    cardHolder.style.transform = 'rotateY(' + (nx*10) + 'deg) rotateX(' + (-ny*10) + 'deg)';
+    cubeRig.style.transform = 'rotateY(' + (nx*30) + 'deg) rotateX(' + (-ny*30) + 'deg)';
+  });
+})();
 </script>
 </body>
 </html>
