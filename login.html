@@ -33,46 +33,90 @@ body{
 
 /* ══ STARFIELD ══ */
 .stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
-.stars i{position:absolute;width:2px;height:2px;background:rgba(148,197,255,.5);border-radius:50%;animation:twinkle 3.5s ease-in-out infinite;}
-@keyframes twinkle{0%,100%{opacity:.12}50%{opacity:.7}}
+.stars i{position:absolute;width:2px;height:2px;background:#dcecff;border-radius:50%;box-shadow:0 0 4px 1px rgba(148,197,255,.7);animation:twinkle 3.5s ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:.35}50%{opacity:1}}
 
-/* ══ HOLOGRAPHIC MARKET CUBE — sits between logo and login card ══ */
-.cube-wrap{position:relative;width:260px;height:260px;margin:6px auto 22px;display:flex;align-items:center;justify-content:center;pointer-events:none;perspective:1700px;animation:fadeUp .7s ease-out .08s both;}
-.cube-rig{position:relative;width:260px;height:260px;transform-style:preserve-3d;transition:transform .2s ease-out;}
-.cube-spin{width:100%;height:100%;transform-style:preserve-3d;animation:cubeSpin 30s linear infinite;}
-@keyframes cubeSpin{from{transform:rotateX(-20deg) rotateY(0deg)}to{transform:rotateX(-20deg) rotateY(360deg)}}
+/* ══ HOLOGRAPHIC EARTH — sits between logo and login card ══ */
+.earth-wrap{position:relative;width:240px;height:240px;margin:6px auto 24px;display:flex;align-items:center;justify-content:center;pointer-events:none;perspective:1200px;animation:fadeUp .7s ease-out .08s both;}
+.earth-rig{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .2s ease-out;}
 
-.cube-face{
-  position:absolute;top:0;left:0;width:260px;height:260px;border-radius:12px;
-  background:linear-gradient(155deg,rgba(15,26,44,.55),rgba(5,9,18,.78));
-  border:1px solid rgba(79,209,255,.38);
-  box-shadow:inset 0 0 50px rgba(79,209,255,.09),0 0 60px rgba(79,209,255,.14),0 0 120px rgba(79,209,255,.06);
-  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+.earth-sphere{
+  position:absolute;inset:0;border-radius:50%;overflow:hidden;
+  background:radial-gradient(circle at 32% 28%,#1c5a80 0%,#0e3a58 32%,#082439 62%,#040f1c 100%);
+  box-shadow:0 0 10px rgba(79,209,255,.15) inset;
 }
-.cube-face::before{content:'';position:absolute;inset:0;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.05),transparent 40%);pointer-events:none;}
-.cube-face .cf-label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:3.5px;color:var(--cyan);text-shadow:0 0 12px rgba(79,209,255,.65);}
-.cube-face .cf-bars{display:flex;align-items:flex-end;gap:6px;height:78px;}
-.cube-face .cf-bars i{width:7px;border-radius:1px;display:block;}
-.cube-face .cf-bars i.up{background:var(--bull);box-shadow:0 0 9px rgba(0,230,168,.65);}
-.cube-face .cf-bars i.dn{background:var(--bear);box-shadow:0 0 9px rgba(255,84,112,.65);}
-.cube-face .cf-chg{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:.5px;}
-.cube-face .cf-hv{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#f2f6ff;text-shadow:0 0 14px rgba(79,209,255,.4);}
-.cube-face .cf-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bull);box-shadow:0 0 8px var(--bull);margin-right:6px;animation:blink 1.4s ease-in-out infinite;}
+.earth-texture{position:absolute;top:0;left:0;width:480px;height:240px;display:flex;animation:earthScroll 22s linear infinite;}
+.earth-tex-copy{position:relative;width:240px;height:240px;flex:0 0 240px;}
+.continent{position:absolute;background:linear-gradient(135deg,rgba(0,230,168,.55),rgba(20,120,90,.55));filter:blur(2px);opacity:.85;}
+.c1{width:70px;height:46px;top:38px;left:24px;border-radius:60% 40% 55% 45%/50% 60% 40% 50%;transform:rotate(-12deg);}
+.c2{width:46px;height:60px;top:100px;left:70px;border-radius:45% 55% 40% 60%/55% 40% 60% 45%;transform:rotate(8deg);}
+.c3{width:56px;height:34px;top:30px;left:150px;border-radius:50% 50% 40% 60%/60% 40% 55% 45%;}
+.c4{width:38px;height:38px;top:150px;left:160px;border-radius:50%;}
+.c5{width:60px;height:28px;top:180px;left:40px;border-radius:60% 40% 50% 50%/50% 60% 40% 50%;}
 
-.cf-front{transform:translateZ(130px);}
-.cf-back{transform:rotateY(180deg) translateZ(130px);}
-.cf-right{transform:rotateY(90deg) translateZ(130px);}
-.cf-left{transform:rotateY(-90deg) translateZ(130px);}
-.cf-top{transform:rotateX(90deg) translateZ(130px);}
-.cf-bottom{transform:rotateX(-90deg) translateZ(130px);}
+.earth-shade{
+  position:absolute;inset:0;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle at 30% 26%,rgba(255,255,255,.16),transparent 30%),
+             radial-gradient(circle at 68% 72%,rgba(0,0,0,.55),transparent 55%),
+             linear-gradient(115deg,transparent 45%,rgba(0,0,0,.55) 78%);
+}
+.earth-atmosphere{
+  position:absolute;inset:-10px;border-radius:50%;pointer-events:none;
+  box-shadow:0 0 40px rgba(79,209,255,.35),0 0 90px rgba(79,209,255,.16),0 0 150px rgba(0,230,168,.08);
+  border:1px solid rgba(148,213,255,.28);
+}
+@keyframes earthScroll{from{transform:translateX(0)}to{transform:translateX(-240px)}}
 
-.cube-glow{position:absolute;left:50%;bottom:-40px;width:340px;height:90px;transform:translateX(-50%);
-  background:radial-gradient(ellipse at center,rgba(79,209,255,.22),rgba(0,230,168,.08) 45%,transparent 72%);
-  filter:blur(6px);pointer-events:none;}
+.orbit-svg{position:absolute;inset:-46px;width:calc(100% + 92px);height:calc(100% + 92px);overflow:visible;animation:orbitSpin 50s linear infinite;}
+@keyframes orbitSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.orbit-ring{fill:none;stroke:rgba(79,209,255,.16);}
+.orbit-arc{fill:none;stroke:url(#arcGrad);stroke-width:1.4;stroke-dasharray:5 9;filter:drop-shadow(0 0 4px rgba(79,209,255,.55));animation:dash 2.6s linear infinite;}
+@keyframes dash{to{stroke-dashoffset:-140;}}
+.orbit-node circle{fill:var(--cyan);}
+.orbit-node.hot circle{fill:var(--gold);}
+.orbit-node .pulse{fill:none;stroke:var(--cyan);stroke-width:1.4;opacity:0;animation:pulse 2.6s ease-out infinite;}
+@keyframes pulse{0%{r:5;opacity:.8;stroke-width:2}100%{r:18;opacity:0;stroke-width:.3}}
 
-.particle{position:absolute;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);opacity:0;animation:particleFloat 5.5s ease-in-out infinite;}
-@keyframes particleFloat{0%{opacity:0;transform:translateY(20px)}15%{opacity:.8}85%{opacity:.5}100%{opacity:0;transform:translateY(-160px)}}
+/* ══ ORBIT PANELS — mini market cards floating around the Earth ══ */
+.orbit-panel{
+  position:absolute;width:98px;padding:8px 10px;border-radius:8px;z-index:3;
+  background:linear-gradient(150deg,rgba(15,22,38,.68),rgba(6,10,20,.85));
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border:1px solid var(--border);
+  box-shadow:0 0 24px rgba(79,209,255,.08);
+  animation:orbitFloat 6s ease-in-out infinite;
+  pointer-events:none;
+}
+.orbit-panel .op-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.2px;color:var(--muted);margin-bottom:5px;}
+.orbit-panel .op-bars{display:flex;align-items:flex-end;gap:3px;height:26px;margin-bottom:5px;}
+.orbit-panel .op-bars i{width:4px;border-radius:1px;display:block;}
+.orbit-panel .op-bars i.up{background:var(--bull);box-shadow:0 0 5px rgba(0,230,168,.5);}
+.orbit-panel .op-bars i.dn{background:var(--bear);box-shadow:0 0 5px rgba(255,84,112,.5);}
+.orbit-panel .op-chg{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;}
+.orbit-panel::before{content:'';position:absolute;width:44px;height:1px;background:linear-gradient(90deg,rgba(79,209,255,.55),transparent);}
+
+.op-tl{top:-14px;left:-76px;animation-delay:0s;}
+.op-tl::before{bottom:10px;right:-44px;transform:rotate(30deg);transform-origin:right center;}
+.op-tr{top:-14px;right:-76px;animation-delay:1.5s;}
+.op-tr::before{bottom:10px;left:-44px;transform:rotate(-30deg);transform-origin:left center;}
+.op-bl{bottom:-14px;left:-76px;animation-delay:2.3s;}
+.op-bl::before{top:10px;right:-44px;transform:rotate(-30deg);transform-origin:right center;}
+.op-br{bottom:-14px;right:-76px;animation-delay:.8s;}
+.op-br::before{top:10px;left:-44px;transform:rotate(30deg);transform-origin:left center;}
+@keyframes orbitFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+
+/* ══ COMETS — streaking across the dark space ══ */
+.comets{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
+.comet{position:absolute;top:0;left:0;width:4px;height:4px;border-radius:50%;background:#ffffff;
+  box-shadow:0 0 10px 3px rgba(210,235,255,1);opacity:0;animation-name:comet-move;animation-timing-function:linear;animation-iteration-count:infinite;}
+.comet::before{content:'';position:absolute;top:50%;right:100%;width:140px;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(210,235,255,.85));transform:translateY(-50%);}
+@keyframes comet-move{
+  0%{opacity:0;transform:rotate(var(--ang)) translateX(0);}
+  6%{opacity:1;}
+  80%{opacity:.85;}
+  100%{opacity:0;transform:rotate(var(--ang)) translateX(var(--dist));}
+}
 
 /* ══ FLOATING CANDLESTICK PANELS ══ */
 .candle-card{
@@ -159,28 +203,25 @@ body{
 @media(max-width:480px){
   .logo-title{font-size:22px;}
   .card-body{padding:18px 18px 22px;}
-  .cube-wrap{width:180px;height:180px;margin:0 auto 14px;}
-  .cube-rig{width:180px;height:180px;opacity:.6;}
-  .cube-spin{width:180px;height:180px;}
-  .cube-face{width:180px;height:180px;}
-  .cf-front,.cf-back,.cf-right,.cf-left,.cf-top,.cf-bottom{--z:90px;}
-  .cf-front{transform:translateZ(90px);} .cf-back{transform:rotateY(180deg) translateZ(90px);}
-  .cf-right{transform:rotateY(90deg) translateZ(90px);} .cf-left{transform:rotateY(-90deg) translateZ(90px);}
-  .cf-top{transform:rotateX(90deg) translateZ(90px);} .cf-bottom{transform:rotateX(-90deg) translateZ(90px);}
-  .cube-face .cf-bars{height:52px;}
+  .earth-wrap{width:170px;height:170px;margin:0 auto 16px;}
+  .earth-texture{width:340px;height:170px;}
+  .earth-tex-copy{width:170px;height:170px;flex-basis:170px;}
+  @keyframes earthScroll{from{transform:translateX(0)}to{transform:translateX(-170px)}}
   .candle-card{width:92px;padding:7px 9px;}
   .candle-card .cc-bars{height:24px;}
   .hud{padding:5px 8px;}
+  .orbit-panel{display:none;}
 }
 @media(prefers-reduced-motion:reduce){
-  .cube-spin,.card-topbar,.stars i,.candle-card,.hud .dot,.particle{animation:none!important;}
-  .card-holder,.cube-rig{transition:none!important;}
+  .earth-texture,.orbit-svg,.card-topbar,.stars i,.candle-card,.hud .dot,.comet,.orbit-arc,.orbit-node .pulse{animation:none!important;}
+  .card-holder,.earth-rig{transition:none!important;}
 }
 </style>
 </head>
 <body>
 
 <div class="stars" id="stars"></div>
+<div class="comets" id="comets"></div>
 
 <div class="candle-card cc1">
   <div class="cc-label">NSE · NIFTY 50</div>
@@ -218,63 +259,61 @@ body{
     <div class="logo-sub">INDIAN STOCK MARKET</div>
   </div>
 
-  <div class="cube-wrap">
-    <div class="cube-rig" id="cubeRig">
-      <div class="cube-glow"></div>
-      <div class="cube-spin">
+  <div class="earth-wrap">
+    <div class="earth-rig" id="earthRig">
 
-        <div class="cube-face cf-front">
-          <div class="cf-label">NIFTY 50</div>
-          <div class="cf-bars">
-            <i class="up" style="height:22px"></i><i class="up" style="height:38px"></i><i class="dn" style="height:16px"></i>
-            <i class="up" style="height:52px"></i><i class="up" style="height:30px"></i><i class="up" style="height:44px"></i>
+      <div class="earth-sphere">
+        <div class="earth-texture">
+          <div class="earth-tex-copy">
+            <i class="continent c1"></i><i class="continent c2"></i><i class="continent c3"></i><i class="continent c4"></i><i class="continent c5"></i>
           </div>
-          <div class="cf-chg" style="color:var(--bull)">▲ +0.62%</div>
-        </div>
-
-        <div class="cube-face cf-right">
-          <div class="cf-label">SENSEX</div>
-          <div class="cf-bars">
-            <i class="up" style="height:26px"></i><i class="dn" style="height:18px"></i><i class="up" style="height:46px"></i>
-            <i class="up" style="height:36px"></i><i class="up" style="height:58px"></i><i class="dn" style="height:14px"></i>
+          <div class="earth-tex-copy">
+            <i class="continent c1"></i><i class="continent c2"></i><i class="continent c3"></i><i class="continent c4"></i><i class="continent c5"></i>
           </div>
-          <div class="cf-chg" style="color:var(--bull)">▲ +0.58%</div>
         </div>
-
-        <div class="cube-face cf-back">
-          <div class="cf-label">NASDAQ</div>
-          <div class="cf-bars">
-            <i class="up" style="height:18px"></i><i class="up" style="height:32px"></i><i class="up" style="height:50px"></i>
-            <i class="dn" style="height:22px"></i><i class="up" style="height:44px"></i><i class="up" style="height:60px"></i>
-          </div>
-          <div class="cf-chg" style="color:var(--bull)">▲ +0.91%</div>
-        </div>
-
-        <div class="cube-face cf-left">
-          <div class="cf-label">DOW JONES</div>
-          <div class="cf-bars">
-            <i class="dn" style="height:40px"></i><i class="up" style="height:24px"></i><i class="dn" style="height:32px"></i>
-            <i class="dn" style="height:14px"></i><i class="up" style="height:20px"></i><i class="dn" style="height:28px"></i>
-          </div>
-          <div class="cf-chg" style="color:var(--bear)">▼ −0.14%</div>
-        </div>
-
-        <div class="cube-face cf-top">
-          <div class="cf-label"><span class="cf-dot"></span>GLOBAL VOLUME</div>
-          <div class="cf-hv">$4.2T</div>
-        </div>
-
-        <div class="cube-face cf-bottom">
-          <div class="cf-label">LIVE NODES</div>
-          <div class="cf-hv">142 / 142</div>
-        </div>
-
+        <div class="earth-shade"></div>
       </div>
+      <div class="earth-atmosphere"></div>
 
-      <i class="particle" style="left:20px;top:60%;width:3px;height:3px;animation-delay:0s;"></i>
-      <i class="particle" style="left:240px;top:70%;width:2px;height:2px;animation-delay:1.4s;"></i>
-      <i class="particle" style="left:90px;top:85%;width:3px;height:3px;animation-delay:2.6s;"></i>
-      <i class="particle" style="left:180px;top:80%;width:2px;height:2px;animation-delay:3.8s;"></i>
+      <svg class="orbit-svg" viewBox="0 0 420 420">
+        <defs>
+          <linearGradient id="arcGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#4fd1ff"/>
+            <stop offset="100%" stop-color="#00e6a8"/>
+          </linearGradient>
+        </defs>
+        <circle class="orbit-ring" cx="210" cy="210" r="170"/>
+        <path class="orbit-arc" d="M 60,140 Q 210,40 360,130"/>
+        <path class="orbit-arc" d="M 360,130 Q 400,210 350,300"/>
+        <path class="orbit-arc" d="M 350,300 Q 210,380 70,290"/>
+        <path class="orbit-arc" d="M 70,290 Q 20,210 60,140"/>
+        <g class="orbit-node hot"><circle class="pulse" cx="60" cy="140" r="5"/><circle cx="60" cy="140" r="4"/></g>
+        <g class="orbit-node hot"><circle class="pulse" cx="70" cy="290" r="5"/><circle cx="70" cy="290" r="4"/></g>
+        <g class="orbit-node"><circle class="pulse" cx="360" cy="130" r="5"/><circle cx="360" cy="130" r="4"/></g>
+        <g class="orbit-node"><circle class="pulse" cx="350" cy="300" r="5"/><circle cx="350" cy="300" r="4"/></g>
+      </svg>
+
+    </div>
+
+    <div class="orbit-panel op-tl">
+      <div class="op-label">NIFTY 50</div>
+      <div class="op-bars"><i class="up" style="height:10px"></i><i class="up" style="height:18px"></i><i class="dn" style="height:8px"></i><i class="up" style="height:22px"></i><i class="up" style="height:14px"></i></div>
+      <div class="op-chg" style="color:var(--bull)">▲ +0.62%</div>
+    </div>
+    <div class="orbit-panel op-tr">
+      <div class="op-label">SENSEX</div>
+      <div class="op-bars"><i class="up" style="height:12px"></i><i class="dn" style="height:9px"></i><i class="up" style="height:20px"></i><i class="up" style="height:16px"></i><i class="up" style="height:24px"></i></div>
+      <div class="op-chg" style="color:var(--bull)">▲ +0.58%</div>
+    </div>
+    <div class="orbit-panel op-bl">
+      <div class="op-label">NASDAQ</div>
+      <div class="op-bars"><i class="up" style="height:9px"></i><i class="up" style="height:16px"></i><i class="up" style="height:24px"></i><i class="dn" style="height:11px"></i><i class="up" style="height:20px"></i></div>
+      <div class="op-chg" style="color:var(--bull)">▲ +0.91%</div>
+    </div>
+    <div class="orbit-panel op-br">
+      <div class="op-label">DOW JONES</div>
+      <div class="op-bars"><i class="dn" style="height:18px"></i><i class="up" style="height:11px"></i><i class="dn" style="height:15px"></i><i class="dn" style="height:7px"></i><i class="up" style="height:10px"></i></div>
+      <div class="op-chg" style="color:var(--bear)">▼ −0.14%</div>
     </div>
   </div>
 
@@ -359,27 +398,63 @@ function handleGoogle() {
 (function(){
   var wrap = document.getElementById('stars');
   var frag = document.createDocumentFragment();
-  for (var i=0;i<70;i++){
+  for (var i=0;i<150;i++){
     var s = document.createElement('i');
+    var size = 1 + Math.random()*2.2;               // 1–3.2px, some stars look closer/bigger
     s.style.left = (Math.random()*100)+'%';
     s.style.top = (Math.random()*100)+'%';
+    s.style.width = size+'px';
+    s.style.height = size+'px';
+    s.style.boxShadow = '0 0 ' + (size*2.5) + 'px ' + (size*0.6) + 'px rgba(148,197,255,.7)';
     s.style.animationDelay = (Math.random()*3.5)+'s';
+    s.style.animationDuration = (2.5 + Math.random()*2.5)+'s';
     frag.appendChild(s);
   }
   wrap.appendChild(frag);
 })();
 
-// ══ 3D mouse-parallax: card tilt + cube tilt ══
+// ══ Comets — streaking shooting stars across the space background ══
+(function(){
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var wrap = document.getElementById('comets');
+  if (reduceMotion || !wrap) return;
+
+  function spawnComet(){
+    var c = document.createElement('i');
+    c.className = 'comet';
+    var startTop = Math.random()*70;              // start mostly in upper 70% of screen
+    var startLeft = Math.random()*70 - 10;         // start mostly left/center, can go slightly off-screen
+    var angle = 25 + Math.random()*40;             // travel down-right, 25–65deg
+    var dist = 450 + Math.random()*450;            // travel distance in px
+    var duration = 1.4 + Math.random()*1.2;        // fast 1.4–2.6s streak
+    c.style.top = startTop + '%';
+    c.style.left = startLeft + '%';
+    c.style.setProperty('--ang', angle + 'deg');
+    c.style.setProperty('--dist', dist + 'px');
+    c.style.animationDuration = duration + 's';
+    c.style.animationIterationCount = '1';
+    wrap.appendChild(c);
+    setTimeout(function(){ c.remove(); }, duration*1000 + 100);
+  }
+
+  function loop(){
+    spawnComet();
+    setTimeout(loop, 550 + Math.random()*500);      // a new comet roughly every ~0.55–1.05s
+  }
+  loop();
+})();
+
+// ══ 3D mouse-parallax: card tilt + earth tilt ══
 (function(){
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduceMotion) return;
   var cardHolder = document.getElementById('cardHolder');
-  var cubeRig = document.getElementById('cubeRig');
+  var earthRig = document.getElementById('earthRig');
   window.addEventListener('mousemove', function(e){
     var nx = (e.clientX / window.innerWidth) - 0.5;
     var ny = (e.clientY / window.innerHeight) - 0.5;
     cardHolder.style.transform = 'rotateY(' + (nx*10) + 'deg) rotateX(' + (-ny*10) + 'deg)';
-    cubeRig.style.transform = 'rotateY(' + (nx*18) + 'deg) rotateX(' + (-ny*18) + 'deg)';
+    earthRig.style.transform = 'rotateY(' + (nx*14) + 'deg) rotateX(' + (-ny*14) + 'deg)';
   });
 })();
 </script>
