@@ -22,7 +22,7 @@
   --muted:#8493b8;
   --muted2:#465071;
 }
-html,body{height:100%;background:var(--void);color:var(--text);font-family:'Inter',sans-serif;overflow:hidden;}
+html,body{height:100%;background:var(--void);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;overflow-y:auto;}
 body{
   background:
     radial-gradient(ellipse 60% 45% at 50% 8%,rgba(79,209,255,.09) 0%,transparent 60%),
@@ -31,62 +31,78 @@ body{
     linear-gradient(180deg,#05070d 0%,#080c17 55%,#05070d 100%);
 }
 
-/* ══ 3D FLOOR GRID ══ */
-.floor-wrap{position:fixed;left:0;right:0;bottom:0;height:46vh;perspective:400px;perspective-origin:50% 0%;z-index:0;overflow:hidden;pointer-events:none;}
-.floor{
-  position:absolute;inset:-20% -60% auto -60%;height:220%;
-  transform:rotateX(82deg);
-  background-image:
-    linear-gradient(rgba(79,209,255,.14) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(79,209,255,.14) 1px,transparent 1px);
-  background-size:64px 64px;
-  animation:floorMove 6s linear infinite;
-  mask-image:linear-gradient(to top,rgba(0,0,0,.9),transparent 85%);
-  -webkit-mask-image:linear-gradient(to top,rgba(0,0,0,.9),transparent 85%);
-}
-@keyframes floorMove{from{background-position:0 0}to{background-position:0 64px}}
+/* ══ STARFIELD ══ */
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.stars i{position:absolute;width:2px;height:2px;background:rgba(148,197,255,.5);border-radius:50%;animation:twinkle 3.5s ease-in-out infinite;}
+@keyframes twinkle{0%,100%{opacity:.12}50%{opacity:.7}}
 
-/* ══ TICKER DEPTH PLANES ══ */
-.ticker-plane{position:fixed;left:0;width:100%;white-space:nowrap;font-family:'JetBrains Mono',monospace;pointer-events:none;z-index:0;letter-spacing:1px;}
-.ticker-plane span{display:inline-block;padding:0 28px;}
-.tp1{top:12%;font-size:15px;color:rgba(148,197,255,.10);filter:blur(.3px);animation:tick1 55s linear infinite;}
-.tp2{top:78%;font-size:13px;color:rgba(148,197,255,.07);filter:blur(.6px);animation:tick2 70s linear infinite;}
-.tp3{top:45%;font-size:22px;color:rgba(148,197,255,.045);filter:blur(1px);animation:tick1 90s linear infinite reverse;}
-@keyframes tick1{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-@keyframes tick2{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+/* ══ HOLOGRAPHIC MARKET CUBE — sits between logo and login card ══ */
+.cube-wrap{position:relative;width:260px;height:260px;margin:6px auto 22px;display:flex;align-items:center;justify-content:center;pointer-events:none;perspective:1700px;animation:fadeUp .7s ease-out .08s both;}
+.cube-rig{position:relative;width:260px;height:260px;transform-style:preserve-3d;transition:transform .2s ease-out;}
+.cube-spin{width:100%;height:100%;transform-style:preserve-3d;animation:cubeSpin 30s linear infinite;}
+@keyframes cubeSpin{from{transform:rotateX(-20deg) rotateY(0deg)}to{transform:rotateX(-20deg) rotateY(360deg)}}
+
+.cube-face{
+  position:absolute;top:0;left:0;width:260px;height:260px;border-radius:12px;
+  background:linear-gradient(155deg,rgba(15,26,44,.55),rgba(5,9,18,.78));
+  border:1px solid rgba(79,209,255,.38);
+  box-shadow:inset 0 0 50px rgba(79,209,255,.09),0 0 60px rgba(79,209,255,.14),0 0 120px rgba(79,209,255,.06);
+  backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+}
+.cube-face::before{content:'';position:absolute;inset:0;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,.05),transparent 40%);pointer-events:none;}
+.cube-face .cf-label{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:3.5px;color:var(--cyan);text-shadow:0 0 12px rgba(79,209,255,.65);}
+.cube-face .cf-bars{display:flex;align-items:flex-end;gap:6px;height:78px;}
+.cube-face .cf-bars i{width:7px;border-radius:1px;display:block;}
+.cube-face .cf-bars i.up{background:var(--bull);box-shadow:0 0 9px rgba(0,230,168,.65);}
+.cube-face .cf-bars i.dn{background:var(--bear);box-shadow:0 0 9px rgba(255,84,112,.65);}
+.cube-face .cf-chg{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:700;letter-spacing:.5px;}
+.cube-face .cf-hv{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:#f2f6ff;text-shadow:0 0 14px rgba(79,209,255,.4);}
+.cube-face .cf-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bull);box-shadow:0 0 8px var(--bull);margin-right:6px;animation:blink 1.4s ease-in-out infinite;}
+
+.cf-front{transform:translateZ(130px);}
+.cf-back{transform:rotateY(180deg) translateZ(130px);}
+.cf-right{transform:rotateY(90deg) translateZ(130px);}
+.cf-left{transform:rotateY(-90deg) translateZ(130px);}
+.cf-top{transform:rotateX(90deg) translateZ(130px);}
+.cf-bottom{transform:rotateX(-90deg) translateZ(130px);}
+
+.cube-glow{position:absolute;left:50%;bottom:-40px;width:340px;height:90px;transform:translateX(-50%);
+  background:radial-gradient(ellipse at center,rgba(79,209,255,.22),rgba(0,230,168,.08) 45%,transparent 72%);
+  filter:blur(6px);pointer-events:none;}
+
+.particle{position:absolute;border-radius:50%;background:var(--cyan);box-shadow:0 0 8px var(--cyan);opacity:0;animation:particleFloat 5.5s ease-in-out infinite;}
+@keyframes particleFloat{0%{opacity:0;transform:translateY(20px)}15%{opacity:.8}85%{opacity:.5}100%{opacity:0;transform:translateY(-160px)}}
+
+/* ══ FLOATING CANDLESTICK PANELS ══ */
+.candle-card{
+  position:fixed;width:112px;padding:9px 11px;border-radius:8px;z-index:2;pointer-events:none;
+  background:linear-gradient(150deg,rgba(15,22,38,.65),rgba(6,10,20,.8));
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--border);
+  animation:cardFloat 6s ease-in-out infinite;
+}
+.candle-card .cc-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.3px;color:var(--muted);margin-bottom:5px;}
+.candle-card .cc-bars{display:flex;align-items:flex-end;gap:3px;height:32px;margin-bottom:5px;}
+.candle-card .cc-bars i{width:4px;border-radius:1px;display:block;}
+.candle-card .cc-bars i.up{background:var(--bull);box-shadow:0 0 5px rgba(0,230,168,.5);}
+.candle-card .cc-bars i.dn{background:var(--bear);box-shadow:0 0 5px rgba(255,84,112,.5);}
+.candle-card .cc-chg{font-family:'JetBrains Mono',monospace;font-size:9px;}
+.cc1{top:6%;left:4%;animation-delay:0s;} .cc2{top:6%;right:4%;animation-delay:1.2s;}
+.cc3{bottom:6%;left:4%;animation-delay:2.1s;} .cc4{bottom:6%;right:4%;animation-delay:.6s;}
+@keyframes cardFloat{0%,100%{transform:translateY(0) rotateY(-6deg);}50%{transform:translateY(-12px) rotateY(6deg);}}
+
+/* ══ HOLOGRAPHIC HUD ══ */
+.hud{position:fixed;z-index:2;font-family:'JetBrains Mono',monospace;letter-spacing:1.5px;color:var(--cyan);
+  background:rgba(10,16,30,.35);border:1px solid var(--border);border-radius:6px;padding:7px 11px;
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);pointer-events:none;}
+.hud .hv{color:#f2f6ff;font-size:13px;font-weight:600;}
+.hud .hl{font-size:9px;color:var(--muted);}
+.hud-tl{top:5%;left:4%;} .hud-br{bottom:5%;right:4%;}
+.hud .dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--bull);box-shadow:0 0 6px var(--bull);margin-right:6px;animation:blink 1.4s ease-in-out infinite;}
 
 /* ══ SCENE / STAGE ══ */
-.scene{position:relative;z-index:2;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;perspective:1400px;}
-
-/* ══ THE CUBE — signature element ══ */
-.cube-stage{width:130px;height:130px;margin-bottom:8px;animation:fadeDown .7s ease-out;}
-.cube-rig{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .25s ease-out;}
-.cube{width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:cubeSpin 16s linear infinite;}
-@keyframes cubeSpin{from{transform:rotateY(0deg) rotateX(-14deg)}to{transform:rotateY(360deg) rotateX(-14deg)}}
-.face{
-  position:absolute;inset:0;width:130px;height:130px;
-  background:linear-gradient(160deg,rgba(13,20,36,.92),rgba(6,10,20,.96));
-  border:1px solid var(--border-strong);
-  display:flex;flex-direction:column;justify-content:flex-end;align-items:center;
-  padding:8px 6px 10px;gap:5px;
-  box-shadow:inset 0 0 24px rgba(79,209,255,.05);
-}
-.face .idx-name{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.5px;color:var(--muted);position:absolute;top:8px;left:0;right:0;text-align:center;}
-.face .bars{display:flex;align-items:flex-end;gap:3px;height:52px;}
-.face .bars i{width:5px;border-radius:1px;display:block;}
-.face .bars i.up{background:var(--bull);box-shadow:0 0 6px rgba(0,230,168,.5);}
-.face .bars i.dn{background:var(--bear);box-shadow:0 0 6px rgba(255,84,112,.5);}
-.face .chg{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.5px;}
-.face .chg.up{color:var(--bull);}
-.face .chg.dn{color:var(--bear);}
-.f-front{transform:rotateY(0deg) translateZ(65px);}
-.f-back{transform:rotateY(180deg) translateZ(65px);}
-.f-right{transform:rotateY(90deg) translateZ(65px);}
-.f-left{transform:rotateY(-90deg) translateZ(65px);}
-.f-top{transform:rotateX(90deg) translateZ(65px);}
-.f-bottom{transform:rotateX(-90deg) translateZ(65px);}
-.cube-glow{position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(circle,rgba(79,209,255,.18),transparent 70%);z-index:-1;filter:blur(6px);animation:glowPulse 4s ease-in-out infinite;}
-@keyframes glowPulse{0%,100%{opacity:.5}50%{opacity:1}}
+.scene{position:relative;z-index:5;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;perspective:1400px;}
 
 /* ══ LOGO ══ */
 .logo-area{text-align:center;margin-bottom:26px;animation:fadeDown .7s ease-out .05s both;}
@@ -98,7 +114,7 @@ body{
 /* ══ LOGIN CARD — mouse-tilted glass slab ══ */
 .card-holder{transform-style:preserve-3d;transition:transform .15s ease-out;}
 .login-card{
-  width:100%;max-width:400px;
+  width:100%;max-width:320px;
   background:linear-gradient(150deg,rgba(15,22,38,.85),rgba(7,11,20,.92));
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   border:1px solid var(--border);
@@ -118,36 +134,6 @@ body{
 .card-header .dot{width:6px;height:6px;border-radius:50%;background:var(--bull);box-shadow:0 0 8px var(--bull);animation:blink 1.4s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
 .card-body{padding:22px 26px 26px;}
-
-.auth-tabs{display:flex;margin-bottom:22px;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
-.auth-tab{flex:1;padding:10px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;font-weight:700;color:var(--muted);background:rgba(10,15,28,.5);border:none;cursor:pointer;transition:all .2s;}
-.auth-tab:hover{color:var(--text);background:rgba(79,209,255,.06);}
-.auth-tab.active{color:#f2f6ff;background:rgba(79,209,255,.1);box-shadow:inset 0 -2px 0 var(--cyan);}
-
-.field{margin-bottom:15px;}
-.field label{display:block;margin-bottom:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted);font-weight:700;}
-.field input{
-  width:100%;padding:12px 14px;font-family:'Inter',sans-serif;font-size:14px;font-weight:500;color:#f2f6ff;
-  background:linear-gradient(150deg,rgba(10,15,28,.7),rgba(4,7,15,.85));
-  border:1px solid var(--border);border-radius:6px;outline:none;transition:all .2s;
-}
-.field input::placeholder{color:rgba(148,197,255,.28);}
-.field input:focus{border-color:rgba(79,209,255,.5);box-shadow:0 0 0 3px rgba(79,209,255,.08),0 0 20px rgba(79,209,255,.06);}
-
-.forgot-link{display:block;text-align:right;margin-top:-6px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted2);cursor:pointer;transition:color .2s;}
-.forgot-link:hover{color:var(--cyan);}
-
-.btn-primary{
-  width:100%;padding:14px;margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:2.5px;font-weight:700;
-  color:#05070d;background:linear-gradient(135deg,var(--bull),var(--cyan));
-  border:none;border-radius:6px;cursor:pointer;transition:all .2s;position:relative;
-}
-.btn-primary:hover{box-shadow:0 0 30px rgba(0,230,168,.35),0 6px 18px rgba(0,0,0,.3);transform:translateY(-2px);}
-.btn-primary:active{transform:translateY(0);}
-.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none;}
-
-.divider{display:flex;align-items:center;gap:12px;margin:18px 0;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--muted2);}
-.divider::before,.divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(148,197,255,.15),transparent);}
 
 .btn-google{
   width:100%;padding:12px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;font-weight:700;color:rgba(220,230,255,.9);
@@ -173,27 +159,52 @@ body{
 @media(max-width:480px){
   .logo-title{font-size:22px;}
   .card-body{padding:18px 18px 22px;}
-  .cube-stage{width:100px;height:100px;}
-  .face{width:100px;height:100px;}
-  .f-front,.f-back,.f-right,.f-left,.f-top,.f-bottom{transform:translateZ(50px);}
-  .f-back{transform:rotateY(180deg) translateZ(50px);}
-  .f-right{transform:rotateY(90deg) translateZ(50px);}
-  .f-left{transform:rotateY(-90deg) translateZ(50px);}
-  .f-top{transform:rotateX(90deg) translateZ(50px);}
-  .f-bottom{transform:rotateX(-90deg) translateZ(50px);}
+  .cube-wrap{width:180px;height:180px;margin:0 auto 14px;}
+  .cube-rig{width:180px;height:180px;opacity:.6;}
+  .cube-spin{width:180px;height:180px;}
+  .cube-face{width:180px;height:180px;}
+  .cf-front,.cf-back,.cf-right,.cf-left,.cf-top,.cf-bottom{--z:90px;}
+  .cf-front{transform:translateZ(90px);} .cf-back{transform:rotateY(180deg) translateZ(90px);}
+  .cf-right{transform:rotateY(90deg) translateZ(90px);} .cf-left{transform:rotateY(-90deg) translateZ(90px);}
+  .cf-top{transform:rotateX(90deg) translateZ(90px);} .cf-bottom{transform:rotateX(-90deg) translateZ(90px);}
+  .cube-face .cf-bars{height:52px;}
+  .candle-card{width:92px;padding:7px 9px;}
+  .candle-card .cc-bars{height:24px;}
+  .hud{padding:5px 8px;}
 }
 @media(prefers-reduced-motion:reduce){
-  .cube,.floor,.card-topbar,.ticker-plane,.cube-glow{animation:none!important;}
+  .cube-spin,.card-topbar,.stars i,.candle-card,.hud .dot,.particle{animation:none!important;}
   .card-holder,.cube-rig{transition:none!important;}
 }
 </style>
 </head>
 <body>
 
-<div class="floor-wrap"><div class="floor"></div></div>
-<div class="ticker-plane tp1"><span>NIFTY 50 ▲ 24,812.35 +0.62%</span><span>SENSEX ▲ 81,204.10 +0.58%</span><span>DOW ▼ 42,118.40 −0.14%</span><span>NASDAQ ▲ 19,882.05 +0.91%</span><span>FTSE 100 ▲ 8,204.66 +0.22%</span><span>BTC/USD ▼ 61,204.00 −1.30%</span><span>NIFTY 50 ▲ 24,812.35 +0.62%</span><span>SENSEX ▲ 81,204.10 +0.58%</span><span>DOW ▼ 42,118.40 −0.14%</span><span>NASDAQ ▲ 19,882.05 +0.91%</span></div>
-<div class="ticker-plane tp2"><span>RELIANCE 2,940 +1.1%</span><span>TCS 3,880 −0.4%</span><span>HDFC BANK 1,660 +0.7%</span><span>INFY 1,845 +0.3%</span><span>AAPL 228.10 +0.9%</span><span>TSLA 244.55 −2.1%</span><span>RELIANCE 2,940 +1.1%</span><span>TCS 3,880 −0.4%</span><span>HDFC BANK 1,660 +0.7%</span><span>INFY 1,845 +0.3%</span></div>
-<div class="ticker-plane tp3"><span>◆ MARKET OPEN ◆</span><span>◆ LIVE FEED ◆</span><span>◆ SECURE TERMINAL ◆</span><span>◆ MARKET OPEN ◆</span><span>◆ LIVE FEED ◆</span></div>
+<div class="stars" id="stars"></div>
+
+<div class="candle-card cc1">
+  <div class="cc-label">NSE · NIFTY 50</div>
+  <div class="cc-bars"><i class="up" style="height:14px"></i><i class="up" style="height:24px"></i><i class="dn" style="height:10px"></i><i class="up" style="height:30px"></i><i class="up" style="height:18px"></i></div>
+  <div class="cc-chg" style="color:var(--bull)">+0.62%</div>
+</div>
+<div class="candle-card cc2">
+  <div class="cc-label">NYSE · DOW</div>
+  <div class="cc-bars"><i class="dn" style="height:26px"></i><i class="up" style="height:16px"></i><i class="dn" style="height:20px"></i><i class="dn" style="height:9px"></i><i class="up" style="height:14px"></i></div>
+  <div class="cc-chg" style="color:var(--bear)">−0.14%</div>
+</div>
+<div class="candle-card cc3">
+  <div class="cc-label">BSE · SENSEX</div>
+  <div class="cc-bars"><i class="up" style="height:16px"></i><i class="dn" style="height:12px"></i><i class="up" style="height:27px"></i><i class="up" style="height:22px"></i><i class="up" style="height:32px"></i></div>
+  <div class="cc-chg" style="color:var(--bull)">+0.58%</div>
+</div>
+<div class="candle-card cc4">
+  <div class="cc-label">NASDAQ 100</div>
+  <div class="cc-bars"><i class="up" style="height:12px"></i><i class="up" style="height:24px"></i><i class="up" style="height:34px"></i><i class="dn" style="height:15px"></i><i class="up" style="height:28px"></i></div>
+  <div class="cc-chg" style="color:var(--bull)">+0.91%</div>
+</div>
+
+<div class="hud hud-tl"><span class="hl"><span class="dot"></span>GLOBAL VOLUME</span><br><span class="hv">$4.2T</span></div>
+<div class="hud hud-br"><span class="hl">NODES ACTIVE</span><br><span class="hv">142 / 142</span></div>
 
 <div class="loading-overlay" id="loadingOverlay">
   <div class="spinner"></div>
@@ -202,23 +213,69 @@ body{
 
 <div class="scene" id="scene">
 
-  <div class="cube-stage">
-    <div class="cube-rig" id="cubeRig">
-      <div class="cube-glow"></div>
-      <div class="cube">
-        <div class="face f-front"><span class="idx-name">NIFTY 50</span><div class="bars"><i class="up" style="height:18px"></i><i class="up" style="height:30px"></i><i class="dn" style="height:14px"></i><i class="up" style="height:40px"></i><i class="up" style="height:24px"></i></div><span class="chg up">+0.62%</span></div>
-        <div class="face f-back"><span class="idx-name">SENSEX</span><div class="bars"><i class="up" style="height:22px"></i><i class="dn" style="height:16px"></i><i class="up" style="height:36px"></i><i class="up" style="height:28px"></i><i class="up" style="height:44px"></i></div><span class="chg up">+0.58%</span></div>
-        <div class="face f-right"><span class="idx-name">DOW JONES</span><div class="bars"><i class="dn" style="height:34px"></i><i class="up" style="height:20px"></i><i class="dn" style="height:26px"></i><i class="dn" style="height:12px"></i><i class="up" style="height:18px"></i></div><span class="chg dn">−0.14%</span></div>
-        <div class="face f-left"><span class="idx-name">NASDAQ</span><div class="bars"><i class="up" style="height:16px"></i><i class="up" style="height:32px"></i><i class="up" style="height:46px"></i><i class="dn" style="height:20px"></i><i class="up" style="height:38px"></i></div><span class="chg up">+0.91%</span></div>
-        <div class="face f-top"><span class="idx-name">FTSE 100</span><div class="bars"><i class="up" style="height:24px"></i><i class="up" style="height:18px"></i><i class="dn" style="height:14px"></i><i class="up" style="height:30px"></i><i class="up" style="height:20px"></i></div><span class="chg up">+0.22%</span></div>
-        <div class="face f-bottom"><span class="idx-name">BTC/USD</span><div class="bars"><i class="dn" style="height:40px"></i><i class="dn" style="height:28px"></i><i class="up" style="height:16px"></i><i class="dn" style="height:34px"></i><i class="dn" style="height:22px"></i></div><span class="chg dn">−1.30%</span></div>
-      </div>
-    </div>
-  </div>
-
   <div class="logo-area">
     <div class="logo-title">NIFTY <span>STRATEGIST</span></div>
     <div class="logo-sub">INDIAN STOCK MARKET</div>
+  </div>
+
+  <div class="cube-wrap">
+    <div class="cube-rig" id="cubeRig">
+      <div class="cube-glow"></div>
+      <div class="cube-spin">
+
+        <div class="cube-face cf-front">
+          <div class="cf-label">NIFTY 50</div>
+          <div class="cf-bars">
+            <i class="up" style="height:22px"></i><i class="up" style="height:38px"></i><i class="dn" style="height:16px"></i>
+            <i class="up" style="height:52px"></i><i class="up" style="height:30px"></i><i class="up" style="height:44px"></i>
+          </div>
+          <div class="cf-chg" style="color:var(--bull)">▲ +0.62%</div>
+        </div>
+
+        <div class="cube-face cf-right">
+          <div class="cf-label">SENSEX</div>
+          <div class="cf-bars">
+            <i class="up" style="height:26px"></i><i class="dn" style="height:18px"></i><i class="up" style="height:46px"></i>
+            <i class="up" style="height:36px"></i><i class="up" style="height:58px"></i><i class="dn" style="height:14px"></i>
+          </div>
+          <div class="cf-chg" style="color:var(--bull)">▲ +0.58%</div>
+        </div>
+
+        <div class="cube-face cf-back">
+          <div class="cf-label">NASDAQ</div>
+          <div class="cf-bars">
+            <i class="up" style="height:18px"></i><i class="up" style="height:32px"></i><i class="up" style="height:50px"></i>
+            <i class="dn" style="height:22px"></i><i class="up" style="height:44px"></i><i class="up" style="height:60px"></i>
+          </div>
+          <div class="cf-chg" style="color:var(--bull)">▲ +0.91%</div>
+        </div>
+
+        <div class="cube-face cf-left">
+          <div class="cf-label">DOW JONES</div>
+          <div class="cf-bars">
+            <i class="dn" style="height:40px"></i><i class="up" style="height:24px"></i><i class="dn" style="height:32px"></i>
+            <i class="dn" style="height:14px"></i><i class="up" style="height:20px"></i><i class="dn" style="height:28px"></i>
+          </div>
+          <div class="cf-chg" style="color:var(--bear)">▼ −0.14%</div>
+        </div>
+
+        <div class="cube-face cf-top">
+          <div class="cf-label"><span class="cf-dot"></span>GLOBAL VOLUME</div>
+          <div class="cf-hv">$4.2T</div>
+        </div>
+
+        <div class="cube-face cf-bottom">
+          <div class="cf-label">LIVE NODES</div>
+          <div class="cf-hv">142 / 142</div>
+        </div>
+
+      </div>
+
+      <i class="particle" style="left:20px;top:60%;width:3px;height:3px;animation-delay:0s;"></i>
+      <i class="particle" style="left:240px;top:70%;width:2px;height:2px;animation-delay:1.4s;"></i>
+      <i class="particle" style="left:90px;top:85%;width:3px;height:3px;animation-delay:2.6s;"></i>
+      <i class="particle" style="left:180px;top:80%;width:2px;height:2px;animation-delay:3.8s;"></i>
+    </div>
   </div>
 
   <div class="card-holder" id="cardHolder">
@@ -229,42 +286,6 @@ body{
         <span class="status"><span class="dot"></span>SECURE</span>
       </div>
       <div class="card-body">
-
-        <div class="auth-tabs">
-          <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">LOGIN</button>
-          <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">SIGN UP</button>
-        </div>
-
-        <div id="formLogin">
-          <div class="field">
-            <label>EMAIL ADDRESS</label>
-            <input type="email" id="loginEmail" placeholder="trader@example.com" autocomplete="email">
-          </div>
-          <div class="field">
-            <label>PASSWORD</label>
-            <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password">
-          </div>
-          <a class="forgot-link" onclick="resetPassword()">FORGOT PASSWORD?</a>
-          <button class="btn-primary" id="btnLogin" onclick="handleLogin()">▶ ENTER TERMINAL</button>
-        </div>
-
-        <div id="formSignup" style="display:none">
-          <div class="field">
-            <label>DISPLAY NAME</label>
-            <input type="text" id="signupName" placeholder="Your name" autocomplete="name">
-          </div>
-          <div class="field">
-            <label>EMAIL ADDRESS</label>
-            <input type="email" id="signupEmail" placeholder="trader@example.com" autocomplete="email">
-          </div>
-          <div class="field">
-            <label>PASSWORD</label>
-            <input type="password" id="signupPassword" placeholder="Min 6 characters" autocomplete="new-password">
-          </div>
-          <button class="btn-primary" id="btnSignup" onclick="handleSignup()">▶ CREATE ACCOUNT</button>
-        </div>
-
-        <div class="divider">OR</div>
 
         <button class="btn-google" onclick="handleGoogle()">
           <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.04 10.04 0 001 12c0 1.61.39 3.14 1.07 4.49l3.77-2.4z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
@@ -304,15 +325,6 @@ auth.onAuthStateChanged(function(user) {
   }
 });
 
-// ══ Tab Switching ══
-function switchTab(tab) {
-  document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
-  document.getElementById('tabSignup').classList.toggle('active', tab === 'signup');
-  document.getElementById('formLogin').style.display = tab === 'login' ? 'block' : 'none';
-  document.getElementById('formSignup').style.display = tab === 'signup' ? 'block' : 'none';
-  clearMsg();
-}
-
 // ══ Messages ══
 function showMsg(text, type) {
   var el = document.getElementById('authMsg');
@@ -326,58 +338,6 @@ function showLoading(text) {
   overlay.classList.add('active');
 }
 function hideLoading() { document.getElementById('loadingOverlay').classList.remove('active'); }
-
-// ══ Email/Password Login ══
-function handleLogin() {
-  var email = document.getElementById('loginEmail').value.trim();
-  var password = document.getElementById('loginPassword').value;
-  if (!email || !password) { showMsg('Please fill in all fields.', 'error'); return; }
-
-  document.getElementById('btnLogin').disabled = true;
-  showLoading('VERIFYING CREDENTIALS...');
-
-  auth.signInWithEmailAndPassword(email, password)
-    .then(function(cred) {
-      showLoading('ACCESS GRANTED — LOADING TERMINAL...');
-      setTimeout(function() { window.location.href = './index.html'; }, 600);
-    })
-    .catch(function(err) {
-      hideLoading();
-      document.getElementById('btnLogin').disabled = false;
-      var msg = 'Login failed.';
-      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') msg = 'Invalid email or password.';
-      else if (err.code === 'auth/too-many-requests') msg = 'Too many attempts. Try again later.';
-      showMsg(msg, 'error');
-    });
-}
-
-// ══ Email/Password Sign Up ══
-function handleSignup() {
-  var name = document.getElementById('signupName').value.trim();
-  var email = document.getElementById('signupEmail').value.trim();
-  var password = document.getElementById('signupPassword').value;
-  if (!name || !email || !password) { showMsg('Please fill in all fields.', 'error'); return; }
-  if (password.length < 6) { showMsg('Password must be at least 6 characters.', 'error'); return; }
-
-  document.getElementById('btnSignup').disabled = true;
-  showLoading('CREATING ACCOUNT...');
-
-  auth.createUserWithEmailAndPassword(email, password)
-    .then(function(cred) { return cred.user.updateProfile({ displayName: name }); })
-    .then(function() {
-      showLoading('ACCOUNT CREATED — LOADING TERMINAL...');
-      setTimeout(function() { window.location.href = './index.html'; }, 600);
-    })
-    .catch(function(err) {
-      hideLoading();
-      document.getElementById('btnSignup').disabled = false;
-      var msg = 'Sign up failed.';
-      if (err.code === 'auth/email-already-in-use') msg = 'This email is already registered. Try logging in.';
-      else if (err.code === 'auth/weak-password') msg = 'Password is too weak. Use at least 6 characters.';
-      else if (err.code === 'auth/invalid-email') msg = 'Invalid email address.';
-      showMsg(msg, 'error');
-    });
-}
 
 // ══ Google Sign-In ══
 function handleGoogle() {
@@ -395,24 +355,19 @@ function handleGoogle() {
     });
 }
 
-// ══ Password Reset ══
-function resetPassword() {
-  var email = document.getElementById('loginEmail').value.trim();
-  if (!email) { showMsg('Enter your email above first, then click Forgot Password.', 'info'); return; }
-  auth.sendPasswordResetEmail(email)
-    .then(function() { showMsg('Password reset email sent. Check your inbox.', 'success'); })
-    .catch(function(err) {
-      if (err.code === 'auth/user-not-found') showMsg('No account found with that email.', 'error');
-      else showMsg('Could not send reset email. Try again.', 'error');
-    });
-}
-
-// ══ Enter key support ══
-document.addEventListener('keydown', function(e) {
-  if (e.key !== 'Enter') return;
-  if (document.getElementById('formLogin').style.display !== 'none') handleLogin();
-  else handleSignup();
-});
+// ══ Starfield ══
+(function(){
+  var wrap = document.getElementById('stars');
+  var frag = document.createDocumentFragment();
+  for (var i=0;i<70;i++){
+    var s = document.createElement('i');
+    s.style.left = (Math.random()*100)+'%';
+    s.style.top = (Math.random()*100)+'%';
+    s.style.animationDelay = (Math.random()*3.5)+'s';
+    frag.appendChild(s);
+  }
+  wrap.appendChild(frag);
+})();
 
 // ══ 3D mouse-parallax: card tilt + cube tilt ══
 (function(){
@@ -424,7 +379,7 @@ document.addEventListener('keydown', function(e) {
     var nx = (e.clientX / window.innerWidth) - 0.5;
     var ny = (e.clientY / window.innerHeight) - 0.5;
     cardHolder.style.transform = 'rotateY(' + (nx*10) + 'deg) rotateX(' + (-ny*10) + 'deg)';
-    cubeRig.style.transform = 'rotateY(' + (nx*30) + 'deg) rotateX(' + (-ny*30) + 'deg)';
+    cubeRig.style.transform = 'rotateY(' + (nx*18) + 'deg) rotateX(' + (-ny*18) + 'deg)';
   });
 })();
 </script>
