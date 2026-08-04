@@ -1433,6 +1433,14 @@ var MAX_RETRIES=4;
 var FAST_FAIL_MS=1600; /* onload firing faster than this = likely an error/cold-start page, not the real app */
 var RETRY_DELAYS=[2000,3500,6000,9000];
 
+/* Static hosts (e.g. GitHub Pages) never "cold start" -- they're plain
+   files, so a fast load is a genuine fast load, not a sign of an error
+   page. Skip the fast-fail retry loop for these so they don't get
+   needlessly reloaded every time they're opened. */
+function isStaticHost(url){
+  return /(^|\/\/)([\w-]+\.)?github\.io\//i.test(url||'');
+}
+
 function spawnFrame(){if(_vframe){_vframe.src='about:blank';vwrap.removeChild(_vframe);_vframe=null;}var f=document.createElement('iframe');f.style.cssText='width:100%;height:100%;border:none;background:#000;position:absolute;inset:0;';f.setAttribute('sandbox','allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-modals allow-storage-access-by-user-activation');f.setAttribute('referrerpolicy','strict-origin-when-cross-origin');vwrap.appendChild(f);_vframe=f;return f;}
 
 function loadIntoFrame(){
@@ -1441,7 +1449,7 @@ function loadIntoFrame(){
   _loadStart=Date.now();
   f.onload=function(){
     var elapsed=Date.now()-_loadStart;
-    if(elapsed<FAST_FAIL_MS && _retryCount<MAX_RETRIES){
+    if(!isStaticHost(currentUrl) && elapsed<FAST_FAIL_MS && _retryCount<MAX_RETRIES){
       _retryCount++;
       var delay=RETRY_DELAYS[Math.min(_retryCount-1,RETRY_DELAYS.length-1)];
       vloadtxt.textContent='RECONNECTING…';
