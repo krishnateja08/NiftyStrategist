@@ -509,7 +509,7 @@ var _currentUser = null;
 
 _fbAuth.onAuthStateChanged(function(user) {
   if (!user) {
-    window.location.href = './welcome.html';
+    window.location.href = './login.html';
     return;
   }
   _currentUser = user;
@@ -521,7 +521,7 @@ _fbAuth.onAuthStateChanged(function(user) {
 
 function doLogout() {
   _fbAuth.signOut().then(function() {
-    window.location.href = './welcome.html';
+    window.location.href = './login.html';
   });
 }
 </script>
