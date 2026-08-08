@@ -77,6 +77,32 @@ body{
 .orbit-node .pulse{fill:none;stroke:var(--cyan);stroke-width:1.4;opacity:0;animation:pulse 2.6s ease-out infinite;}
 @keyframes pulse{0%{r:5;opacity:.8;stroke-width:2}100%{r:18;opacity:0;stroke-width:.3}}
 
+/* ══ ICON ORBIT RINGS — market/tech badges circling the globe ══ */
+.icon-orbits{position:absolute;inset:0;z-index:2;pointer-events:none;}
+.io-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px dashed var(--border);}
+.io-r1{width:300px;height:300px;}
+.io-r2{width:366px;height:366px;border-style:solid;}
+.io-r3{width:436px;height:436px;}
+
+.io-spoke{position:absolute;top:0;left:50%;width:0;height:50%;transform-origin:50% 100%;
+  animation-name:io-cw;animation-timing-function:linear;animation-iteration-count:infinite;animation-duration:var(--dur,20s);}
+.io-spoke.ccw{animation-name:io-ccw;}
+
+.io-badge{position:absolute;top:0;left:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--cyan);
+  background:linear-gradient(150deg,rgba(15,22,38,.85),rgba(6,10,20,.92));
+  border:1px solid var(--border);box-shadow:0 0 14px rgba(79,209,255,.18);
+  animation-name:io-counter-cw;animation-timing-function:linear;animation-iteration-count:infinite;animation-duration:var(--dur,20s);}
+.io-badge.ccw{animation-name:io-counter-ccw;}
+.io-badge svg{width:16px;height:16px;}
+.io-badge img{width:16px;height:16px;}
+.io-badge.txt{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:.2px;color:var(--text);}
+
+@keyframes io-cw{from{transform:rotate(var(--a))}to{transform:rotate(calc(var(--a) + 360deg))}}
+@keyframes io-ccw{from{transform:rotate(var(--a))}to{transform:rotate(calc(var(--a) - 360deg))}}
+@keyframes io-counter-cw{from{transform:rotate(calc(-1 * var(--a)))}to{transform:rotate(calc(-1 * var(--a) - 360deg))}}
+@keyframes io-counter-ccw{from{transform:rotate(calc(-1 * var(--a)))}to{transform:rotate(calc(-1 * var(--a) + 360deg))}}
+
 /* ══ ORBIT PANELS — mini market cards floating around the Earth ══ */
 .orbit-panel{
   position:absolute;width:98px;padding:8px 10px;border-radius:8px;z-index:3;
@@ -211,9 +237,15 @@ body{
   .candle-card .cc-bars{height:24px;}
   .hud{padding:5px 8px;}
   .orbit-panel{display:none;}
+  .io-r1{width:210px;height:210px;}
+  .io-r2{width:258px;height:258px;}
+  .io-r3{display:none;}
+  .io-badge{width:26px;height:26px;margin:-13px 0 0 -13px;}
+  .io-badge svg,.io-badge img{width:13px;height:13px;}
+  .io-badge.txt{font-size:7px;}
 }
 @media(prefers-reduced-motion:reduce){
-  .earth-texture,.orbit-svg,.card-topbar,.stars i,.candle-card,.hud .dot,.comet,.orbit-arc,.orbit-node .pulse{animation:none!important;}
+  .earth-texture,.orbit-svg,.card-topbar,.stars i,.candle-card,.hud .dot,.comet,.orbit-arc,.orbit-node .pulse,.io-spoke,.io-badge{animation:none!important;}
   .card-holder,.earth-rig{transition:none!important;}
 }
 </style>
@@ -292,6 +324,78 @@ body{
         <g class="orbit-node"><circle class="pulse" cx="360" cy="130" r="5"/><circle cx="360" cy="130" r="4"/></g>
         <g class="orbit-node"><circle class="pulse" cx="350" cy="300" r="5"/><circle cx="350" cy="300" r="4"/></g>
       </svg>
+
+      <div class="icon-orbits">
+        <!-- Ring 1 — security & auth -->
+        <div class="io-ring io-r1">
+          <div class="io-spoke" style="--a:-60deg;--dur:16s">
+            <div class="io-badge" style="--a:-60deg;--dur:16s" title="Secure Auth">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+          </div>
+          <div class="io-spoke" style="--a:60deg;--dur:16s">
+            <div class="io-badge" style="--a:60deg;--dur:16s" title="Google">
+              <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.04 10.04 0 001 12c0 1.61.39 3.14 1.07 4.49l3.77-2.4z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            </div>
+          </div>
+          <div class="io-spoke" style="--a:120deg;--dur:16s">
+            <div class="io-badge" style="--a:120deg;--dur:16s" title="Secure Auth">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg>
+            </div>
+          </div>
+          <div class="io-spoke" style="--a:240deg;--dur:16s">
+            <div class="io-badge" style="--a:240deg;--dur:16s" title="Google">
+              <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.04 10.04 0 001 12c0 1.61.39 3.14 1.07 4.49l3.77-2.4z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ring 2 — Indian exchanges (counter-rotating) -->
+        <div class="io-ring io-r2">
+          <div class="io-spoke ccw" style="--a:0deg;--dur:22s">
+            <div class="io-badge ccw txt" style="--a:0deg;--dur:22s" title="NSE">NSE</div>
+          </div>
+          <div class="io-spoke ccw" style="--a:-90deg;--dur:22s">
+            <div class="io-badge ccw txt" style="--a:-90deg;--dur:22s" title="BSE">BSE</div>
+          </div>
+          <div class="io-spoke ccw" style="--a:180deg;--dur:22s">
+            <div class="io-badge ccw txt" style="--a:180deg;--dur:22s" title="NSE">NSE</div>
+          </div>
+          <div class="io-spoke ccw" style="--a:90deg;--dur:22s">
+            <div class="io-badge ccw txt" style="--a:90deg;--dur:22s" title="BSE">BSE</div>
+          </div>
+        </div>
+
+        <!-- Ring 3 — market data & growth -->
+        <div class="io-ring io-r3">
+          <div class="io-spoke" style="--a:-60deg;--dur:28s">
+            <div class="io-badge" style="--a:-60deg;--dur:28s" title="Trending">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg>
+            </div>
+          </div>
+          <div class="io-spoke" style="--a:0deg;--dur:28s">
+            <div class="io-badge txt" style="--a:0deg;--dur:28s" title="Rupee">₹</div>
+          </div>
+          <div class="io-spoke" style="--a:60deg;--dur:28s">
+            <div class="io-badge" style="--a:60deg;--dur:28s" title="Global Markets">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"/></svg>
+            </div>
+          </div>
+          <div class="io-spoke" style="--a:120deg;--dur:28s">
+            <div class="io-badge" style="--a:120deg;--dur:28s" title="Trending">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg>
+            </div>
+          </div>
+          <div class="io-spoke" style="--a:180deg;--dur:28s">
+            <div class="io-badge txt" style="--a:180deg;--dur:28s" title="Rupee">₹</div>
+          </div>
+          <div class="io-spoke" style="--a:240deg;--dur:28s">
+            <div class="io-badge" style="--a:240deg;--dur:28s" title="Global Markets">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
 
     </div>
 
