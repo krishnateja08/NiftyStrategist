@@ -139,6 +139,15 @@ body{
   bottom:4%;right:4%;padding:5px 9px;pointer-events:none;font-size:9px;display:flex;align-items:center;opacity:.7;}
 .hud .dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--bull);box-shadow:0 0 6px var(--bull);margin-right:6px;animation:blink 1.4s ease-in-out infinite;}
 
+/* ══ WORLD CLOCK — compact multi-timezone readout, top-right ══ */
+.world-clock{
+  position:fixed;top:4%;right:4%;z-index:2;pointer-events:none;text-align:right;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.6px;
+  color:var(--muted);text-shadow:0 0 10px rgba(79,209,255,.18);opacity:.85;
+}
+.world-clock .wc-sep{color:var(--muted2);margin:0 5px;}
+.world-clock .wc-zone{color:var(--cyan);font-weight:600;}
+
 /* ══ SCENE / STAGE ══ */
 .scene{position:relative;z-index:5;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;perspective:1400px;}
 
@@ -206,6 +215,7 @@ body{
   .hud{padding:4px 7px;}
   .idx-ring{width:200px;height:200px;}
   .idx-badge{width:19px;height:19px;margin:-9.5px 0 0 -9.5px;font-size:5.6px;}
+  .world-clock{font-size:8px;}
 }
 @media(prefers-reduced-motion:reduce){
   .earth-texture,.orbit-svg,.card-topbar,.stars i,.candle-card,.hud .dot,.comet,.orbit-arc,.orbit-node .pulse,.idx-spoke,.idx-badge{animation:none!important;}
@@ -227,6 +237,8 @@ body{
 </div>
 
 <div class="hud"><span class="dot"></span>142 NODES ACTIVE</div>
+
+<div class="world-clock" id="worldClock"></div>
 
 <div class="loading-overlay" id="loadingOverlay">
   <div class="spinner"></div>
@@ -413,6 +425,34 @@ function handleGoogle() {
     setTimeout(loop, 550 + Math.random()*500);      // a new comet roughly every ~0.55–1.05s
   }
   loop();
+})();
+
+// ══ World clock — IST / EST / SGT, updates every second ══
+(function(){
+  var el = document.getElementById('worldClock');
+  if (!el) return;
+
+  var zones = [
+    { label: 'IST', tz: 'Asia/Kolkata' },
+    { label: 'EST', tz: 'America/New_York' },
+    { label: 'SGT', tz: 'Asia/Singapore' }
+  ];
+
+  function fmt(tz){
+    return new Intl.DateTimeFormat('en-US', {
+      timeZone: tz, hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true
+    }).format(new Date());
+  }
+
+  function render(){
+    var parts = zones.map(function(z){
+      return '<span class="wc-zone">' + z.label + '</span> ' + fmt(z.tz);
+    });
+    el.innerHTML = parts.join('<span class="wc-sep">|</span>');
+  }
+
+  render();
+  setInterval(render, 1000);
 })();
 
 // ══ Ticker rotation — cycles the one small panel through the 4 indices ══
