@@ -37,13 +37,13 @@ body{
 @keyframes twinkle{0%,100%{opacity:.35}50%{opacity:1}}
 
 /* ══ HOLOGRAPHIC EARTH — sits between logo and login card ══ */
-.earth-wrap{position:relative;width:240px;height:240px;margin:6px auto 24px;display:flex;align-items:center;justify-content:center;pointer-events:none;perspective:1200px;animation:fadeUp .7s ease-out .08s both;}
+.earth-wrap{position:relative;width:200px;height:200px;margin:10px auto 34px;display:flex;align-items:center;justify-content:center;pointer-events:none;perspective:1200px;animation:fadeUp .7s ease-out .08s both;opacity:.82;filter:saturate(.85);}
 .earth-rig{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .2s ease-out;}
 
 .earth-sphere{
   position:absolute;inset:0;border-radius:50%;overflow:hidden;
-  background:radial-gradient(circle at 32% 28%,#1c5a80 0%,#0e3a58 32%,#082439 62%,#040f1c 100%);
-  box-shadow:0 0 10px rgba(79,209,255,.15) inset;
+  background:radial-gradient(circle at 32% 28%,#164d6d 0%,#0c324c 32%,#071e30 62%,#030c17 100%);
+  box-shadow:0 0 10px rgba(79,209,255,.1) inset;
 }
 .earth-texture{position:absolute;top:0;left:0;width:480px;height:240px;display:flex;animation:earthScroll 22s linear infinite;}
 .earth-tex-copy{position:relative;width:240px;height:240px;flex:0 0 240px;}
@@ -61,13 +61,13 @@ body{
              linear-gradient(115deg,transparent 45%,rgba(0,0,0,.55) 78%);
 }
 .earth-atmosphere{
-  position:absolute;inset:-10px;border-radius:50%;pointer-events:none;
-  box-shadow:0 0 40px rgba(79,209,255,.35),0 0 90px rgba(79,209,255,.16),0 0 150px rgba(0,230,168,.08);
-  border:1px solid rgba(148,213,255,.28);
+  position:absolute;inset:-8px;border-radius:50%;pointer-events:none;
+  box-shadow:0 0 22px rgba(79,209,255,.2),0 0 50px rgba(79,209,255,.08),0 0 90px rgba(0,230,168,.04);
+  border:1px solid rgba(148,213,255,.16);
 }
 @keyframes earthScroll{from{transform:translateX(0)}to{transform:translateX(-240px)}}
 
-.orbit-svg{position:absolute;inset:-46px;width:calc(100% + 92px);height:calc(100% + 92px);overflow:visible;animation:orbitSpin 50s linear infinite;}
+.orbit-svg{position:absolute;inset:-46px;width:calc(100% + 92px);height:calc(100% + 92px);overflow:visible;opacity:.55;animation:orbitSpin 50s linear infinite;}
 @keyframes orbitSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 .orbit-ring{fill:none;stroke:rgba(79,209,255,.16);}
 .orbit-arc{fill:none;stroke:url(#arcGrad);stroke-width:1.4;stroke-dasharray:5 9;filter:drop-shadow(0 0 4px rgba(79,209,255,.55));animation:dash 2.6s linear infinite;}
@@ -77,59 +77,32 @@ body{
 .orbit-node .pulse{fill:none;stroke:var(--cyan);stroke-width:1.4;opacity:0;animation:pulse 2.6s ease-out infinite;}
 @keyframes pulse{0%{r:5;opacity:.8;stroke-width:2}100%{r:18;opacity:0;stroke-width:.3}}
 
-/* ══ ICON ORBIT RINGS — market/tech badges circling the globe ══ */
-.icon-orbits{position:absolute;inset:0;z-index:2;pointer-events:none;}
-.io-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px dashed var(--border);}
-.io-r1{width:300px;height:300px;}
-.io-r2{width:366px;height:366px;border-style:solid;}
-.io-r3{width:436px;height:436px;}
-
-.io-spoke{position:absolute;top:0;left:50%;width:0;height:50%;transform-origin:50% 100%;
-  animation-name:io-cw;animation-timing-function:linear;animation-iteration-count:infinite;animation-duration:var(--dur,20s);}
-.io-spoke.ccw{animation-name:io-ccw;}
-
-.io-badge{position:absolute;top:0;left:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;color:var(--cyan);
-  background:linear-gradient(150deg,rgba(15,22,38,.85),rgba(6,10,20,.92));
-  border:1px solid var(--border);box-shadow:0 0 14px rgba(79,209,255,.18);
-  animation-name:io-counter-cw;animation-timing-function:linear;animation-iteration-count:infinite;animation-duration:var(--dur,20s);}
-.io-badge.ccw{animation-name:io-counter-ccw;}
-.io-badge svg{width:16px;height:16px;}
-.io-badge img{width:16px;height:16px;}
-.io-badge.txt{font-family:'JetBrains Mono',monospace;font-size:8.5px;font-weight:700;letter-spacing:.2px;color:var(--text);}
-
-@keyframes io-cw{from{transform:rotate(var(--a))}to{transform:rotate(calc(var(--a) + 360deg))}}
-@keyframes io-ccw{from{transform:rotate(var(--a))}to{transform:rotate(calc(var(--a) - 360deg))}}
-@keyframes io-counter-cw{from{transform:rotate(calc(-1 * var(--a)))}to{transform:rotate(calc(-1 * var(--a) - 360deg))}}
-@keyframes io-counter-ccw{from{transform:rotate(calc(-1 * var(--a)))}to{transform:rotate(calc(-1 * var(--a) + 360deg))}}
-
-/* ══ ORBIT PANELS — mini market cards floating around the Earth ══ */
-.orbit-panel{
-  position:absolute;width:98px;padding:8px 10px;border-radius:8px;z-index:3;
-  background:linear-gradient(150deg,rgba(15,22,38,.68),rgba(6,10,20,.85));
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
-  border:1px solid var(--border);
-  box-shadow:0 0 24px rgba(79,209,255,.08);
-  animation:orbitFloat 6s ease-in-out infinite;
-  pointer-events:none;
+/* ══ INDEX ORBIT — one small ring of index badges circling the globe ══ */
+.idx-orbit{position:absolute;inset:0;pointer-events:none;z-index:2;}
+.idx-ring{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:284px;height:284px;}
+.idx-spoke{position:absolute;top:0;left:50%;width:0;height:50%;transform-origin:50% 100%;animation:idx-cw 46s linear infinite;}
+.idx-badge{
+  position:absolute;top:0;left:50%;width:25px;height:25px;margin:-12.5px 0 0 -12.5px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'JetBrains Mono',monospace;font-size:6.6px;font-weight:700;letter-spacing:.1px;color:var(--cyan);
+  background:linear-gradient(150deg,rgba(15,22,38,.88),rgba(6,10,20,.94));
+  border:1px solid var(--border);box-shadow:0 0 8px rgba(79,209,255,.14);
+  animation:idx-counter-cw 46s linear infinite;
 }
-.orbit-panel .op-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.2px;color:var(--muted);margin-bottom:5px;}
-.orbit-panel .op-bars{display:flex;align-items:flex-end;gap:3px;height:26px;margin-bottom:5px;}
-.orbit-panel .op-bars i{width:4px;border-radius:1px;display:block;}
-.orbit-panel .op-bars i.up{background:var(--bull);box-shadow:0 0 5px rgba(0,230,168,.5);}
-.orbit-panel .op-bars i.dn{background:var(--bear);box-shadow:0 0 5px rgba(255,84,112,.5);}
-.orbit-panel .op-chg{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;}
-.orbit-panel::before{content:'';position:absolute;width:44px;height:1px;background:linear-gradient(90deg,rgba(79,209,255,.55),transparent);}
-
-.op-tl{top:-14px;left:-76px;animation-delay:0s;}
-.op-tl::before{bottom:10px;right:-44px;transform:rotate(30deg);transform-origin:right center;}
-.op-tr{top:-14px;right:-76px;animation-delay:1.5s;}
-.op-tr::before{bottom:10px;left:-44px;transform:rotate(-30deg);transform-origin:left center;}
-.op-bl{bottom:-14px;left:-76px;animation-delay:2.3s;}
-.op-bl::before{top:10px;right:-44px;transform:rotate(-30deg);transform-origin:right center;}
-.op-br{bottom:-14px;right:-76px;animation-delay:.8s;}
-.op-br::before{top:10px;left:-44px;transform:rotate(30deg);transform-origin:left center;}
-@keyframes orbitFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.idx-badge.flag-in{
+  background:
+    radial-gradient(circle at center, rgba(8,12,22,.94) 58%, transparent 59%),
+    linear-gradient(180deg,#FF9933 0% 33.3%,#FFFFFF 33.3% 66.6%,#138808 66.6% 100%);
+  color:#fff;border-color:rgba(255,255,255,.3);box-shadow:0 0 9px rgba(255,153,51,.35);
+}
+.idx-badge.flag-us{
+  background:
+    radial-gradient(circle at center, rgba(8,12,22,.94) 58%, transparent 59%),
+    linear-gradient(180deg,#3C3B6E 0% 33.3%,#FFFFFF 33.3% 66.6%,#B22234 66.6% 100%);
+  color:#fff;border-color:rgba(255,255,255,.3);box-shadow:0 0 9px rgba(90,110,220,.35);
+}
+@keyframes idx-cw{from{transform:rotate(var(--a))}to{transform:rotate(calc(var(--a) + 360deg))}}
+@keyframes idx-counter-cw{from{transform:rotate(calc(-1 * var(--a)))}to{transform:rotate(calc(-1 * var(--a) - 360deg))}}
 
 /* ══ COMETS — streaking across the dark space ══ */
 .comets{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;}
@@ -144,38 +117,33 @@ body{
   100%{opacity:0;transform:rotate(var(--ang)) translateX(var(--dist));}
 }
 
-/* ══ FLOATING CANDLESTICK PANELS ══ */
+/* ══ FLOATING TICKER PANEL — single small card, rotates through indices ══ */
 .candle-card{
-  position:fixed;width:112px;padding:9px 11px;border-radius:8px;z-index:2;pointer-events:none;
-  background:linear-gradient(150deg,rgba(15,22,38,.65),rgba(6,10,20,.8));
+  position:fixed;top:6%;left:4%;width:96px;padding:7px 9px;border-radius:8px;z-index:2;pointer-events:none;
+  background:linear-gradient(150deg,rgba(15,22,38,.6),rgba(6,10,20,.75));
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   border:1px solid var(--border);
   animation:cardFloat 6s ease-in-out infinite;
 }
-.candle-card .cc-label{font-family:'JetBrains Mono',monospace;font-size:8px;letter-spacing:1.3px;color:var(--muted);margin-bottom:5px;}
-.candle-card .cc-bars{display:flex;align-items:flex-end;gap:3px;height:32px;margin-bottom:5px;}
-.candle-card .cc-bars i{width:4px;border-radius:1px;display:block;}
+.candle-card .cc-label{font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:1.1px;color:var(--muted);margin-bottom:4px;transition:opacity .35s ease;}
+.candle-card .cc-bars{display:flex;align-items:flex-end;gap:3px;height:24px;margin-bottom:4px;}
+.candle-card .cc-bars i{width:3.5px;border-radius:1px;display:block;transition:height .35s ease;}
 .candle-card .cc-bars i.up{background:var(--bull);box-shadow:0 0 5px rgba(0,230,168,.5);}
 .candle-card .cc-bars i.dn{background:var(--bear);box-shadow:0 0 5px rgba(255,84,112,.5);}
-.candle-card .cc-chg{font-family:'JetBrains Mono',monospace;font-size:9px;}
-.cc1{top:6%;left:4%;animation-delay:0s;} .cc2{top:6%;right:4%;animation-delay:1.2s;}
-.cc3{bottom:6%;left:4%;animation-delay:2.1s;} .cc4{bottom:6%;right:4%;animation-delay:.6s;}
+.candle-card .cc-chg{font-family:'JetBrains Mono',monospace;font-size:8.5px;transition:opacity .35s ease;}
+.candle-card.fading .cc-label,.candle-card.fading .cc-chg{opacity:0;}
 @keyframes cardFloat{0%,100%{transform:translateY(0) rotateY(-6deg);}50%{transform:translateY(-12px) rotateY(6deg);}}
 
 /* ══ HOLOGRAPHIC HUD ══ */
-.hud{position:fixed;z-index:2;font-family:'JetBrains Mono',monospace;letter-spacing:1.5px;color:var(--cyan);
-  background:rgba(10,16,30,.35);border:1px solid var(--border);border-radius:6px;padding:7px 11px;
-  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);pointer-events:none;}
-.hud .hv{color:#f2f6ff;font-size:13px;font-weight:600;}
-.hud .hl{font-size:9px;color:var(--muted);}
-.hud-tl{top:5%;left:4%;} .hud-br{bottom:5%;right:4%;}
+.hud{position:fixed;z-index:2;font-family:'JetBrains Mono',monospace;letter-spacing:1.2px;color:var(--muted);
+  bottom:4%;right:4%;padding:5px 9px;pointer-events:none;font-size:9px;display:flex;align-items:center;opacity:.7;}
 .hud .dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--bull);box-shadow:0 0 6px var(--bull);margin-right:6px;animation:blink 1.4s ease-in-out infinite;}
 
 /* ══ SCENE / STAGE ══ */
 .scene{position:relative;z-index:5;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 20px;perspective:1400px;}
 
 /* ══ LOGO ══ */
-.logo-area{text-align:center;margin-bottom:26px;animation:fadeDown .7s ease-out .05s both;}
+.logo-area{text-align:center;margin-bottom:34px;animation:fadeDown .7s ease-out .05s both;}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-18px)}to{opacity:1;transform:none}}
 .logo-title{font-family:'Bricolage Grotesque',sans-serif;font-size:27px;font-weight:800;letter-spacing:.3px;color:#f2f6ff;}
 .logo-title span{color:var(--cyan);text-shadow:0 0 18px rgba(79,209,255,.5);}
@@ -184,7 +152,7 @@ body{
 /* ══ LOGIN CARD — mouse-tilted glass slab ══ */
 .card-holder{transform-style:preserve-3d;transition:transform .15s ease-out;}
 .login-card{
-  width:100%;max-width:320px;
+  width:100%;max-width:340px;
   background:linear-gradient(150deg,rgba(15,22,38,.85),rgba(7,11,20,.92));
   backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   border:1px solid var(--border);
@@ -203,7 +171,7 @@ body{
 .card-header .status{color:var(--bull);display:flex;align-items:center;gap:5px;}
 .card-header .dot{width:6px;height:6px;border-radius:50%;background:var(--bull);box-shadow:0 0 8px var(--bull);animation:blink 1.4s ease-in-out infinite;}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.1}}
-.card-body{padding:22px 26px 26px;}
+.card-body{padding:26px 30px 30px;}
 
 .btn-google{
   width:100%;padding:12px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;font-weight:700;color:rgba(220,230,255,.9);
@@ -218,7 +186,7 @@ body{
 .msg.success{display:block;background:rgba(0,230,168,.08);border:1px solid rgba(0,230,168,.25);color:var(--bull);}
 .msg.info{display:block;background:rgba(79,209,255,.08);border:1px solid rgba(79,209,255,.2);color:var(--cyan);}
 
-.login-footer{text-align:center;margin-top:20px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:1.5px;color:var(--muted2);animation:fadeUp .7s ease-out .22s both;}
+.login-footer{text-align:center;margin-top:22px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:1.3px;color:var(--muted2);opacity:.75;animation:fadeUp .7s ease-out .22s both;}
 
 .loading-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(5,7,13,.95);flex-direction:column;align-items:center;justify-content:center;gap:16px;}
 .loading-overlay.active{display:flex;}
@@ -233,19 +201,14 @@ body{
   .earth-texture{width:340px;height:170px;}
   .earth-tex-copy{width:170px;height:170px;flex-basis:170px;}
   @keyframes earthScroll{from{transform:translateX(0)}to{transform:translateX(-170px)}}
-  .candle-card{width:92px;padding:7px 9px;}
-  .candle-card .cc-bars{height:24px;}
-  .hud{padding:5px 8px;}
-  .orbit-panel{display:none;}
-  .io-r1{width:210px;height:210px;}
-  .io-r2{width:258px;height:258px;}
-  .io-r3{display:none;}
-  .io-badge{width:26px;height:26px;margin:-13px 0 0 -13px;}
-  .io-badge svg,.io-badge img{width:13px;height:13px;}
-  .io-badge.txt{font-size:7px;}
+  .candle-card{width:84px;padding:6px 8px;}
+  .candle-card .cc-bars{height:20px;}
+  .hud{padding:4px 7px;}
+  .idx-ring{width:200px;height:200px;}
+  .idx-badge{width:19px;height:19px;margin:-9.5px 0 0 -9.5px;font-size:5.6px;}
 }
 @media(prefers-reduced-motion:reduce){
-  .earth-texture,.orbit-svg,.card-topbar,.stars i,.candle-card,.hud .dot,.comet,.orbit-arc,.orbit-node .pulse,.io-spoke,.io-badge{animation:none!important;}
+  .earth-texture,.orbit-svg,.card-topbar,.stars i,.candle-card,.hud .dot,.comet,.orbit-arc,.orbit-node .pulse,.idx-spoke,.idx-badge{animation:none!important;}
   .card-holder,.earth-rig{transition:none!important;}
 }
 </style>
@@ -255,29 +218,15 @@ body{
 <div class="stars" id="stars"></div>
 <div class="comets" id="comets"></div>
 
-<div class="candle-card cc1">
-  <div class="cc-label">NSE · NIFTY 50</div>
-  <div class="cc-bars"><i class="up" style="height:14px"></i><i class="up" style="height:24px"></i><i class="dn" style="height:10px"></i><i class="up" style="height:30px"></i><i class="up" style="height:18px"></i></div>
-  <div class="cc-chg" style="color:var(--bull)">+0.62%</div>
-</div>
-<div class="candle-card cc2">
-  <div class="cc-label">NYSE · DOW</div>
-  <div class="cc-bars"><i class="dn" style="height:26px"></i><i class="up" style="height:16px"></i><i class="dn" style="height:20px"></i><i class="dn" style="height:9px"></i><i class="up" style="height:14px"></i></div>
-  <div class="cc-chg" style="color:var(--bear)">−0.14%</div>
-</div>
-<div class="candle-card cc3">
-  <div class="cc-label">BSE · SENSEX</div>
-  <div class="cc-bars"><i class="up" style="height:16px"></i><i class="dn" style="height:12px"></i><i class="up" style="height:27px"></i><i class="up" style="height:22px"></i><i class="up" style="height:32px"></i></div>
-  <div class="cc-chg" style="color:var(--bull)">+0.58%</div>
-</div>
-<div class="candle-card cc4">
-  <div class="cc-label">NASDAQ 100</div>
-  <div class="cc-bars"><i class="up" style="height:12px"></i><i class="up" style="height:24px"></i><i class="up" style="height:34px"></i><i class="dn" style="height:15px"></i><i class="up" style="height:28px"></i></div>
-  <div class="cc-chg" style="color:var(--bull)">+0.91%</div>
+<div class="candle-card" id="tickerCard">
+  <div class="cc-label" id="tickerLabel">NSE · NIFTY 50</div>
+  <div class="cc-bars" id="tickerBars">
+    <i class="up" style="height:14px"></i><i class="up" style="height:24px"></i><i class="dn" style="height:10px"></i><i class="up" style="height:30px"></i><i class="up" style="height:18px"></i>
+  </div>
+  <div class="cc-chg" id="tickerChg" style="color:var(--bull)">+0.62%</div>
 </div>
 
-<div class="hud hud-tl"><span class="hl"><span class="dot"></span>GLOBAL VOLUME</span><br><span class="hv">$4.2T</span></div>
-<div class="hud hud-br"><span class="hl">NODES ACTIVE</span><br><span class="hv">142 / 142</span></div>
+<div class="hud"><span class="dot"></span>142 NODES ACTIVE</div>
 
 <div class="loading-overlay" id="loadingOverlay">
   <div class="spinner"></div>
@@ -325,100 +274,18 @@ body{
         <g class="orbit-node"><circle class="pulse" cx="350" cy="300" r="5"/><circle cx="350" cy="300" r="4"/></g>
       </svg>
 
-      <div class="icon-orbits">
-        <!-- Ring 1 — security & auth -->
-        <div class="io-ring io-r1">
-          <div class="io-spoke" style="--a:-60deg;--dur:16s">
-            <div class="io-badge" style="--a:-60deg;--dur:16s" title="Secure Auth">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg>
-            </div>
-          </div>
-          <div class="io-spoke" style="--a:60deg;--dur:16s">
-            <div class="io-badge" style="--a:60deg;--dur:16s" title="Google">
-              <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.04 10.04 0 001 12c0 1.61.39 3.14 1.07 4.49l3.77-2.4z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            </div>
-          </div>
-          <div class="io-spoke" style="--a:120deg;--dur:16s">
-            <div class="io-badge" style="--a:120deg;--dur:16s" title="Secure Auth">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 9 8 11 4.5-2 8-6 8-11V5z"/><path d="m9 12 2 2 4-4"/></svg>
-            </div>
-          </div>
-          <div class="io-spoke" style="--a:240deg;--dur:16s">
-            <div class="io-badge" style="--a:240deg;--dur:16s" title="Google">
-              <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.04 10.04 0 001 12c0 1.61.39 3.14 1.07 4.49l3.77-2.4z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-            </div>
-          </div>
-        </div>
-
-        <!-- Ring 2 — Indian exchanges (counter-rotating) -->
-        <div class="io-ring io-r2">
-          <div class="io-spoke ccw" style="--a:0deg;--dur:22s">
-            <div class="io-badge ccw txt" style="--a:0deg;--dur:22s" title="NSE">NSE</div>
-          </div>
-          <div class="io-spoke ccw" style="--a:-90deg;--dur:22s">
-            <div class="io-badge ccw txt" style="--a:-90deg;--dur:22s" title="BSE">BSE</div>
-          </div>
-          <div class="io-spoke ccw" style="--a:180deg;--dur:22s">
-            <div class="io-badge ccw txt" style="--a:180deg;--dur:22s" title="NSE">NSE</div>
-          </div>
-          <div class="io-spoke ccw" style="--a:90deg;--dur:22s">
-            <div class="io-badge ccw txt" style="--a:90deg;--dur:22s" title="BSE">BSE</div>
-          </div>
-        </div>
-
-        <!-- Ring 3 — market data & growth -->
-        <div class="io-ring io-r3">
-          <div class="io-spoke" style="--a:-60deg;--dur:28s">
-            <div class="io-badge" style="--a:-60deg;--dur:28s" title="Trending">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg>
-            </div>
-          </div>
-          <div class="io-spoke" style="--a:0deg;--dur:28s">
-            <div class="io-badge txt" style="--a:0deg;--dur:28s" title="Rupee">₹</div>
-          </div>
-          <div class="io-spoke" style="--a:60deg;--dur:28s">
-            <div class="io-badge" style="--a:60deg;--dur:28s" title="Global Markets">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"/></svg>
-            </div>
-          </div>
-          <div class="io-spoke" style="--a:120deg;--dur:28s">
-            <div class="io-badge" style="--a:120deg;--dur:28s" title="Trending">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 17 9 11 13 15 21 6"/><polyline points="14 6 21 6 21 13"/></svg>
-            </div>
-          </div>
-          <div class="io-spoke" style="--a:180deg;--dur:28s">
-            <div class="io-badge txt" style="--a:180deg;--dur:28s" title="Rupee">₹</div>
-          </div>
-          <div class="io-spoke" style="--a:240deg;--dur:28s">
-            <div class="io-badge" style="--a:240deg;--dur:28s" title="Global Markets">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="3" y1="12" x2="21" y2="12"/><path d="M12 3a15 15 0 0 1 0 18 15 15 0 0 1 0-18z"/></svg>
-            </div>
-          </div>
+      <div class="idx-orbit">
+        <div class="idx-ring">
+          <div class="idx-spoke" style="--a:-90deg"><div class="idx-badge flag-in" style="--a:-90deg" title="NSE">NSE</div></div>
+          <div class="idx-spoke" style="--a:-18deg"><div class="idx-badge flag-in" style="--a:-18deg" title="BSE">BSE</div></div>
+          <div class="idx-spoke" style="--a:54deg"><div class="idx-badge flag-us" style="--a:54deg" title="NASDAQ">NDQ</div></div>
+          <div class="idx-spoke" style="--a:126deg"><div class="idx-badge flag-us" style="--a:126deg" title="S&amp;P 500">SPX</div></div>
+          <div class="idx-spoke" style="--a:198deg"><div class="idx-badge flag-us" style="--a:198deg" title="Dow Jones">DJI</div></div>
         </div>
       </div>
 
     </div>
 
-    <div class="orbit-panel op-tl">
-      <div class="op-label">NIFTY 50</div>
-      <div class="op-bars"><i class="up" style="height:10px"></i><i class="up" style="height:18px"></i><i class="dn" style="height:8px"></i><i class="up" style="height:22px"></i><i class="up" style="height:14px"></i></div>
-      <div class="op-chg" style="color:var(--bull)">▲ +0.62%</div>
-    </div>
-    <div class="orbit-panel op-tr">
-      <div class="op-label">SENSEX</div>
-      <div class="op-bars"><i class="up" style="height:12px"></i><i class="dn" style="height:9px"></i><i class="up" style="height:20px"></i><i class="up" style="height:16px"></i><i class="up" style="height:24px"></i></div>
-      <div class="op-chg" style="color:var(--bull)">▲ +0.58%</div>
-    </div>
-    <div class="orbit-panel op-bl">
-      <div class="op-label">NASDAQ</div>
-      <div class="op-bars"><i class="up" style="height:9px"></i><i class="up" style="height:16px"></i><i class="up" style="height:24px"></i><i class="dn" style="height:11px"></i><i class="up" style="height:20px"></i></div>
-      <div class="op-chg" style="color:var(--bull)">▲ +0.91%</div>
-    </div>
-    <div class="orbit-panel op-br">
-      <div class="op-label">DOW JONES</div>
-      <div class="op-bars"><i class="dn" style="height:18px"></i><i class="up" style="height:11px"></i><i class="dn" style="height:15px"></i><i class="dn" style="height:7px"></i><i class="up" style="height:10px"></i></div>
-      <div class="op-chg" style="color:var(--bear)">▼ −0.14%</div>
-    </div>
   </div>
 
   <div class="card-holder" id="cardHolder">
@@ -546,6 +413,48 @@ function handleGoogle() {
     setTimeout(loop, 550 + Math.random()*500);      // a new comet roughly every ~0.55–1.05s
   }
   loop();
+})();
+
+// ══ Ticker rotation — cycles the one small panel through the 4 indices ══
+(function(){
+  var card = document.getElementById('tickerCard');
+  var labelEl = document.getElementById('tickerLabel');
+  var barsEl = document.getElementById('tickerBars');
+  var chgEl = document.getElementById('tickerChg');
+  if (!card) return;
+
+  var indices = [
+    { label: 'NSE · NIFTY 50', heights: [14,24,10,30,18], dirs: ['up','up','dn','up','up'], chg: '+0.62%', color: 'var(--bull)' },
+    { label: 'BSE · SENSEX',   heights: [16,12,27,22,32], dirs: ['up','dn','up','up','up'], chg: '+0.58%', color: 'var(--bull)' },
+    { label: 'NASDAQ 100',     heights: [12,24,34,15,28], dirs: ['up','up','up','dn','up'], chg: '+0.91%', color: 'var(--bull)' },
+    { label: 'NYSE · DOW',     heights: [26,16,20,9,14],  dirs: ['dn','up','dn','dn','up'], chg: '−0.14%', color: 'var(--bear)' }
+  ];
+
+  var i = 0;
+  function render(idx){
+    var d = indices[idx];
+    labelEl.textContent = d.label;
+    chgEl.textContent = d.chg;
+    chgEl.style.color = d.color;
+    var bars = barsEl.children;
+    for (var b = 0; b < bars.length; b++) {
+      bars[b].style.height = d.heights[b] + 'px';
+      bars[b].className = d.dirs[b];
+    }
+  }
+  render(0);
+
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduceMotion) return;
+
+  setInterval(function(){
+    card.classList.add('fading');
+    setTimeout(function(){
+      i = (i + 1) % indices.length;
+      render(i);
+      card.classList.remove('fading');
+    }, 350);
+  }, 3800);
 })();
 
 // ══ 3D mouse-parallax: card tilt + earth tilt ══
