@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-14T00:52:01Z",
+  "updated": "2026-08-14T03:17:12Z",
   "data": {
     "sp": {
       "price": 7798.99,
@@ -12,37 +12,37 @@
       "src": "GHA"
     },
     "dji": {
-      "price": 53839.99,
+      "price": 53840.0,
       "chgPct": 0.13,
       "src": "GHA"
     },
     "inr": {
       "price": 95.43,
-      "chgPct": 0.12,
+      "chgPct": 0.0,
       "src": "GHA"
     },
     "crude": {
-      "price": 81.2,
-      "chgPct": -1.72,
+      "price": 81.23,
+      "chgPct": -1.68,
       "src": "GHA"
     },
     "gold": {
-      "price": 4392.3,
-      "chgPct": -1.48,
+      "price": 4376.0,
+      "chgPct": -1.85,
       "src": "GHA"
     },
     "silver": {
-      "price": 64.41,
-      "chgPct": -1.63,
+      "price": 64.1,
+      "chgPct": -2.11,
       "src": "GHA"
     },
     "n50": {
-      "price": 24395.85,
+      "price": 24395.8,
       "chgPct": -0.16,
       "src": "GHA"
     },
     "bn": {
-      "price": 57635.25,
+      "price": 57635.2,
       "chgPct": -0.43,
       "src": "GHA"
     },
@@ -58,7 +58,7 @@
     },
     "vix": {
       "price": 11.42,
-      "chgPct": -2.38,
+      "chgPct": -2.35,
       "src": "GHA"
     },
     "t_RELIANCE": {
